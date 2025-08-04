@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from '../../lib/api';
+import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from '@lib/api';
 
 // Kiểu dữ liệu cho user
 interface User {

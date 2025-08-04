@@ -29,11 +29,11 @@
       "@pages/*": ["src/pages/*"],
       "@utils/*": ["src/utils/*"],
       "@hooks/*": ["src/hooks/*"],
-      "@services/*": ["src/app/services/*"],
-      "@store/*": ["src/app/store/*"],
+      "@app/*": ["src/app/*"],
       "@assets/*": ["src/assets/*"],
       "@contexts/*": ["src/contexts/*"],
-      "@types/*": ["src/types/*"]
+      "@types/*": ["src/types/*"],
+      "@lib/*": ["src/lib/*"]
     },
 
     /* Additional options */

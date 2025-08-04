@@ -1,8 +1,8 @@
 import type { Middleware } from '@reduxjs/toolkit';
 import { jwtDecode} from 'jwt-decode';
 import type { JwtPayload } from 'jwt-decode';
-import { logout } from '../slices/auth.slice';
-import type { RootState } from '../Store';
+import { logout } from '@app/slices/auth.slice';
+import type { RootState } from '@app/Store';
 
 // Middleware kiểm tra token hết hạn để tự động đăng xuất
 export const tokenMiddleware: Middleware<{}, RootState> = store => next => action => {

@@ -3,8 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   getDataFromLocalStorage,
   setDataToLocalStorage,
-} from '../../utils/localStorageUtils';
-import { authApi } from '../services/auth.api';
+} from '@utils/localStorageUtils';
+import { authApi } from '@app/services/auth.api';
 
 export interface User {
   id: string;
