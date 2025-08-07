@@ -40,3 +40,26 @@
 .read-the-docs {
   color: #888;
 }
+
+.custom-sider .ant-layout-sider-trigger {
+  background: white !important;
+  color: black !important;
+  border-radius: 0 !important;
+  border-top: 1px solid #f5f5f5;
+  border-right: 1px solid #f5f5f5;
+  font-size: 20px;
+  height: 48px;
+}
+
+/* Đổi màu nền khi chọn menu item */
+.ant-menu-light .ant-menu-item-selected {
+  background-color: #e6f7ff !important;
+  color: black !important;
+  font: "bold" !important;
+}
+
+.ant-menu-light .ant-menu-submenu-selected .ant-menu-submenu-title{
+  background-color: #e6f7ff !important;
+  color: black !important;
+  font: "bold" !important;
+}
