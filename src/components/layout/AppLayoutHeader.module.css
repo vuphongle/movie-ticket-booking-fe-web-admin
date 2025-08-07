@@ -1,0 +1,75 @@
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.languageButton {
+  display: flex !important;
+  align-items: center !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  min-width: 60px !important;
+  justify-content: center !important;
+}
+
+.languageButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.languageButton.active {
+  border: 2px solid #1890ff !important;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f4ff 100%) !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.languageButton.inactive {
+  border: 1px solid #d9d9d9 !important;
+  background: #ffffff !important;
+}
+
+.languageButton.inactive:hover {
+  border-color: #40a9ff !important;
+  background: #f6ffed !important;
+}
+
+.flagImage {
+  width: 20px;
+  height: 14px;
+  margin-right: 6px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.languageText {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.languageText.active {
+  color: #1890ff;
+}
+
+.languageText.inactive {
+  color: #666666;
+}
+
+.avatarWrapper {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.avatarWrapper:hover {
+  transform: scale(1.05);
+}
+
+.headerContainer {
+  padding: 0 16px;
+  height: 100%;
+  background: linear-gradient(90deg, #ffffff 0%, #f8f9fa 100%);
+  border-bottom: 1px solid #e8e8e8;
+}

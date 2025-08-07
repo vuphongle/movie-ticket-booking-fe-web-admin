@@ -1,9 +1,12 @@
 import { Menu } from "antd";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import menuData from "../../data/routes";
+import { useTranslation } from "react-i18next";
+import { getMenuData } from "../../data/routes";
 import type { MenuProps } from "antd";
 
-function mapMenuToItems(menu: typeof menuData): MenuProps["items"] {
+function mapMenuToItems(
+  menu: ReturnType<typeof getMenuData>
+): MenuProps["items"] {
   return menu.map((item) => ({
     key: item.id.toString(),
     icon: item.icon ? <item.icon /> : undefined,
@@ -31,16 +34,19 @@ function mapMenuToItems(menu: typeof menuData): MenuProps["items"] {
 
 function AppMenu() {
   const { pathname } = useLocation();
+  const { t } = useTranslation();
+
+  const menuData = getMenuData(t);
 
   const defaultSelectedKey = menuData
     .flatMap((item) => item.subs)
-    .find((sub) => sub.url === pathname)
+    .find((sub) => sub?.url === pathname)
     ?.id?.toString();
 
   const defaultOpenKey = menuData
     .find(
       (item) =>
-        item.subs.some((sub) => sub.url === pathname) ||
+        item.subs?.some((sub) => sub.url === pathname) ||
         pathname.includes(item.url)
     )
     ?.id?.toString();

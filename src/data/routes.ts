@@ -15,252 +15,255 @@ import {
     TrophyOutlined
 } from "@ant-design/icons";
 
-const menu = [
+export const getMenuData = (t: (key: string) => string) => [
     {
         id: 1,
-        label: "Dashboard",
+        label: t('DASHBOARD'),
         icon: PieChartOutlined,
         url: "/admin/dashboard",
         subs: [
             {
                 id: 11,
-                label: "Tổng quan",
+                label: t('OVERVIEW'),
                 url: "/admin/dashboard",
             },
             {
                 id: 12,
-                label: "Doanh thu theo phim",
+                label: t('REVENUE_BY_MOVIE'),
                 url: "/admin/revenue/movie",
             },
             {
                 id: 13,
-                label: "Doanh thu theo rạp",
+                label: t('REVENUE_BY_CINEMA'),
                 url: "/admin/revenue/cinema",
             },
         ],
     },
     {
         id: 7,
-        label: "Quản lý rạp phim",
+        label: t('CINEMA_MANAGEMENT'),
         icon: RobotOutlined,
         url: "/admin/cinemas",
         subs: [
             {
                 id: 71,
-                label: "Danh sách rạp phim",
+                label: t('CINEMA_LIST'),
                 url: "/admin/cinemas",
             },
             {
                 id: 72,
-                label: "Tạo rạp phim",
+                label: t('CREATE_CINEMA'),
                 url: "/admin/cinemas/create",
             },
         ],
     },
     {
         id: 8,
-        label: "Quản lý phim",
+        label: t('MOVIE_MANAGEMENT'),
         icon: TabletOutlined,
         url: "/admin/movies",
         subs: [
             {
                 id: 81,
-                label: "Danh sách phim",
+                label: t('MOVIE_LIST'),
                 url: "/admin/movies",
             },
             {
                 id: 82,
-                label: "Tạo phim",
+                label: t('CREATE_MOVIE'),
                 url: "/admin/movies/create",
             },
         ],
     },
     {
         id: 9,
-        label: "Quản lý lịch chiếu",
+        label: t('SCHEDULE_MANAGEMENT'),
         icon: BulbOutlined,
         url: "/admin/schedules",
         subs: [
             {
                 id: 91,
-                label: "Danh sách lịch chiếu",
+                label: t('SCHEDULE_LIST'),
                 url: "/admin/schedules",
             },
         ],
     },
     {
         id: 100,
-        label: "Quản lý suất chiếu",
+        label: t('SHOWTIME_MANAGEMENT'),
         icon: CopyrightOutlined,
         url: "/admin/showtimes",
         subs: [
             {
                 id: 1002,
-                label: "Danh sách suất chiếu",
+                label: t('SHOWTIME_LIST'),
                 url: "/admin/showtimes",
             },
         ],
     },
     {
         id: 400,
-        label: "Quản lý đơn hàng",
+        label: t('ORDER_MANAGEMENT'),
         icon: CarOutlined,
         url: "/admin/orders",
         subs: [
             {
                 id: 4001,
-                label: "Danh sách đơn hàng",
+                label: t('ORDER_LIST'),
                 url: "/admin/orders",
             }
         ],
     },
     {
         id: 200,
-        label: "Quản lý giá vé",
+        label: t('TICKET_PRICE_MANAGEMENT'),
         icon: CalculatorOutlined,
         url: "/admin/ticket-prices",
         subs: [
             {
                 id: 2001,
-                label: "Giá vé cơ bản",
+                label: t('BASE_TICKET_PRICE'),
                 url: "/admin/ticket-prices/base-price",
             }
         ],
     },
     {
         id: 300,
-        label: "Quản lý khuyến mại",
+        label: t('COUPON_MANAGEMENT'),
         icon: CarOutlined,
         url: "/admin/coupons",
         subs: [
             {
                 id: 3001,
-                label: "Danh sách khuyến mại",
+                label: t('COUPON_LIST'),
                 url: "/admin/coupons",
             }
         ],
     },
     {
         id: 2,
-        label: "Quản lý bài viết",
+        label: t('BLOG_MANAGEMENT'),
         icon: FileTextOutlined,
         url: "/admin/blogs",
         subs: [
             {
                 id: 21,
-                label: "Tất cả bài viết",
+                label: t('ALL_BLOGS'),
                 url: "/admin/blogs",
             },
             {
                 id: 22,
-                label: "Bài viết của tôi",
+                label: t('MY_BLOGS'),
                 url: "/admin/blogs/own-blogs",
             },
             {
                 id: 23,
-                label: "Tạo bài viết",
+                label: t('CREATE_BLOG'),
                 url: "/admin/blogs/create",
             },
         ],
     },
     {
         id: 3,
-        label: "Quản lý user",
+        label: t('USER_MANAGEMENT'),
         icon: UserOutlined,
         url: "/admin/users",
         subs: [
             {
                 id: 31,
-                label: "Danh sách user",
+                label: t('USER_LIST'),
                 url: "/admin/users",
             },
             {
                 id: 32,
-                label: "Tạo user",
+                label: t('CREATE_USER'),
                 url: "/admin/users/create",
             },
         ],
     },
     {
         id: 4,
-        label: "Quản lý thể loại",
+        label: t('GENRE_MANAGEMENT'),
         icon: TeamOutlined,
         url: "/admin/genres",
         subs: [
             {
                 id: 41,
-                label: "Danh sách thể loại",
+                label: t('GENRE_LIST'),
                 url: "/admin/genres",
             },
         ],
     },
     {
         id: 5,
-        label: "Quản lý quốc gia",
+        label: t('COUNTRY_MANAGEMENT'),
         icon: ProjectOutlined,
         url: "/admin/countries",
         subs: [
             {
                 id: 51,
-                label: "Danh sách quốc gia",
+                label: t('COUNTRY_LIST'),
                 url: "/admin/countries",
             }
         ],
     },
     {
         id: 6,
-        label: "Quản lý combo-nước",
+        label: t('ADDITIONAL_SERVICE_MANAGEMENT'),
         icon: ReadOutlined,
         url: "/admin/additional-services",
         subs: [
             {
                 id: 61,
-                label: "Danh sách combo-nước",
+                label: t('ADDITIONAL_SERVICE_LIST'),
                 url: "/admin/additional-services",
             },
             {
                 id: 62,
-                label: "Tạo combo-nước",
+                label: t('CREATE_ADDITIONAL_SERVICE'),
                 url: "/admin/additional-services/create",
             },
         ],
     },
     {
         id: 500,
-        label: "Quản lý đạo diễn",
+        label: t('DIRECTOR_MANAGEMENT'),
         icon: RocketOutlined,
         url: "/admin/directors",
         subs: [
             {
                 id: 5001,
-                label: "Danh sách đạo diễn",
+                label: t('DIRECTOR_LIST'),
                 url: "/admin/directors",
             },
             {
                 id: 5002,
-                label: "Tạo đạo diễn",
+                label: t('CREATE_DIRECTOR'),
                 url: "/admin/directors/create",
             },
         ],
     },
     {
         id: 600,
-        label: "Quản lý diễn viên",
+        label: t('ACTOR_MANAGEMENT'),
         icon: TrophyOutlined,
         url: "/admin/actors",
         subs: [
             {
                 id: 6001,
-                label: "Danh sách diễn viên",
+                label: t('ACTOR_LIST'),
                 url: "/admin/actors",
             },
             {
                 id: 6002,
-                label: "Tạo diễn viên",
+                label: t('CREATE_ACTOR'),
                 url: "/admin/actors/create",
             },
         ],
     },
 ];
+
+// Default menu without translation for backward compatibility
+const menu = getMenuData((key: string) => key);
 
 export default menu;
