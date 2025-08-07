@@ -33,7 +33,9 @@
       "@assets/*": ["./src/assets/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@types/*": ["./src/types/*"],
-      "@lib/*": ["./src/lib/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@locales/*": ["./src/locales/*"],
+      "@data/*": ["./src/data/*"]
     },
 
     /* Additional options */

@@ -4,7 +4,7 @@ import Flex from "antd/es/flex";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import type { RootState } from "@app/Store";
-import { logout } from "../../app/slices/auth.slice";
+import { logout } from "@app/slices/auth.slice";
 import { flags } from "@assets/index";
 import styles from "./AppLayoutHeader.module.css";
 

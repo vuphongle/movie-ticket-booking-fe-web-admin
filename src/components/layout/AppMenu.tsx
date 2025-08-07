@@ -1,7 +1,7 @@
 import { Menu } from "antd";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { getMenuData } from "../../data/routes";
+import { getMenuData } from "@data/routes";
 import type { MenuProps } from "antd";
 
 function mapMenuToItems(
