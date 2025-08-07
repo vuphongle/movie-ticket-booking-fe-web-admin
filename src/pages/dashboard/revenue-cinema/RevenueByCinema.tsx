@@ -1,6 +1,9 @@
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 
-const Dashboard = () => {
+const RevenueByCinema = () => {
+  const { t } = useTranslation();
+
   return (
     <div
       style={{
@@ -8,7 +11,7 @@ const Dashboard = () => {
       }}
     >
       <Helmet>
-        <title>Dashboard</title>
+        <title>{t("REVENUE_BY_CINEMA")}</title>
       </Helmet>
       <h1
         style={{
@@ -17,10 +20,10 @@ const Dashboard = () => {
           color: "black",
         }}
       >
-        Welcome to the Dashboard
+        Welcome to the Revenue by Cinema
       </h1>
     </div>
   );
 };
 
-export default Dashboard;
+export default RevenueByCinema;

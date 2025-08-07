@@ -15,9 +15,10 @@ const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: "100vh", width: "100vw", overflow: "hidden" }}>
       <Sider
         width={SIDER_WIDTH}
+        collapsedWidth={SIDER_COLLAPSED_WIDTH}
         collapsible
         collapsed={collapsed}
         onCollapse={setCollapsed}
@@ -30,6 +31,8 @@ const AppLayout = () => {
           zIndex: 100,
           background: "white",
           borderRight: "1px solid #f5f5f5",
+          minWidth: collapsed ? SIDER_COLLAPSED_WIDTH : SIDER_WIDTH,
+          maxWidth: collapsed ? SIDER_COLLAPSED_WIDTH : SIDER_WIDTH,
         }}
       >
         <div
@@ -66,7 +69,9 @@ const AppLayout = () => {
       <Layout
         style={{
           marginLeft: collapsed ? SIDER_COLLAPSED_WIDTH : SIDER_WIDTH,
-          transition: "margin-left 0.2s",
+          transition: "margin-left 0.2s ease",
+          minHeight: "100vh",
+          width: `calc(100vw - ${collapsed ? SIDER_COLLAPSED_WIDTH : SIDER_WIDTH}px)`,
         }}
       >
         <Header
@@ -86,9 +91,10 @@ const AppLayout = () => {
         </Header>
         <Content
           style={{
-            margin: `${HEADER_HEIGHT}px 16px 16px 16px`,
-            padding: "16px",
+            marginTop: `${HEADER_HEIGHT}px`,
             background: "white",
+            minHeight: `calc(100vh - ${HEADER_HEIGHT}px - 32px)`,
+            overflow: "auto",
           }}
         >
           <Outlet />

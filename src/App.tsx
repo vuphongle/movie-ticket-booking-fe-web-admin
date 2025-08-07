@@ -1,6 +1,11 @@
 import "./App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { Dashboard, Login } from "@pages/index";
+import {
+  Dashboard,
+  Login,
+  RevenueByCinema,
+  RevenueByMovie,
+} from "@pages/index";
 import AppLayout from "@components/layout/AppLayout";
 import PrivateRoutes from "@components/private/PrivateRoutes";
 
@@ -11,6 +16,8 @@ function App() {
         <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="/" element={<AppLayout />}>
           <Route path="admin/dashboard" element={<Dashboard />} />
+          <Route path="admin/revenue/cinema" element={<RevenueByCinema />} />
+          <Route path="admin/revenue/movie" element={<RevenueByMovie />} />
         </Route>
         <Route path="*" element={<div>404 Not Found</div>} />
       </Route>
