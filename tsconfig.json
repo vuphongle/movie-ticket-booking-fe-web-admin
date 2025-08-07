@@ -35,7 +35,8 @@
       "@types/*": ["./src/types/*"],
       "@lib/*": ["./src/lib/*"],
       "@locales/*": ["./src/locales/*"],
-      "@data/*": ["./src/data/*"]
+      "@data/*": ["./src/data/*"],
+      "@services/*": ["./src/app/services/*"],
     },
 
     /* Additional options */

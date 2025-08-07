@@ -23,6 +23,7 @@ export default defineConfig({
       "@lib": path.resolve(__dirname, "src/lib"),
       "@locales": path.resolve(__dirname, "src/locales"),
       "@data": path.resolve(__dirname, "src/data"),
+      "@services": path.resolve(__dirname, "src/app/services"),
     },
   },
   css: {

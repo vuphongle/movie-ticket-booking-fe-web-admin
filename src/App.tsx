@@ -1,16 +1,20 @@
 import "./App.css";
 import { Route, Routes, Navigate } from "react-router-dom";
-import { Dashboard } from "@pages/index";
+import { Dashboard, Login } from "@pages/index";
 import AppLayout from "@components/layout/AppLayout";
+import PrivateRoutes from "@components/private/PrivateRoutes";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
-      <Route path="/" element={<AppLayout />}>
-        <Route path="admin/dashboard" element={<Dashboard />} />
+      <Route element={<PrivateRoutes />}>
+        <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+        <Route path="/" element={<AppLayout />}>
+          <Route path="admin/dashboard" element={<Dashboard />} />
+        </Route>
+        <Route path="*" element={<div>404 Not Found</div>} />
       </Route>
-      <Route path="*" element={<div>404 Not Found</div>} />
+      <Route path="/admin/login" element={<Login />} />
     </Routes>
   );
 }

@@ -16,6 +16,22 @@ const common = {
   LOGOUT_SUCCESS: "Đăng xuất thành công",
   BACK_TO_HOME: "Quay lại trang chủ",
   LANGUAGE_CHANGED: "Đổi ngôn ngữ thành công",
+
+  // Login
+  LOGIN_ADMIN_TITLE: "Đăng nhập Admin",
+  LOGIN_EMAIL_LABEL: "Email",
+  LOGIN_EMAIL_REQUIRED: "Email không được để trống!",
+  LOGIN_EMAIL_INVALID: "Email không đúng định dạng!",
+  LOGIN_EMAIL_PLACEHOLDER: "Nhập email",
+  LOGIN_PASSWORD_LABEL: "Mật khẩu",
+  LOGIN_PASSWORD_REQUIRED: "Mật khẩu không được để trống!",
+  LOGIN_PASSWORD_PLACEHOLDER: "Nhập mật khẩu",
+  LOGIN_SUBMIT_BTN: "Đăng nhập",
+  LOGIN_LOADING: "Đang xử lý...",
+  LOGIN_SUCCESS: "Đăng nhập thành công!",
+  LOGIN_ERROR: "Đã xảy ra lỗi khi đăng nhập.",
+  LOGIN_FOOTER: "Admin Panel",
+  LOGIN_PAGE_TITLE: "Đăng nhập Admin"
 };
 
 export default common;
