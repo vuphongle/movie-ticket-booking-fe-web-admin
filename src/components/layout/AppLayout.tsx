@@ -33,6 +33,7 @@ const AppLayout = () => {
           borderRight: "1px solid #f5f5f5",
           minWidth: collapsed ? SIDER_COLLAPSED_WIDTH : SIDER_WIDTH,
           maxWidth: collapsed ? SIDER_COLLAPSED_WIDTH : SIDER_WIDTH,
+          overflow: "hidden",
         }}
       >
         <div
@@ -64,7 +65,14 @@ const AppLayout = () => {
             />
           </a>
         </div>
-        <AppMenu />
+        <div
+          style={{
+            height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+            overflow: "auto",
+          }}
+        >
+          <AppMenu />
+        </div>
       </Sider>
       <Layout
         style={{

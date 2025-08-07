@@ -60,7 +60,7 @@ function AppMenu() {
       items={items}
       defaultSelectedKeys={defaultSelectedKey ? [defaultSelectedKey] : []}
       defaultOpenKeys={defaultOpenKey ? [defaultOpenKey] : []}
-      style={{ background: "white", border: "none" }}
+      style={{ background: "white", border: "none", paddingBottom: 64 }}
     />
   );
 }
