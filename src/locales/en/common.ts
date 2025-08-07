@@ -32,6 +32,14 @@ const common = {
   LOGIN_ERROR: "An error occurred during login.",
   LOGIN_FOOTER: "Admin Panel",
   LOGIN_PAGE_TITLE: "Admin Login",
+  ACCOUNT_NOT_ACTIVATED:
+    "Your account is not activated. Please check your email for the activation link.",
+  INVALID_CREDENTIALS: "Invalid email or password. Please try again.",
+
+  // Error Page
+  ERROR_PAGE_DEFAULT_SUBTITLE: "Sorry, the page you visited does not exist.",
+  ERROR_PAGE_BACK_HOME: "Back Home",
+  FORBIDDEN: "Forbidden",
 };
 
 export default common;

@@ -68,7 +68,11 @@ const App = () => {
         "data" in error &&
         typeof (error as any).data?.message === "string"
       ) {
-        message.error((error as any).data.message);
+        if ((error as any).data?.code === "ACCOUNT_NOT_ACTIVATED") {
+          message.error(t("ACCOUNT_NOT_ACTIVATED"));
+        } else if ((error as any).data?.code === "INVALID_CREDENTIALS") {
+          message.error(t("INVALID_CREDENTIALS"));
+        }
       } else {
         message.error(t("LOGIN_ERROR"));
       }

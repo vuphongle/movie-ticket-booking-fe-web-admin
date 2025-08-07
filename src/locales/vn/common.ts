@@ -32,6 +32,14 @@ const common = {
   LOGIN_ERROR: "Đã xảy ra lỗi khi đăng nhập.",
   LOGIN_FOOTER: "Admin Panel",
   LOGIN_PAGE_TITLE: "Đăng nhập Admin",
+  ACCOUNT_NOT_ACTIVATED:
+    "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email để nhận liên kết kích hoạt.",
+  INVALID_CREDENTIALS: "Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.",
+
+  // Error Page
+  ERROR_PAGE_DEFAULT_SUBTITLE: "Xin lỗi, trang bạn truy cập không tồn tại.",
+  ERROR_PAGE_BACK_HOME: "Quay lại trang chủ",
+  FORBIDDEN: "Truy cập bị cấm",
 };
 
 export default common;
