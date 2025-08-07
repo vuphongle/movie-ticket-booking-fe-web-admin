@@ -16,7 +16,7 @@ const common = {
   LOGOUT_SUCCESS: "Logged out successfully",
   BACK_TO_HOME: "Back to Home",
   LANGUAGE_CHANGED: "Language changed successfully",
-  
+
   // Login
   LOGIN_ADMIN_TITLE: "Admin Login",
   LOGIN_EMAIL_LABEL: "Email",
@@ -31,7 +31,7 @@ const common = {
   LOGIN_SUCCESS: "Login successful!",
   LOGIN_ERROR: "An error occurred during login.",
   LOGIN_FOOTER: "Admin Panel",
-  LOGIN_PAGE_TITLE: "Admin Login"
+  LOGIN_PAGE_TITLE: "Admin Login",
 };
 
 export default common;

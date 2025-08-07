@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface ErrorProps {
   error?: {
@@ -12,7 +12,7 @@ interface ErrorProps {
 const Error: React.FC<ErrorProps> = ({ error }) => {
   return (
     <div style={styles.container}>
-      <div style={styles.box} role='alert'>
+      <div style={styles.box} role="alert">
         <h2 style={styles.title}>
           <span>Oops, something went wrong!</span>
         </h2>
@@ -28,24 +28,24 @@ const Error: React.FC<ErrorProps> = ({ error }) => {
 
 const styles = {
   container: {
-    maxWidth: '1152px',
-    margin: '0 auto',
-    padding: '28px 0',
+    maxWidth: "1152px",
+    margin: "0 auto",
+    padding: "28px 0",
   },
   box: {
-    padding: '16px',
-    marginBottom: '16px',
-    color: '#1f2937',
-    backgroundColor: '#eff6ff',
-    borderRadius: '8px',
+    padding: "16px",
+    marginBottom: "16px",
+    color: "#1f2937",
+    backgroundColor: "#eff6ff",
+    borderRadius: "8px",
   },
   title: {
-    fontSize: '24px',
-    marginBottom: '8px',
+    fontSize: "24px",
+    marginBottom: "8px",
   },
   message: {
-    fontSize: '14px',
-    color: '#6b7280',
+    fontSize: "14px",
+    color: "#6b7280",
   },
 };
 

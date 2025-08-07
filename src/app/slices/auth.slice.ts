@@ -1,10 +1,10 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
   getDataFromLocalStorage,
   setDataToLocalStorage,
-} from '@utils/localStorageUtils';
-import { authApi } from '@app/services/auth.api';
+} from "@utils/localStorageUtils";
+import { authApi } from "@app/services/auth.api";
 
 export interface User {
   id: string;
@@ -29,22 +29,22 @@ const defaultState: AuthState = {
 };
 
 const initialState: AuthState =
-  getDataFromLocalStorage('authenticatedUser') || defaultState;
+  getDataFromLocalStorage("authenticatedUser") || defaultState;
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     logout: () => {
-      setDataToLocalStorage('authenticatedUser', defaultState);
+      setDataToLocalStorage("authenticatedUser", defaultState);
       return defaultState;
     },
     updateAuth: (state, action: PayloadAction<Partial<User>>) => {
       state.auth = { ...state.auth, ...action.payload } as User;
-      setDataToLocalStorage('authenticatedUser', state);
+      setDataToLocalStorage("authenticatedUser", state);
     },
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder.addMatcher(
       authApi.endpoints.login.matchFulfilled,
       (state, action) => {
@@ -53,8 +53,8 @@ const authSlice = createSlice({
         state.accessToken = accessToken;
         state.refreshToken = refreshToken;
         state.isAuthenticated = true; // <-- bạn tự đặt ở đây thay vì lấy từ payload
-        setDataToLocalStorage('authenticatedUser', state);
-      }
+        setDataToLocalStorage("authenticatedUser", state);
+      },
     );
   },
 });

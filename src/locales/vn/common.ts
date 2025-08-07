@@ -31,7 +31,7 @@ const common = {
   LOGIN_SUCCESS: "Đăng nhập thành công!",
   LOGIN_ERROR: "Đã xảy ra lỗi khi đăng nhập.",
   LOGIN_FOOTER: "Admin Panel",
-  LOGIN_PAGE_TITLE: "Đăng nhập Admin"
+  LOGIN_PAGE_TITLE: "Đăng nhập Admin",
 };
 
 export default common;
