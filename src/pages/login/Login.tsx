@@ -6,7 +6,7 @@ import { useLoginMutation } from "@services/auth.service";
 import { HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
-import type { RootState } from "../../app/Store";
+import type { RootState } from "@app/Store";
 
 const LoginWrapper = styled.div`
   height: 100vh;

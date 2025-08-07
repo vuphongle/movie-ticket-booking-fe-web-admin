@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_DOMAIN, API_DOMAIN_AUTH_PUBLIC } from "../../data/constants";
+import { API_DOMAIN, API_DOMAIN_AUTH_PUBLIC } from "@/data/constants";
 
 // Define a service using a base URL and expected endpoints
 const ENDPOINT = API_DOMAIN_AUTH_PUBLIC;
