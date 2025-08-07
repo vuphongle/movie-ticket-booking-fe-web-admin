@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useLoginMutation } from "@services/auth.service";
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
 import type { RootState } from "../../app/Store";
@@ -72,14 +72,15 @@ const App = () => {
       } else {
         message.error(t("LOGIN_ERROR"));
       }
+      console.log("Login error:", error);
     }
   };
 
   return (
     <>
-      <Helmet>
+      <HelmetProvider>
         <title>{t("LOGIN_PAGE_TITLE")}</title>
-      </Helmet>
+      </HelmetProvider>
       <LoginWrapper>
         <Spin spinning={isLoading} tip={t("LOGIN_LOADING")}>
           <LoginBox>

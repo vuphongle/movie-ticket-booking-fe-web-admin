@@ -30,7 +30,8 @@ function AppLayoutHeader() {
     },
     {
       key: "2",
-      label: <span onClick={handleLogout}>{t("LOGOUT")}</span>,
+      label: t("LOGOUT"),
+      onClick: handleLogout,
     },
   ];
 

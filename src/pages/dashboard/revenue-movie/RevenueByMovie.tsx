@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
@@ -10,9 +10,9 @@ const Dashboard = () => {
         color: "white",
       }}
     >
-      <Helmet>
+      <HelmetProvider>
         <title>{t("REVENUE_BY_MOVIE")}</title>
-      </Helmet>
+      </HelmetProvider>
       <h1
         style={{
           fontWeight: "bold",

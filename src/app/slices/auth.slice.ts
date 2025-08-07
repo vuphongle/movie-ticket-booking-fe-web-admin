@@ -52,7 +52,7 @@ const authSlice = createSlice({
         state.auth = user;
         state.accessToken = accessToken;
         state.refreshToken = refreshToken;
-        state.isAuthenticated = true; // <-- bạn tự đặt ở đây thay vì lấy từ payload
+        state.isAuthenticated = true;
         setDataToLocalStorage("authenticatedUser", state);
       },
     );

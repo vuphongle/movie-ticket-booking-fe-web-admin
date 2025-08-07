@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { HelmetProvider } from "react-helmet-async";
 
 const Dashboard = () => {
   return (
@@ -7,9 +7,9 @@ const Dashboard = () => {
         color: "white",
       }}
     >
-      <Helmet>
+      <HelmetProvider>
         <title>Dashboard</title>
-      </Helmet>
+      </HelmetProvider>
       <h1
         style={{
           fontWeight: "bold",
