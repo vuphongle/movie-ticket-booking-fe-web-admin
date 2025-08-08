@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from '@lib/api';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from "@lib/api";
 
 // Kiểu dữ liệu cho user
 interface User {
@@ -41,13 +41,13 @@ interface ChangePasswordRequest {
 }
 
 export const authApi = createApi({
-  reducerPath: 'authApi',
+  reducerPath: "authApi",
   baseQuery: fetchBaseQuery({ baseUrl: API_BASE_AUTH_PUBLIC }),
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
-      query: credentials => ({
-        url: 'auth/login',
-        method: 'POST',
+      query: (credentials) => ({
+        url: "auth/login",
+        method: "POST",
         body: credentials,
       }),
       transformResponse: (response: LoginResponse): LoginResponse => {
@@ -55,7 +55,7 @@ export const authApi = createApi({
           ...response,
           user: {
             ...response.user,
-            avatar: response.user.avatar.startsWith('/api')
+            avatar: response.user.avatar.startsWith("/api")
               ? `${API_DOMAIN}${response.user.avatar}`
               : response.user.avatar,
           },
@@ -64,17 +64,17 @@ export const authApi = createApi({
     }),
 
     registerAccount: builder.mutation<void, RegisterRequest>({
-      query: data => ({
-        url: 'auth/register',
-        method: 'POST',
+      query: (data) => ({
+        url: "auth/register",
+        method: "POST",
         body: data,
       }),
     }),
 
     forgotPassword: builder.mutation<void, ForgotPasswordRequest>({
       query: ({ email }) => ({
-        url: 'auth/forgot-password',
-        method: 'POST',
+        url: "auth/forgot-password",
+        method: "POST",
         params: {
           email,
         },
@@ -82,23 +82,23 @@ export const authApi = createApi({
     }),
 
     checkForgotPasswordToken: builder.query<void, string>({
-      query: token => ({
+      query: (token) => ({
         url: `auth/check-forgot-password-token/${token}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
 
     checkRegisterToken: builder.query<void, string>({
-      query: token => ({
+      query: (token) => ({
         url: `auth/check-register-token/${token}`,
-        method: 'GET',
+        method: "GET",
       }),
     }),
 
     changePassword: builder.mutation<void, ChangePasswordRequest>({
-      query: data => ({
-        url: 'auth/change-password',
-        method: 'POST',
+      query: (data) => ({
+        url: "auth/change-password",
+        method: "POST",
         body: data,
       }),
     }),

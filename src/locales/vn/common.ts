@@ -1,0 +1,45 @@
+const common = {
+  SUCCESS: "Thành công",
+  ERROR: "Lỗi",
+  LOADING: "Đang tải...",
+  SAVE: "Lưu",
+  CANCEL: "Hủy",
+  CONFIRM: "Xác nhận",
+  DELETE: "Xóa",
+  EDIT: "Chỉnh sửa",
+  CLOSE: "Đóng",
+  BACK: "Quay lại",
+  NEXT: "Tiếp theo",
+  DONE: "Hoàn thành",
+  RETRY: "Thử lại",
+  LOGOUT: "Đăng xuất",
+  LOGOUT_SUCCESS: "Đăng xuất thành công",
+  BACK_TO_HOME: "Quay lại trang chủ",
+  LANGUAGE_CHANGED: "Đổi ngôn ngữ thành công",
+
+  // Login
+  LOGIN_ADMIN_TITLE: "Đăng nhập Admin",
+  LOGIN_EMAIL_LABEL: "Email",
+  LOGIN_EMAIL_REQUIRED: "Email không được để trống!",
+  LOGIN_EMAIL_INVALID: "Email không đúng định dạng!",
+  LOGIN_EMAIL_PLACEHOLDER: "Nhập email",
+  LOGIN_PASSWORD_LABEL: "Mật khẩu",
+  LOGIN_PASSWORD_REQUIRED: "Mật khẩu không được để trống!",
+  LOGIN_PASSWORD_PLACEHOLDER: "Nhập mật khẩu",
+  LOGIN_SUBMIT_BTN: "Đăng nhập",
+  LOGIN_LOADING: "Đang xử lý...",
+  LOGIN_SUCCESS: "Đăng nhập thành công!",
+  LOGIN_ERROR: "Đã xảy ra lỗi khi đăng nhập.",
+  LOGIN_FOOTER: "Admin Panel",
+  LOGIN_PAGE_TITLE: "Đăng nhập Admin",
+  ACCOUNT_NOT_ACTIVATED:
+    "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email để nhận liên kết kích hoạt.",
+  INVALID_CREDENTIALS: "Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.",
+
+  // Error Page
+  ERROR_PAGE_DEFAULT_SUBTITLE: "Xin lỗi, trang bạn truy cập không tồn tại.",
+  ERROR_PAGE_BACK_HOME: "Quay lại trang chủ",
+  FORBIDDEN: "Truy cập bị cấm",
+};
+
+export default common;

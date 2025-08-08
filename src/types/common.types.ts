@@ -9,7 +9,7 @@ export interface PaginationParams {
   page: number;
   limit: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 export interface PaginatedResponse<T> {
@@ -41,7 +41,7 @@ export interface TableColumn {
 export interface FilterOption {
   key: string;
   label: string;
-  type: 'text' | 'select' | 'date' | 'dateRange';
+  type: "text" | "select" | "date" | "dateRange";
   options?: SelectOption[];
 }
 
