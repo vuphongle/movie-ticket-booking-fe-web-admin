@@ -1,4 +1,4 @@
-import { useTranslation } from "node_modules/react-i18next";
+import { useTranslation } from "react-i18next";
 import React from "react";
 
 const Loading: React.FC = () => {
@@ -44,7 +44,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-// Keyframe animation (hiệu ứng xoay cho module kết hợp css động)
 const style = document.createElement("style");
 style.innerHTML = `
 @keyframes spin {
