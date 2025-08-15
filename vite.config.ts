@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -10,16 +11,19 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": "/src",
-      "@components": "/src/components",
-      "@pages": "/src/pages",
-      "@utils": "/src/utils",
-      "@hooks": "/src/hooks",
-      "@app": "/src/app",
-      "@assets": "/src/assets",
-      "@contexts": "/src/contexts",
-      "@types": "/src/types",
-      "@lib": "/src/lib",
+      "@": path.resolve(__dirname, "src"),
+      "@components": path.resolve(__dirname, "src/components"),
+      "@pages": path.resolve(__dirname, "src/pages"),
+      "@utils": path.resolve(__dirname, "src/utils"),
+      "@hooks": path.resolve(__dirname, "src/hooks"),
+      "@app": path.resolve(__dirname, "src/app"),
+      "@assets": path.resolve(__dirname, "src/assets"),
+      "@contexts": path.resolve(__dirname, "src/contexts"),
+      "@types": path.resolve(__dirname, "src/types"),
+      "@lib": path.resolve(__dirname, "src/lib"),
+      "@locales": path.resolve(__dirname, "src/locales"),
+      "@data": path.resolve(__dirname, "src/data"),
+      "@services": path.resolve(__dirname, "src/app/services"),
     },
   },
   css: {
