@@ -20,14 +20,6 @@ export interface LoginResponse {
   user: User;
 }
 
-// Kiểu dữ liệu truyền vào đăng ký
-export interface RegisterRequest {
-  email: string;
-  password: string;
-  name: string;
-  confirmPassword?: string; // Optional cho form validation
-}
-
 // Kiểu dữ liệu quên mật khẩu
 export interface ForgotPasswordRequest {
   email: string;
@@ -35,8 +27,9 @@ export interface ForgotPasswordRequest {
 
 // Kiểu dữ liệu đổi mật khẩu
 export interface ChangePasswordRequest {
-  token: string;
+  oldPassword: string;
   newPassword: string;
+  confirmPassword: string;
 }
 
 // Auth state cho Redux

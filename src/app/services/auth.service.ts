@@ -4,9 +4,7 @@ import type { ApiResponse } from "@/types/common.types";
 import type {
   LoginRequest,
   LoginResponse,
-  RegisterRequest,
   ForgotPasswordRequest,
-  ChangePasswordRequest,
 } from "@/types/auth.types";
 
 export const authApi = createApi({
@@ -39,14 +37,6 @@ export const authApi = createApi({
       },
     }),
 
-    registerAccount: builder.mutation<ApiResponse, RegisterRequest>({
-      query: (data) => ({
-        url: "auth/register",
-        method: "POST",
-        body: data,
-      }),
-    }),
-
     forgotPassword: builder.mutation<ApiResponse, ForgotPasswordRequest>({
       query: ({ email }) => ({
         url: "auth/forgot-password",
@@ -55,29 +45,6 @@ export const authApi = createApi({
       }),
     }),
 
-    checkForgotPasswordToken: builder.query<ApiResponse, string>({
-      query: (token) => ({
-        url: `auth/check-forgot-password-token/${token}`,
-        method: "GET",
-      }),
-    }),
-
-    checkRegisterToken: builder.query<ApiResponse, string>({
-      query: (token) => ({
-        url: `auth/check-register-token/${token}`,
-        method: "GET",
-      }),
-    }),
-
-    changePassword: builder.mutation<ApiResponse, ChangePasswordRequest>({
-      query: (data) => ({
-        url: "auth/change-password",
-        method: "POST",
-        body: data,
-      }),
-    }),
-
-    // Có thể thêm endpoint logout nếu cần
     logout: builder.mutation<ApiResponse, void>({
       query: () => ({
         url: "auth/logout",
@@ -89,10 +56,6 @@ export const authApi = createApi({
 
 export const {
   useLoginMutation,
-  useRegisterAccountMutation,
   useForgotPasswordMutation,
-  useCheckForgotPasswordTokenQuery,
-  useChangePasswordMutation,
-  useCheckRegisterTokenQuery,
   useLogoutMutation,
 } = authApi;

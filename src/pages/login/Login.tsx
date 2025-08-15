@@ -2,7 +2,7 @@ import { Button, Form, Input, Spin, Typography, message } from "antd";
 import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useLoginMutation } from "@app/services/auth.api";
+import { useLoginMutation } from "@/app/services/auth.service";
 import { HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { QuestionCircleOutlined } from "@ant-design/icons";

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
-import { useForgotPasswordMutation } from "@app/services/auth.api";
+import { useForgotPasswordMutation } from "@/app/services/auth.service";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { MailOutlined, ReloadOutlined, EditOutlined } from "@ant-design/icons";
 

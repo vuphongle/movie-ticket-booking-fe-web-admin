@@ -38,7 +38,7 @@ function AppLayoutHeader() {
     {
       key: "2",
       icon: <LockOutlined />,
-      label: <a href="/">{t("CHANGE_PASSWORD")}</a>,
+      label: <a href="/admin/change-password">{t("CHANGE_PASSWORD")}</a>,
     },
     {
       key: "3",

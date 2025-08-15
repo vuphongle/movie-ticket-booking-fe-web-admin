@@ -4,7 +4,7 @@ import {
   getDataFromLocalStorage,
   setDataToLocalStorage,
 } from "@utils/localStorageUtils";
-import { authApi } from "@app/services/auth.api";
+import { authApi } from "@/app/services/auth.service";
 import type { User, AuthState } from "@/types/auth.types";
 
 const defaultState: AuthState = {
