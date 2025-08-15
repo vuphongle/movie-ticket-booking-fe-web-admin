@@ -2,11 +2,16 @@ import { Button, Form, Input, Spin, Typography, message } from "antd";
 import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useLoginMutation } from "@services/auth.service";
+import { useLoginMutation } from "@/app/services/auth.service";
 import { HelmetProvider } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
+import { QuestionCircleOutlined } from "@ant-design/icons";
 
 import type { RootState } from "@app/Store";
+
+function normalizeEmail(raw: string) {
+  return raw.trim().toLowerCase();
+}
 
 const LoginWrapper = styled.div`
   height: 100vh;
@@ -47,6 +52,7 @@ const Footer = styled.div`
 `;
 
 const App = () => {
+  const [form] = Form.useForm();
   const [login, { isLoading }] = useLoginMutation();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
@@ -57,8 +63,9 @@ const App = () => {
   }
 
   const handleLogin = async (values: { email: string; password: string }) => {
+    const email = normalizeEmail(values.email);
     try {
-      await login(values).unwrap();
+      await login({ email, password: values.password }).unwrap();
       message.success(t("LOGIN_SUCCESS"));
       navigate("/admin/dashboard");
     } catch (error) {
@@ -72,11 +79,12 @@ const App = () => {
           message.error(t("ACCOUNT_NOT_ACTIVATED"));
         } else if ((error as any).data?.code === "INVALID_CREDENTIALS") {
           message.error(t("INVALID_CREDENTIALS"));
+        } else if ((error as any).data?.code === "INTERNAL_SERVER_ERROR") {
+          message.error(t("LOGIN_ERROR"));
         }
       } else {
         message.error(t("LOGIN_ERROR"));
       }
-      console.log("Login error:", error);
     }
   };
 
@@ -90,6 +98,7 @@ const App = () => {
           <LoginBox>
             <Title>{t("LOGIN_ADMIN_TITLE")}</Title>
             <Form
+              form={form}
               layout="vertical"
               onFinish={handleLogin}
               autoComplete="off"
@@ -101,9 +110,24 @@ const App = () => {
                 rules={[
                   { required: true, message: t("LOGIN_EMAIL_REQUIRED") },
                   { type: "email", message: t("LOGIN_EMAIL_INVALID") },
+                  {
+                    validator: (_, value) => {
+                      if (!value) return Promise.resolve();
+                      const normalized = normalizeEmail(value);
+                      if (normalized !== value) {
+                        form.setFieldsValue({ email: normalized });
+                      }
+                      return Promise.resolve();
+                    },
+                  },
                 ]}
               >
-                <Input placeholder={t("LOGIN_EMAIL_PLACEHOLDER")} />
+                <Input
+                  placeholder={t("LOGIN_EMAIL_PLACEHOLDER")}
+                  allowClear
+                  autoFocus
+                  inputMode="email"
+                />
               </Form.Item>
               <Form.Item
                 name="password"
@@ -118,6 +142,20 @@ const App = () => {
                 <Button type="primary" htmlType="submit" block>
                   {t("LOGIN_SUBMIT_BTN")}
                 </Button>
+              </Form.Item>
+              <Form.Item style={{ textAlign: "center", marginTop: 8 }}>
+                <Typography.Link
+                  onClick={() => navigate("/admin/forgot-password")}
+                  style={{
+                    fontSize: 13,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <QuestionCircleOutlined />
+                  {t("LOGIN_FORGOT_PASSWORD")}
+                </Typography.Link>
               </Form.Item>
             </Form>
             <Footer>

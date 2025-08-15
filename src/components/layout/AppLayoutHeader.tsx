@@ -7,6 +7,12 @@ import type { RootState } from "@app/Store";
 import { logout } from "@app/slices/auth.slice";
 import { flags } from "@assets/index";
 import styles from "./AppLayoutHeader.module.css";
+import {
+  UserOutlined,
+  LockOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+} from "@ant-design/icons";
 
 function AppLayoutHeader() {
   const { auth } = useSelector((state: RootState) => state.auth);
@@ -26,10 +32,22 @@ function AppLayoutHeader() {
   const items = [
     {
       key: "1",
-      label: <a href="/">{t("BACK_TO_HOME")}</a>,
+      icon: <UserOutlined />,
+      label: <a href="/">{t("PROFILE")}</a>,
     },
     {
       key: "2",
+      icon: <LockOutlined />,
+      label: <a href="/admin/change-password">{t("CHANGE_PASSWORD")}</a>,
+    },
+    {
+      key: "3",
+      icon: <HomeOutlined />,
+      label: <a href="/">{t("BACK_TO_HOME")}</a>,
+    },
+    {
+      key: "4",
+      icon: <LogoutOutlined />,
       label: t("LOGOUT"),
       onClick: handleLogout,
     },
@@ -94,6 +112,16 @@ function AppLayoutHeader() {
       <Dropdown menu={{ items }} placement="bottomRight" trigger={["click"]}>
         <div className={styles.avatarWrapper}>
           <Avatar src={<img src={auth?.avatar} alt="avatar" />} size={40} />
+          <div className={styles.userInfo}>
+            <span className={styles.username}>{auth?.name}</span>
+            <span className={styles.dropdownIcon}>
+              {auth?.role === "ADMIN"
+                ? "Admin"
+                : auth?.role === "SUPER_ADMIN"
+                  ? "Super Admin"
+                  : auth?.role}
+            </span>
+          </div>
         </div>
       </Dropdown>
     </Flex>

@@ -1,0 +1,33 @@
+.menuHover :global(.ant-menu-item),
+.menuHover :global(.ant-menu-submenu-title) {
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease;
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.menuHover :global(.ant-menu-item:hover),
+.menuHover :global(.ant-menu-submenu-title:hover) {
+  transform: scale(1.04);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Không scale khi đang selected (tránh giật) */
+.menuHover :global(.ant-menu-item-selected) {
+  transform: none;
+}
+
+/* Animate icon nhẹ khi hover */
+.menuHover :global(.ant-menu-item:hover .anticon),
+.menuHover :global(.ant-menu-submenu-title:hover .anticon) {
+  transition: transform 120ms ease;
+  transform: translateX(2px);
+}
+
+/* (Tùy chọn) nếu bạn muốn text cũng dịch nhẹ theo */
+.menuHover :global(.ant-menu-item:hover .ant-menu-title-content),
+.menuHover :global(.ant-menu-submenu-title:hover .ant-menu-title-content) {
+  transition: transform 120ms ease;
+  transform: translateX(1px);
+}

@@ -1,19 +1,30 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_DOMAIN, API_DOMAIN_AUTH_PUBLIC } from "@/data/constants";
+import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from "@/data/constants";
+import type { ApiResponse } from "@/types/common.types";
+import type {
+  LoginRequest,
+  LoginResponse,
+  ForgotPasswordRequest,
+} from "@/types/auth.types";
 
-// Define a service using a base URL and expected endpoints
-const ENDPOINT = API_DOMAIN_AUTH_PUBLIC;
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ baseUrl: ENDPOINT }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: API_BASE_AUTH_PUBLIC,
+    prepareHeaders: (headers) => {
+      headers.set("Content-Type", "application/json");
+      return headers;
+    },
+  }),
+  tagTypes: ["Auth"],
   endpoints: (builder) => ({
-    login: builder.mutation({
+    login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "login",
+        url: "auth/login",
         method: "POST",
         body: credentials,
       }),
-      transformResponse: (response: { user: { avatar: string } }) => {
+      transformResponse: (response: LoginResponse): LoginResponse => {
         return {
           ...response,
           user: {
@@ -25,7 +36,26 @@ export const authApi = createApi({
         };
       },
     }),
+
+    forgotPassword: builder.mutation<ApiResponse, ForgotPasswordRequest>({
+      query: ({ email }) => ({
+        url: "auth/forgot-password",
+        method: "GET",
+        params: { email },
+      }),
+    }),
+
+    logout: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: "auth/logout",
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = authApi;
+export const {
+  useLoginMutation,
+  useForgotPasswordMutation,
+  useLogoutMutation,
+} = authApi;
