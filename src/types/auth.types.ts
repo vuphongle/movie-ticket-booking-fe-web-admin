@@ -20,7 +20,7 @@ export interface LoginResponse {
   user: User;
 }
 
-// Kiểu dữ liệu truyền vào đăng ký  
+// Kiểu dữ liệu truyền vào đăng ký
 export interface RegisterRequest {
   email: string;
   password: string;

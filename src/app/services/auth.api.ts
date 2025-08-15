@@ -11,14 +11,14 @@ import type {
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ 
+  baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_AUTH_PUBLIC,
     prepareHeaders: (headers) => {
-      headers.set('Content-Type', 'application/json');
+      headers.set("Content-Type", "application/json");
       return headers;
     },
   }),
-  tagTypes: ['Auth'],
+  tagTypes: ["Auth"],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({

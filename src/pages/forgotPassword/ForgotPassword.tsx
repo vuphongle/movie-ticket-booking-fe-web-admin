@@ -171,7 +171,7 @@ const ForgotPassword = () => {
         message.error(t("FORGOT_PASSWORD_ERROR"));
       }
     },
-    [forgotPassword, startCooldown, t, isLoading]
+    [forgotPassword, startCooldown, t, isLoading],
   );
 
   // Resend email
