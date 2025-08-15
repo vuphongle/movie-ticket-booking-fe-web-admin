@@ -1,22 +1,13 @@
-import type { Middleware } from "@reduxjs/toolkit";
-import { logout } from "@app/slices/auth.slice";
+import { logout } from "../slices/auth.slice";
+import type { AnyAction, MiddlewareAPI, Dispatch } from "@reduxjs/toolkit";
 
-// Middleware kiểm tra trạng thái của các action để tự động đăng xuất nếu nhận được lỗi 401
-export const checkStatusMiddleware: Middleware =
-  ({ dispatch }) =>
-  (next) =>
-  (action) => {
-    if (action.type.endsWith("rejected")) {
-      const { payload, error } = action as {
-        payload?: { status?: number };
-        error?: any;
-        type: string;
-      };
-
-      if (error && payload?.status === 401) {
-        dispatch(logout());
-      }
+// Middleware to check HTTP status code
+export const checkStatusMiddleware = ({ dispatch }: MiddlewareAPI) => (next: Dispatch<AnyAction>) => (action: AnyAction) => {
+    if (action.type.endsWith('rejected')) {
+        const { payload, error } = action;
+        if (error && payload.status === 401) {
+            dispatch(logout());
+        }
     }
-
     return next(action);
-  };
+};

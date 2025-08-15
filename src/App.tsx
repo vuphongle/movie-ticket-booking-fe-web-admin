@@ -5,6 +5,7 @@ import {
   Login,
   RevenueByCinema,
   RevenueByMovie,
+  ForgotPassword,
 } from "@pages/index";
 import AppLayout from "@components/layout/AppLayout";
 import PrivateRoutes from "@components/private/PrivateRoutes";
@@ -30,6 +31,7 @@ function App() {
         </Route>
       </Route>
       <Route path="/admin/login" element={<Login />} />
+      <Route path="/admin/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 }

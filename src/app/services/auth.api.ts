@@ -1,48 +1,24 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from "@lib/api";
-
-// Kiểu dữ liệu cho user
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-}
-
-// Kiểu dữ liệu phản hồi từ login
-interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-}
-
-// Kiểu dữ liệu truyền vào login
-interface LoginRequest {
-  email: string;
-  password: string;
-}
-
-// Kiểu dữ liệu truyền vào đăng ký
-interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
-// Kiểu dữ liệu quên mật khẩu
-interface ForgotPasswordRequest {
-  email: string;
-}
-
-// Kiểu dữ liệu đổi mật khẩu
-interface ChangePasswordRequest {
-  token: string;
-  newPassword: string;
-}
+import { API_BASE_AUTH_PUBLIC, API_DOMAIN } from "@/data/constants";
+import type { ApiResponse } from "@/types/common.types";
+import type {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
+  ForgotPasswordRequest,
+  ChangePasswordRequest,
+} from "@/types/auth.types";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({ baseUrl: API_BASE_AUTH_PUBLIC }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: API_BASE_AUTH_PUBLIC,
+    prepareHeaders: (headers) => {
+      headers.set('Content-Type', 'application/json');
+      return headers;
+    },
+  }),
+  tagTypes: ['Auth'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
@@ -63,7 +39,7 @@ export const authApi = createApi({
       },
     }),
 
-    registerAccount: builder.mutation<void, RegisterRequest>({
+    registerAccount: builder.mutation<ApiResponse, RegisterRequest>({
       query: (data) => ({
         url: "auth/register",
         method: "POST",
@@ -71,35 +47,41 @@ export const authApi = createApi({
       }),
     }),
 
-    forgotPassword: builder.mutation<void, ForgotPasswordRequest>({
+    forgotPassword: builder.mutation<ApiResponse, ForgotPasswordRequest>({
       query: ({ email }) => ({
         url: "auth/forgot-password",
-        method: "POST",
-        params: {
-          email,
-        },
+        method: "GET",
+        params: { email },
       }),
     }),
 
-    checkForgotPasswordToken: builder.query<void, string>({
+    checkForgotPasswordToken: builder.query<ApiResponse, string>({
       query: (token) => ({
         url: `auth/check-forgot-password-token/${token}`,
         method: "GET",
       }),
     }),
 
-    checkRegisterToken: builder.query<void, string>({
+    checkRegisterToken: builder.query<ApiResponse, string>({
       query: (token) => ({
         url: `auth/check-register-token/${token}`,
         method: "GET",
       }),
     }),
 
-    changePassword: builder.mutation<void, ChangePasswordRequest>({
+    changePassword: builder.mutation<ApiResponse, ChangePasswordRequest>({
       query: (data) => ({
         url: "auth/change-password",
         method: "POST",
         body: data,
+      }),
+    }),
+
+    // Có thể thêm endpoint logout nếu cần
+    logout: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: "auth/logout",
+        method: "POST",
       }),
     }),
   }),
@@ -112,4 +94,5 @@ export const {
   useCheckForgotPasswordTokenQuery,
   useChangePasswordMutation,
   useCheckRegisterTokenQuery,
+  useLogoutMutation,
 } = authApi;

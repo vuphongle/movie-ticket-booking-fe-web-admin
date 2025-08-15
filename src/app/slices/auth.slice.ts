@@ -5,21 +5,7 @@ import {
   setDataToLocalStorage,
 } from "@utils/localStorageUtils";
 import { authApi } from "@app/services/auth.api";
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar: string;
-  [key: string]: any;
-}
-
-export interface AuthState {
-  auth: User | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-  isAuthenticated: boolean;
-}
+import type { User, AuthState } from "@/types/auth.types";
 
 const defaultState: AuthState = {
   auth: null,
