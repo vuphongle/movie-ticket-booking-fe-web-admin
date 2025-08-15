@@ -114,7 +114,13 @@ function AppLayoutHeader() {
           <Avatar src={<img src={auth?.avatar} alt="avatar" />} size={40} />
           <div className={styles.userInfo}>
             <span className={styles.username}>{auth?.name}</span>
-            <span className={styles.dropdownIcon}>{auth?.role}</span>
+            <span className={styles.dropdownIcon}>
+              {auth?.role === "ADMIN"
+                ? "Admin"
+                : auth?.role === "SUPER_ADMIN"
+                  ? "Super Admin"
+                  : auth?.role}
+            </span>
           </div>
         </div>
       </Dropdown>
