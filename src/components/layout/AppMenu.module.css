@@ -31,3 +31,14 @@
   transition: transform 120ms ease;
   transform: translateX(1px);
 }
+
+.menuHover :global(.ant-menu),
+.menuHover :global(.ant-menu-item),
+.menuHover :global(.ant-menu-submenu-title),
+.menuHover :global(.ant-menu-title-content),
+.menuHover :global(.ant-menu a) {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
