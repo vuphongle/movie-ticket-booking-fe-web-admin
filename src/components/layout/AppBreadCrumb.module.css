@@ -1,0 +1,14 @@
+.appBreadcrumb {
+  background: #f5f5f5;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+}
+
+.appBreadcrumb :global(.ant-breadcrumb-separator) {
+  color: #888;
+}
+
+.appBreadcrumbLast {
+  color: #1890ff;
+  font-weight: bold;
+}

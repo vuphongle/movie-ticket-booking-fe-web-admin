@@ -26,6 +26,8 @@ const common = {
   ERROR_PAGE_DEFAULT_SUBTITLE: "Xin lỗi, trang bạn truy cập không tồn tại.",
   ERROR_PAGE_BACK_HOME: "Quay lại trang chủ",
   FORBIDDEN: "Truy cập bị cấm",
+
+  SEARCH: "Tìm kiếm",
 };
 
 export default common;

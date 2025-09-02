@@ -11,6 +11,7 @@ import {
 import AppLayout from "@components/layout/AppLayout";
 import PrivateRoutes from "@components/private/PrivateRoutes";
 import AuthorizeRoutes from "@/components/private/AuthorizeRoutes";
+import ShowTimesList from "./pages/showtimes/ShowTimesList";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="admin/dashboard" element={<Dashboard />} />
             <Route path="admin/revenue/cinema" element={<RevenueByCinema />} />
             <Route path="admin/revenue/movie" element={<RevenueByMovie />} />
+            <Route path="admin/showtimes" element={<ShowTimesList />} />
             <Route path="admin/change-password" element={<ChangePassword />} />
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />
