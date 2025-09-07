@@ -25,6 +25,8 @@ const common = {
   ERROR_PAGE_DEFAULT_SUBTITLE: "Sorry, the page you visited does not exist.",
   ERROR_PAGE_BACK_HOME: "Back Home",
   FORBIDDEN: "Forbidden",
+
+  SEARCH: "Search",
 };
 
 export default common;
