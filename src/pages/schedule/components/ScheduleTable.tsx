@@ -2,6 +2,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, message, Modal, Space, Table, Tag } from "antd";
 import type { SortOrder } from "antd/es/table/interface";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { useDeleteScheduleMutation } from "@services/schedules.service";
 import { formatDate } from "@/utils/functionUtils";
@@ -9,6 +10,8 @@ import ModalUpdate from "./ModalUpdate";
 import type { ScheduleTableProps, Schedule } from "@/types";
 
 const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
+  const { t } = useTranslation();
+
   // Simple column search properties (simplified version for now)
   const getColumnSearchProps = (dataIndex: string, nestedKeys?: string[]) => ({
     // Basic filtering without complex search UI
@@ -49,7 +52,7 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
 
   const columns = [
     {
-      title: "Phim chiếu",
+      title: t("MOVIE"),
       dataIndex: "movie",
       key: "movie",
       ...getColumnSearchProps("movie", ["name"]),
@@ -62,7 +65,7 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
       },
     },
     {
-      title: "Thời gian chiếu",
+      title: t("SHOWING_TIME"),
       dataIndex: "startDate",
       key: "time",
       sorter: (a: Schedule, b: Schedule) =>
@@ -73,7 +76,7 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
       },
     },
     {
-      title: "Phân loại",
+      title: t("CLASSIFICATION"),
       dataIndex: "startDate",
       key: "type",
       sorter: (a: Schedule, b: Schedule) => {
@@ -90,10 +93,10 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
               : "warning";
         const statusText =
           classification === 1
-            ? "Sắp chiếu"
+            ? t("UPCOMING")
             : classification === 2
-              ? "Đang chiếu"
-              : "Đã chiếu";
+              ? t("SHOWING")
+              : t("ENDED");
 
         return <Tag color={color}>{statusText}</Tag>;
       },
@@ -128,18 +131,18 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
 
   const handleConfirm = (id: string | number) => {
     Modal.confirm({
-      title: "Bạn có chắc chắn muốn xóa lịch chiếu này?",
-      content: "Hành động này không thể hoàn tác!",
-      okText: "Xóa",
+      title: t("CONFIRM_DELETE_SCHEDULE"),
+      content: t("CONFIRM_DELETE_MESSAGE"),
+      okText: t("DELETE"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("CANCEL"),
       okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
       onOk: () => {
         return new Promise<void>((resolve, reject) => {
           deleteSchedule(id)
             .unwrap()
             .then(() => {
-              message.success("Xóa lịch chiếu thành công!");
+              message.success(t("SCHEDULE_DELETED_SUCCESS"));
               resolve(); // Đóng modal sau khi xóa thành công
             })
             .catch((error: any) => {

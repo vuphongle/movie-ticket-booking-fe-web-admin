@@ -1,18 +1,20 @@
 import { Button, DatePicker, Form, message, Modal, Select, Space } from "antd";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import { useUpdateScheduleMutation } from "@services/schedules.service";
 import { formatDate } from "@/utils/functionUtils";
 import type { ModalUpdateProps, ScheduleFormData } from "@/types";
 
 const ModalUpdate = (props: ModalUpdateProps) => {
   const { schedule, open, onCancel, movies } = props;
+  const { t } = useTranslation();
   const [updateSchedule, { isLoading }] = useUpdateScheduleMutation();
 
   const onFinish = (values: ScheduleFormData) => {
     updateSchedule({ id: schedule.id, ...values })
       .unwrap()
       .then((_data) => {
-        message.success("Cập nhật lịch chiếu thành công!");
+        message.success(t("SCHEDULE_UPDATED_SUCCESS"));
         onCancel();
       })
       .catch((error: any) => {
@@ -24,7 +26,7 @@ const ModalUpdate = (props: ModalUpdateProps) => {
     <>
       <Modal
         open={open}
-        title="Cập nhật lịch chiếu"
+        title={t("UPDATE_SCHEDULE")}
         footer={null}
         onCancel={onCancel}
         confirmLoading={isLoading}
@@ -44,19 +46,19 @@ const ModalUpdate = (props: ModalUpdateProps) => {
           }}
         >
           <Form.Item
-            label="Phim chiếu"
+            label={t("MOVIE")}
             name="movieId"
             rules={[
               {
                 required: true,
-                message: "Phim chiếu không được để trống!",
+                message: t("MOVIE_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a movie"
+              placeholder={t("SELECT_MOVIE")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -71,12 +73,12 @@ const ModalUpdate = (props: ModalUpdateProps) => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày bắt đầu"
+            label={t("START_DATE")}
             name="startDate"
             rules={[
               {
                 required: true,
-                message: "Ngày bắt đầu không được để trống!",
+                message: t("START_DATE_REQUIRED"),
               },
             ]}
           >
@@ -84,12 +86,12 @@ const ModalUpdate = (props: ModalUpdateProps) => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày kết thúc"
+            label={t("END_DATE")}
             name="endDate"
             rules={[
               {
                 required: true,
-                message: "Ngày kết thúc không được để trống!",
+                message: t("END_DATE_REQUIRED"),
               },
             ]}
           >
@@ -99,7 +101,7 @@ const ModalUpdate = (props: ModalUpdateProps) => {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={isLoading}>
-                Cập nhật
+                {t("UPDATE")}
               </Button>
             </Space>
           </Form.Item>

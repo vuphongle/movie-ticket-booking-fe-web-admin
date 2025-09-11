@@ -23,7 +23,7 @@ const showtimes = {
 
     // Thông báo
     FEATURE_UNDER_DEVELOPMENT: "Tính năng đang trong quá trình phát triển!. Vui lòng thử lại sau.",
-    ADD_SHOWTIME: "Thêm lịch chiếu",
+    ADD_SHOWTIME: "Thêm suất chiếu",
     ADD_SCREENINGS: "Thêm suất chiếu",
     MOVIE_SCREENING_REQUIRED: "Phim chiếu không được để trống!",
     SELECT_MOVIE: "Chọn phim",

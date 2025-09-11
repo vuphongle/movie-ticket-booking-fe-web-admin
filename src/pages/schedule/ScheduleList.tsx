@@ -12,6 +12,7 @@ import {
 } from "antd";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetMoviesQuery } from "@services/movies.service";
 import {
@@ -22,11 +23,8 @@ import AppBreadCrumb from "@components/layout/AppBreadCrumb";
 import ScheduleTable from "./components/ScheduleTable";
 import type { ScheduleFormData } from "@/types";
 
-const breadcrumb = [
-  { label: "Danh sách lịch chiếu", href: "/admin/schedules" },
-];
-
 const ScheduleList = () => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -39,6 +37,8 @@ const ScheduleList = () => {
 
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
+
+  const breadcrumb = [{ label: t("SCHEDULE_LIST"), href: "/admin/schedules" }];
 
   if (isFetchingSchedules || isFetchingMovies) {
     return (
@@ -60,7 +60,7 @@ const ScheduleList = () => {
       .then((_data) => {
         form.resetFields();
         setOpen(false);
-        message.success("Tạo lịch chiếu thành công!");
+        message.success(t("SCHEDULE_CREATED_SUCCESS"));
       })
       .catch((error: any) => {
         message.error(error.data.message);
@@ -70,7 +70,7 @@ const ScheduleList = () => {
   return (
     <>
       <Helmet>
-        <title>Danh sách lịch chiếu</title>
+        <title>{t("SCHEDULE_LIST")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -88,7 +88,7 @@ const ScheduleList = () => {
             icon={<PlusOutlined />}
             onClick={() => setOpen(true)}
           >
-            Tạo lịch chiếu
+            {t("CREATE_SCHEDULE")}
           </Button>
           <RouterLink to="/admin/Schedules">
             <Button
@@ -96,7 +96,7 @@ const ScheduleList = () => {
               type="primary"
               icon={<ReloadOutlined />}
             >
-              Refresh
+              {t("REFRESH")}
             </Button>
           </RouterLink>
         </Space>
@@ -105,7 +105,7 @@ const ScheduleList = () => {
       </div>
       <Modal
         open={open}
-        title="Tạo lịch chiếu"
+        title={t("CREATE_SCHEDULE")}
         footer={null}
         onCancel={() => setOpen(false)}
         confirmLoading={isLoadingCreate}
@@ -117,19 +117,19 @@ const ScheduleList = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="Phim chiếu"
+            label={t("MOVIE")}
             name="movieId"
             rules={[
               {
                 required: true,
-                message: "Phim chiếu không được để trống!",
+                message: t("MOVIE_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a movie"
+              placeholder={t("SELECT_MOVIE")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label?.toString() ?? "")
@@ -144,12 +144,12 @@ const ScheduleList = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày bắt đầu"
+            label={t("START_DATE")}
             name="startDate"
             rules={[
               {
                 required: true,
-                message: "Ngày bắt đầu không được để trống!",
+                message: t("START_DATE_REQUIRED"),
               },
             ]}
           >
@@ -157,12 +157,12 @@ const ScheduleList = () => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày kết thúc"
+            label={t("END_DATE")}
             name="endDate"
             rules={[
               {
                 required: true,
-                message: "Ngày kết thúc không được để trống!",
+                message: t("END_DATE_REQUIRED"),
               },
             ]}
           >
@@ -176,7 +176,7 @@ const ScheduleList = () => {
                 htmlType="submit"
                 loading={isLoadingCreate}
               >
-                Lưu
+                {t("SAVE")}
               </Button>
             </Space>
           </Form.Item>

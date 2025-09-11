@@ -4,6 +4,7 @@ import login from "./login";
 import forgotPassword from "./forgotPassword";
 import changePassword from "./changePassword";
 import showtimes from "./showTimes";
+import schedule from "./schedule";
 
 const en = {
   ...common,
@@ -12,6 +13,7 @@ const en = {
   ...showtimes,
   ...changePassword,
   ...forgotPassword,
+  ...schedule,
 };
 
 export default en;
