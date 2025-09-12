@@ -5,6 +5,7 @@ const showtimes = {
     SHOW_DATE_REQUIRED: "Ngày chiếu không được để trống!",
     SELECT_CINEMA: "Chọn rạp chiếu",
     SELECT_AUDITORIUM: "Chọn phòng chiếu",
+    ALL_AUDITORIUMS: "Tất cả phòng chiếu",
 
     SUBTITLING: "Phụ đề",
     DUBBING: "Lồng tiếng",

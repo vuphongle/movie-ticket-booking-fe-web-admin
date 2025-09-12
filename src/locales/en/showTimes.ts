@@ -5,6 +5,7 @@ const showtimes = {
   SHOW_DATE_REQUIRED: "Show Date is required!",
   SELECT_CINEMA: "Select a cinema",
   SELECT_AUDITORIUM: "Select an auditorium",
+  ALL_AUDITORIUMS: "All auditoriums",
 
   SUBTITLING: "Subtitling",
   DUBBING: "Dubbing",

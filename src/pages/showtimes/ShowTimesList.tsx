@@ -63,8 +63,8 @@ const ShowTimesList = () => {
   const handleSearch = (values: SearchValues) => {
     const { cinemaId, auditoriumId, showDate } = values;
     searchShowtimes({
-      cinemaId,
-      auditoriumId,
+      cinemaId: cinemaId || undefined,
+      auditoriumId: auditoriumId || undefined,
       showDate: formatDate(showDate.toISOString()),
     });
     setDateSelected(dayjs(values.showDate.toISOString()));
@@ -109,6 +109,7 @@ const ShowTimesList = () => {
               <Select
                 style={{ width: "100%" }}
                 showSearch
+                allowClear
                 placeholder={t("SELECT_CINEMA")}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -116,13 +117,18 @@ const ShowTimesList = () => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={cinemas?.map((cinema: Cinema) => ({
-                  value: cinema.id,
-                  label: cinema.name,
-                }))}
+                options={[
+                  { value: "", label: t("ALL_CINEMAS") || "Tất cả rạp chiếu" },
+                  ...(cinemas?.map((cinema: Cinema) => ({
+                    value: cinema.id,
+                    label: cinema.name,
+                  })) || []),
+                ]}
                 onChange={(value) => {
                   form.setFieldsValue({ auditoriumId: undefined });
-                  getAuditoriumsByCinema(value);
+                  if (value) {
+                    getAuditoriumsByCinema(value);
+                  }
                 }}
               />
             </Form.Item>
@@ -135,6 +141,7 @@ const ShowTimesList = () => {
               <Select
                 style={{ width: "100%" }}
                 showSearch
+                allowClear
                 placeholder={t("SELECT_AUDITORIUM")}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -142,10 +149,16 @@ const ShowTimesList = () => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={auditoriums?.map((auditorium: Auditorium) => ({
-                  value: auditorium.id,
-                  label: auditorium.name,
-                }))}
+                options={[
+                  {
+                    value: "",
+                    label: t("ALL_AUDITORIUMS"),
+                  },
+                  ...(auditoriums?.map((auditorium: Auditorium) => ({
+                    value: auditorium.id,
+                    label: auditorium.name,
+                  })) || []),
+                ]}
               />
             </Form.Item>
 
