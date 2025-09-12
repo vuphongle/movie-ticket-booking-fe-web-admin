@@ -6,36 +6,13 @@ import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { useDeleteScheduleMutation } from "@services/schedules.service";
 import { formatDate } from "@/utils/functionUtils";
+import useSearchTable from "@/hooks/useSearchTable.tsx";
 import ModalUpdate from "./ModalUpdate";
 import type { ScheduleTableProps, Schedule } from "@/types";
 
 const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
   const { t } = useTranslation();
-
-  // Simple column search properties (simplified version for now)
-  const getColumnSearchProps = (dataIndex: string, nestedKeys?: string[]) => ({
-    // Basic filtering without complex search UI
-    onFilter: (value: any, record: any) => {
-      if (nestedKeys && nestedKeys.length > 0) {
-        let nestedValue = record;
-        for (const key of nestedKeys) {
-          nestedValue = nestedValue?.[key];
-        }
-        return (
-          nestedValue
-            ?.toString()
-            ?.toLowerCase()
-            ?.includes((value as string).toLowerCase()) ?? false
-        );
-      }
-      return (
-        record[dataIndex]
-          ?.toString()
-          ?.toLowerCase()
-          ?.includes((value as string).toLowerCase()) ?? false
-      );
-    },
-  });
+  const { getColumnSearchProps } = useSearchTable();
 
   const [open, setOpen] = useState(false);
   const [scheduleUpdate, setScheduleUpdate] = useState<Schedule | null>(null);
@@ -68,17 +45,27 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
       title: t("SHOWING_TIME"),
       dataIndex: "startDate",
       key: "time",
+      ...getColumnSearchProps("startDate"),
       sorter: (a: Schedule, b: Schedule) =>
         new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       sortDirections: ["descend", "ascend"] as SortOrder[],
       render: (_text: any, record: Schedule, _index: number) => {
-        return `${formatDate(record.startDate)} - ${formatDate(record.endDate)}`;
+        const timeRange = `${formatDate(record.startDate)} - ${formatDate(record.endDate)}`;
+        return timeRange;
       },
     },
     {
       title: t("CLASSIFICATION"),
-      dataIndex: "startDate",
+      dataIndex: "classification",
       key: "type",
+      filters: [
+        { text: t("UPCOMING"), value: 1 },
+        { text: t("SHOWING"), value: 2 },
+        { text: t("ENDED"), value: 3 },
+      ],
+      onFilter: (value: any, record: Schedule) => {
+        return getClassification(record) === value;
+      },
       sorter: (a: Schedule, b: Schedule) => {
         return getClassification(a) - getClassification(b);
       },

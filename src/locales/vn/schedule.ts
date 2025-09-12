@@ -32,6 +32,12 @@ const schedule = {
   
   // Placeholders
   SELECT_MOVIE: "Chọn phim chiếu",
+  SELECT_STATUS: "Chọn trạng thái",
+  SEARCH_PLACEHOLDER: "Tìm kiếm theo tên phim hoặc thời gian...",
+  
+  // Filter labels
+  ALL: "Tất cả",
+  ALL_MOVIES: "Tất cả phim",
 };
 
 export default schedule;

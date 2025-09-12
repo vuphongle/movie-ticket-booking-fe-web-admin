@@ -32,6 +32,12 @@ const schedule = {
   
   // Placeholders
   SELECT_MOVIE: "Select a movie",
+  SELECT_STATUS: "Select status",
+  SEARCH_PLACEHOLDER: "Search by movie name or time...",
+  
+  // Filter labels
+  ALL: "All",
+  ALL_MOVIES: "All movies",
 };
 
 export default schedule;
