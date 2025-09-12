@@ -27,11 +27,11 @@ const schedule = {
   ENDED: "Đã chiếu",
   
   // Actions
-  REFRESH: "Refresh",
+  REFRESH: "Làm mới",
   UPDATE: "Cập nhật",
   
   // Placeholders
-  SELECT_MOVIE: "Select a movie",
+  SELECT_MOVIE: "Chọn phim chiếu",
 };
 
 export default schedule;

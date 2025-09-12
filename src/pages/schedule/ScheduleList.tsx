@@ -14,6 +14,7 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
+import dayjs from "dayjs";
 import { useGetMoviesQuery } from "@services/movies.service";
 import {
   useCreateScheduleMutation,
@@ -151,22 +152,70 @@ const ScheduleList = () => {
                 required: true,
                 message: t("START_DATE_REQUIRED"),
               },
+              {
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  const today = dayjs().startOf("day");
+                  if (value.isBefore(today)) {
+                    return Promise.reject(
+                      new Error(
+                        t("START_DATE_CANNOT_BE_PAST") ||
+                          "Ngày bắt đầu không được ở quá khứ"
+                      )
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
             ]}
           >
-            <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format={"DD/MM/YYYY"}
+              placeholder={t("SELECT_DATE")}
+              disabledDate={(current) =>
+                current && current < dayjs().startOf("day")
+              }
+            />
           </Form.Item>
 
           <Form.Item
             label={t("END_DATE")}
             name="endDate"
+            dependencies={["startDate"]}
             rules={[
               {
                 required: true,
                 message: t("END_DATE_REQUIRED"),
               },
+              ({ getFieldValue }) => ({
+                validator: (_, value) => {
+                  if (!value) return Promise.resolve();
+                  const startDate = getFieldValue("startDate");
+                  if (startDate && !value.isAfter(startDate, "day")) {
+                    return Promise.reject(
+                      new Error(
+                        t("END_DATE_MUST_BE_AFTER_START_DATE") ||
+                          "Ngày kết thúc phải lớn hơn ngày bắt đầu"
+                      )
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              }),
             ]}
           >
-            <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format={"DD/MM/YYYY"}
+              placeholder={t("SELECT_DATE")}
+              disabledDate={(current) => {
+                const startDate = form.getFieldValue("startDate");
+                return (
+                  current && startDate && !current.isAfter(startDate, "day")
+                );
+              }}
+            />
           </Form.Item>
 
           <Form.Item>

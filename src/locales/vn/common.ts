@@ -28,6 +28,7 @@ const common = {
   FORBIDDEN: "Truy cập bị cấm",
 
   SEARCH: "Tìm kiếm",
+  SELECT_DATE: "Chọn ngày",
 };
 
 export default common;
