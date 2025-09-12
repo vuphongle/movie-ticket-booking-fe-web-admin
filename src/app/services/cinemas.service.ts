@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_BASE_ADMIN } from "../../data/constants";
+import { API_BASE_ADMIN } from "@data/constants";
 import type { RootState } from "../Store";
 
 // Define a service using a base URL and expected endpoints

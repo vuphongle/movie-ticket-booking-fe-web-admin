@@ -13,6 +13,7 @@ import PrivateRoutes from "@components/private/PrivateRoutes";
 import AuthorizeRoutes from "@/components/private/AuthorizeRoutes";
 import ShowTimesList from "@pages/showtimes/ShowTimesList";
 import ScheduleList from "@pages/schedule/ScheduleList";
+import CouponList from "@pages/coupon/CouponList";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
             <Route path="admin/revenue/movie" element={<RevenueByMovie />} />
             <Route path="admin/showtimes" element={<ShowTimesList />} />
             <Route path="admin/schedules" element={<ScheduleList />} />
+            <Route path="admin/coupons" element={<CouponList />} />
             <Route path="admin/change-password" element={<ChangePassword />} />
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />
