@@ -5,6 +5,7 @@ import forgotPassword from "./forgotPassword";
 import changePassword from "./changePassword";
 import showtimes from "./showTimes";
 import schedule from "./schedule";
+import coupon from "./coupon";
 
 const en = {
   ...common,
@@ -14,6 +15,7 @@ const en = {
   ...changePassword,
   ...forgotPassword,
   ...schedule,
+  ...coupon,
 };
 
 export default en;

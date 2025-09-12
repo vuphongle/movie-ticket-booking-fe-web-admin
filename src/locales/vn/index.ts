@@ -5,6 +5,7 @@ import forgotPassword from "./forgotPassword";
 import changePassword from "./changPassword";
 import showtimes from "./showTimes";
 import schedule from "./schedule";
+import coupon from "./coupon";
 
 const vn = {
   ...common,
@@ -14,6 +15,7 @@ const vn = {
   ...changePassword,
   ...forgotPassword,
   ...schedule,
+  ...coupon,
 };
 
 export default vn;

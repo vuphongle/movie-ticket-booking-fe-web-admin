@@ -10,23 +10,25 @@ import {
   message,
 } from "antd";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 import { useUpdateCouponMutation } from "../../../app/services/coupons.service";
 import { formatDate } from "../../../utils/functionUtils";
 import type { CouponModalProps, UpdateCouponRequest } from "@/types";
 
 const ModalUpdate = (props: CouponModalProps) => {
   const { coupon, open, onCancel } = props;
+  const { t } = useTranslation();
   const [updateCoupon, { isLoading }] = useUpdateCouponMutation();
 
   const onFinish = (values: Omit<UpdateCouponRequest, "id">) => {
     updateCoupon({ id: coupon.id, ...values })
       .unwrap()
       .then((_data) => {
-        message.success("Cập nhật khuyến mại thành công!");
+        message.success(t("COUPON_UPDATE_SUCCESS"));
         onCancel();
       })
       .catch((error: any) => {
-        message.error(error.data.message);
+        message.error(error.data?.message || t("COUPON_UPDATE_ERROR"));
       });
   };
 
@@ -34,7 +36,7 @@ const ModalUpdate = (props: CouponModalProps) => {
     <>
       <Modal
         open={open}
-        title="Cập nhật khuyến mại"
+        title={t("COUPON_UPDATE_MODAL_TITLE")}
         footer={null}
         onCancel={onCancel}
         confirmLoading={isLoading}
@@ -54,31 +56,31 @@ const ModalUpdate = (props: CouponModalProps) => {
           }}
         >
           <Form.Item
-            label="Mã khuyến mại"
+            label={t("COUPON_CODE_LABEL")}
             name="code"
             rules={[
               {
                 required: true,
-                message: "Mã khuyến mại không được để trống!",
+                message: t("COUPON_CODE_REQUIRED"),
               },
             ]}
           >
-            <Input placeholder="Enter code" />
+            <Input placeholder={t("COUPON_CODE_PLACEHOLDER")} />
           </Form.Item>
 
           <Form.Item
-            label="Phần trăm trừ (%)"
+            label={t("COUPON_DISCOUNT_LABEL")}
             name="discount"
             rules={[
               {
                 required: true,
-                message: "Phần trăm không được để trống!",
+                message: t("COUPON_DISCOUNT_REQUIRED"),
               },
               {
                 validator: (_, value) => {
                   if (value > 100 || value < 0) {
                     return Promise.reject(
-                      new Error("Phần trăm phải nằm trong khoảng 0 - 100")
+                      new Error(t("COUPON_DISCOUNT_RANGE_ERROR"))
                     );
                   }
                   return Promise.resolve();
@@ -87,23 +89,25 @@ const ModalUpdate = (props: CouponModalProps) => {
             ]}
           >
             <InputNumber
-              placeholder="Enter discount"
+              placeholder={t("COUPON_DISCOUNT_PLACEHOLDER")}
               style={{ width: "100%" }}
             />
           </Form.Item>
 
           <Form.Item
-            label="Số lượng"
+            label={t("COUPON_QUANTITY_LABEL")}
             name="quantity"
             rules={[
               {
                 required: true,
-                message: "Số lượng không được để trống!",
+                message: t("COUPON_QUANTITY_REQUIRED"),
               },
               {
                 validator: (_, value) => {
                   if (value <= 0) {
-                    return Promise.reject(new Error("Số lượng phải lớn hơn 0"));
+                    return Promise.reject(
+                      new Error(t("COUPON_QUANTITY_MIN_ERROR"))
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -111,25 +115,25 @@ const ModalUpdate = (props: CouponModalProps) => {
             ]}
           >
             <InputNumber
-              placeholder="Enter quantity"
+              placeholder={t("COUPON_QUANTITY_PLACEHOLDER")}
               style={{ width: "100%" }}
             />
           </Form.Item>
 
           <Form.Item
-            label="Trạng thái"
+            label={t("COUPON_STATUS_LABEL")}
             name="status"
             rules={[
               {
                 required: true,
-                message: "Trạng thái không được để trống!",
+                message: t("COUPON_STATUS_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a status"
+              placeholder={t("COUPON_STATUS_PLACEHOLDER")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -137,19 +141,19 @@ const ModalUpdate = (props: CouponModalProps) => {
                   .includes(input.toLowerCase())
               }
               options={[
-                { label: "Ẩn", value: false },
-                { label: "Kích hoạt", value: true },
+                { label: t("COUPON_STATUS_INACTIVE"), value: false },
+                { label: t("COUPON_STATUS_ACTIVE"), value: true },
               ]}
             />
           </Form.Item>
 
           <Form.Item
-            label="Ngày bắt đầu"
+            label={t("COUPON_START_DATE_LABEL")}
             name="startDate"
             rules={[
               {
                 required: true,
-                message: "Ngày bắt đầu không được để trống!",
+                message: t("COUPON_START_DATE_REQUIRED"),
               },
             ]}
           >
@@ -157,12 +161,12 @@ const ModalUpdate = (props: CouponModalProps) => {
           </Form.Item>
 
           <Form.Item
-            label="Ngày kết thúc"
+            label={t("COUPON_END_DATE_LABEL")}
             name="endDate"
             rules={[
               {
                 required: true,
-                message: "Ngày kết thúc không được để trống!",
+                message: t("COUPON_END_DATE_REQUIRED"),
               },
             ]}
           >
@@ -172,7 +176,7 @@ const ModalUpdate = (props: CouponModalProps) => {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={isLoading}>
-                Cập nhật
+                {t("COUPON_UPDATE_BTN")}
               </Button>
             </Space>
           </Form.Item>

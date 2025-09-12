@@ -23,7 +23,13 @@ export const couponApi = createApi({
     endpoints: (builder) => ({
         getCoupons: builder.query<Coupon[], void>({
             query: () => 'coupons',
-            providesTags: ['Coupon'],
+            providesTags: (result) =>
+                result
+                    ? [
+                        ...result.map(({ id }) => ({ type: 'Coupon' as const, id })),
+                        { type: 'Coupon', id: 'LIST' },
+                    ]
+                    : [{ type: 'Coupon', id: 'LIST' }],
         }),
         getCouponById: builder.query<Coupon, string>({
             query: (id) => `coupons/${id}`,
