@@ -9,6 +9,8 @@ const showtimes = {
 
     SUBTITLING: "Phụ đề",
     DUBBING: "Lồng tiếng",
+    GRAPHICS_2D: "2D",
+    GRAPHICS_3D: "3D",
     MOVIE_SCREENING: "Phim chiếu",
     GRAPHICS_TYPE: "Hình thức chiếu",
     TRANSLATION_TYPE: "Hình thức dịch",
@@ -36,7 +38,40 @@ const showtimes = {
     START_TIME: "Thời gian bắt đầu",
     END_TIME: "Thời gian kết thúc",
     GRAPHICS_TYPE_REQUIRED: "Hình thức chiếu không được để trống!",
-    SELECT_SHOW_DATE: "Chọn ngày"
+    SELECT_SHOW_DATE: "Chọn ngày",
+    ALL_CINEMAS: "Tất cả rạp chiếu",
+
+    // Slot system translations
+    SHOW_TIME_SLOT: "Ca chiếu",
+    SELECT_SLOT: "Chọn ca chiếu", 
+    SLOT_REQUIRED: "Vui lòng chọn ca chiếu",
+    SLOT_1: "Ca 1 (08:00 - 10:30)",
+    SLOT_2: "Ca 2 (10:30 - 13:00)",
+    SLOT_3: "Ca 3 (13:00 - 15:30)", 
+    SLOT_4: "Ca 4 (15:30 - 18:00)",
+    SLOT_5: "Ca 5 (18:00 - 20:30)",
+    SLOT_6: "Ca 6 (20:30 - 23:00)",
+    MULTIPLE_SLOTS_REQUIRED: "Phim này cần {count} ca liên tiếp",
+    PREVIEW_TIME: "Thời gian dự kiến: {startTime} - {endTime}",
+    SPANS_BADGE: "Chiếm {count} ca",
+    SPANS_BADGE_PREFIX: "Chiếm",
+    SPANS_BADGE_SUFFIX: "ca",
+
+    // Error messages for slot system
+    SLOT_CONFLICT_ERROR: "Xung đột lịch chiếu! Ca này đã được sử dụng.",
+    INVALID_SLOT_ERROR: "Ca chiếu không hợp lệ. Vui lòng chọn ca khác.",
+    SPAN_OVERFLOW_ERROR: "Suất chiếu vượt quá khung giờ cuối ngày.",
+    MOVIE_TOO_LONG_ERROR: "Phim quá dài, vượt quá khả năng của hệ thống ca.",
+    BAD_INPUT_ERROR: "Dữ liệu đầu vào không hợp lệ.",
+    
+    // Enhanced slot descriptions
+    SLOT_DESCRIPTION_SINGLE: "Ca {slot}",
+    SLOT_DESCRIPTION_MULTIPLE: "Ca {startSlot} đến {endSlot}",
+    ACTUAL_SHOW_TIME: "Thời gian chiếu thực tế: {startTime} - {endTime}",
+    ACTUAL_SHOW_TIME_PREFIX: "Thời gian chiếu thực tế",
+    SLOT_OCCUPANCY_WARNING: "Phim này sẽ chiếm {count} ca liên tiếp (để tránh trùng lịch)",
+    SLOT_OCCUPANCY_WARNING_PREFIX: "Phim này sẽ chiếm",
+    SLOT_OCCUPANCY_WARNING_SUFFIX: "ca liên tiếp (để tránh trùng lịch)",
 };
 
 export default showtimes;

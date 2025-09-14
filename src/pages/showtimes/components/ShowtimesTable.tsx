@@ -3,29 +3,10 @@ import { formatDate } from "@utils/functionUtils";
 import ShowtimesByAuditorium from "./ShowtimesByAuditorium";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "react-i18next";
-
-interface Cinema {
-  id: string;
-  name: string;
-}
-
-interface Auditorium {
-  id: string;
-  name: string;
-}
-
-interface AuditoriumData {
-  auditorium: Auditorium;
-  showtimes: any[];
-}
-
-interface CinemaData {
-  cinema: Cinema;
-  auditoriums: AuditoriumData[];
-}
+import type { ShowtimeResponse } from "@/types/showtime.types";
 
 interface ShowtimesTableProps {
-  data: CinemaData[];
+  data: ShowtimeResponse[];
   dateSelected: Dayjs;
 }
 

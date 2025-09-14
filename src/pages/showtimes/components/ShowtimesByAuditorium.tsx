@@ -16,8 +16,8 @@ import {
   Space,
   Table,
   Tag,
-  TimePicker,
   Typography,
+  Alert,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
@@ -27,6 +27,23 @@ import { useCreateShowtimesMutation } from "@services/showtimes.service";
 import { isSameDay } from "@utils/functionUtils";
 import Row from "./Row";
 import { useTranslation } from "react-i18next";
+import {
+  calculateSlotSpans,
+  getSlotSelectOptions,
+  getActualTimeRange,
+  slotToApiTimes,
+  requiresMultipleSlots,
+  calculateActualEndTime,
+} from "@/data/showtimeSlots";
+import type {
+  ShowtimeFormData,
+  ShowtimeApiPayload,
+} from "@/types/showtime.types";
+import {
+  handleShowtimeError,
+  validateSlotSelection,
+  parseShowtimeError,
+} from "@/utils/showtimeErrorHandler";
 
 // Type definitions
 interface Movie {
@@ -71,17 +88,6 @@ interface ShowtimesByAuditoriumProps {
   dateSelected: Dayjs;
 }
 
-const parseGraphicsType = (type: string) => {
-  switch (type) {
-    case "_2D":
-      return <Tag color="blue">2D</Tag>;
-    case "_3D":
-      return <Tag color="red">3D</Tag>;
-    default:
-      return "";
-  }
-};
-
 function ShowtimesByAuditorium({
   data,
   cinema,
@@ -90,7 +96,11 @@ function ShowtimesByAuditorium({
 }: ShowtimesByAuditoriumProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [timeRange, setTimeRange] = useState<Dayjs[]>([]);
+  const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
+  const [previewTime, setPreviewTime] = useState<{
+    startTime: string;
+    endTime: string;
+  } | null>(null);
   const [showtimes, setShowtimes] = useState<Showtime[]>(data.showtimes);
   const [form] = Form.useForm();
   const { data: movies, isLoading: _isFetchingMovies } =
@@ -98,6 +108,17 @@ function ShowtimesByAuditorium({
   const [createShowtimes, { isLoading: isLoadingCreateShowtimes }] =
     useCreateShowtimesMutation();
   const { t } = useTranslation();
+
+  const parseGraphicsTypeTranslated = (type: string) => {
+    switch (type) {
+      case "_2D":
+        return <Tag color="blue">{t("GRAPHICS_2D")}</Tag>;
+      case "_3D":
+        return <Tag color="red">{t("GRAPHICS_3D")}</Tag>;
+      default:
+        return "";
+    }
+  };
 
   const parseTranslationType = (type: string) => {
     switch (type) {
@@ -113,9 +134,9 @@ function ShowtimesByAuditorium({
   useEffect(() => {
     form.setFieldsValue({
       date: dateSelected,
-      time: timeRange,
+      slotId: selectedSlot,
     });
-  }, [dateSelected, timeRange, form]);
+  }, [dateSelected, selectedSlot, form]);
 
   useEffect(() => {
     setShowtimes(data.showtimes);
@@ -142,7 +163,7 @@ function ShowtimesByAuditorium({
       dataIndex: "graphicsType", // Sử dụng trực tiếp dataIndex nếu có thể
       key: "graphicsType",
       render: (text: string, _record: Showtime, _index: number) => {
-        return parseGraphicsType(text);
+        return parseGraphicsTypeTranslated(text);
       },
     },
     {
@@ -158,10 +179,22 @@ function ShowtimesByAuditorium({
       dataIndex: "startTime", // Sử dụng trực tiếp dataIndex nếu có thể
       key: "time",
       render: (_text: string, record: Showtime, _index: number) => {
+        const spans = calculateSlotSpans(record.movie.duration);
+        // Calculate actual end time instead of using slot boundary
+        const actualEndTime = calculateActualEndTime(
+          record.startTime,
+          record.movie.duration
+        );
+
         return (
-          <Tag color="volcano">
-            {record.startTime} - {record.endTime}
-          </Tag>
+          <Space>
+            <Tag color="volcano">
+              {record.startTime} - {actualEndTime}
+            </Tag>
+            {spans > 1 && (
+              <Tag color="purple">{`${t("SPANS_BADGE_PREFIX")} ${spans} ${t("SPANS_BADGE_SUFFIX")}`}</Tag>
+            )}
+          </Space>
         );
       },
     },
@@ -185,13 +218,20 @@ function ShowtimesByAuditorium({
       dataIndex: "status",
       key: "status",
       render: (_text: string, record: Showtime, _index: number) => {
-        const now = new Date();
-        const startTime = new Date(`${record.date}T${record.startTime}`);
-        const endTime = new Date(`${record.date}T${record.endTime}`);
+        // Use dayjs for better timezone handling
+        const now = dayjs();
+        const startTime = dayjs(
+          `${record.date} ${record.startTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
+        const endTime = dayjs(
+          `${record.date} ${record.endTime}`,
+          "YYYY-MM-DD HH:mm"
+        );
 
-        if (now < startTime) {
+        if (now.isBefore(startTime)) {
           return <Tag color="blue">{t("UPCOMING")}</Tag>;
-        } else if (now >= startTime && now <= endTime) {
+        } else if (now.isAfter(startTime) && now.isBefore(endTime)) {
           return <Tag color="green">{t("NOW_SHOWING")}</Tag>;
         } else {
           return <Tag color="red">{t("ALREADY_SHOWN")}</Tag>;
@@ -200,14 +240,12 @@ function ShowtimesByAuditorium({
     },
   ];
 
-  const disabledHours = () => {
-    const hours = [];
-    for (let i = 0; i < 24; i++) {
-      if (i < 8) {
-        hours.push(i);
-      }
-    }
-    return hours;
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setSelectedMovie(null);
+    setSelectedSlot(null);
+    setPreviewTime(null);
+    form.resetFields();
   };
 
   const getClassification = (showDateStr: string) => {
@@ -217,84 +255,75 @@ function ShowtimesByAuditorium({
     return 2;
   };
 
-  const onFinish = (values: any) => {
-    const [startTime, endTime] = values.time.map((time: Dayjs) =>
-      time.format("HH:mm")
+  const onFinish = (values: ShowtimeFormData) => {
+    if (!selectedMovie) return;
+
+    // Validate slot selection before API call
+    const validation = validateSlotSelection(
+      selectedMovie.duration,
+      values.slotId
     );
-    createShowtimes({
+    if (!validation.isValid) {
+      message.error(validation.errorMessage);
+      return;
+    }
+
+    const apiPayload = slotToApiTimes(values.slotId, selectedMovie.duration);
+    if (!apiPayload) {
+      message.error(t("BAD_INPUT_ERROR"));
+      return;
+    }
+
+    const createPayload: ShowtimeApiPayload = {
       auditoriumId: auditorium.id,
       movieId: values.movieId,
       date: dayjs(values.date).format("YYYY-MM-DD"),
-      startTime,
-      endTime,
+      startTime: apiPayload.startTime,
+      endTime: apiPayload.endTime,
       graphicsType: values.graphicsType,
       translationType: values.translationType,
-    })
+    };
+
+    createShowtimes(createPayload)
       .unwrap()
       .then((_data: any) => {
         form.resetFields();
+        setSelectedMovie(null);
+        setSelectedSlot(null);
+        setPreviewTime(null);
         setIsModalOpen(false);
         message.success(t("CREATE_SHOWTIME_SUCCESS"));
       })
       .catch((error: any) => {
-        message.error(error.data.message);
+        const parsedError = parseShowtimeError(error);
+        handleShowtimeError(parsedError);
       });
   };
 
-  const handleTimeChange = (values: [Dayjs, Dayjs] | null) => {
-    if (!values || !selectedMovie) return;
-    const startTime = values[0];
-    const endTime = dayjs(startTime).add(selectedMovie.duration, "minutes");
-    setTimeRange([startTime, endTime]);
+  const handleSlotChange = (slotId: number) => {
+    if (!selectedMovie) return;
+
+    setSelectedSlot(slotId);
+    // Use actual time range for preview (shows real movie end time)
+    const actualPreview = getActualTimeRange(slotId, selectedMovie.duration);
+    setPreviewTime(actualPreview);
   };
 
   const handleMovieChange = (value: string) => {
     const movie = movies?.find((movie: Movie) => movie.id === Number(value));
     if (!movie) return;
+
     setSelectedMovie(movie);
+    setSelectedSlot(null);
+    setPreviewTime(null);
 
-    // Lấy startTime từ hàm getLatestEndTime và thêm duration
-    const startTime = getLatestEndTime(showtimes);
-    let endTime = dayjs(startTime).add(movie.duration, "minutes");
-
-    // Làm tròn endTime lên sao cho phút chia hết cho 5
-    const roundedMinutes = roundUpToNextFive(endTime.minute());
-    if (roundedMinutes >= 60) {
-      // Nếu số phút làm tròn lớn hơn 60, cần tăng giờ lên và reset phút về 0
-      endTime = endTime
-        .add(roundedMinutes - endTime.minute(), "minutes")
-        .add(1, "hour")
-        .minute(0);
-    } else {
-      endTime = endTime.minute(roundedMinutes);
-    }
-
-    setTimeRange([startTime, endTime]);
+    // Reset dependent fields when movie changes
+    form.setFieldsValue({
+      slotId: undefined,
+      graphicsType: undefined,
+      translationType: undefined,
+    });
   };
-
-  // Hàm làm tròn phút lên đến số gần nhất chia hết cho 5
-  const roundUpToNextFive = (num: number) => {
-    return Math.ceil(num / 5) * 5;
-  };
-
-  const getLatestEndTime = (showtimes: Showtime[]) => {
-    if (showtimes.length === 0) {
-      // Trả về 08:00 nếu không có suất chiếu nào
-      return dayjs().hour(8).minute(0).second(0);
-    }
-
-    const latestEndTime = showtimes.reduce(
-      (latest: Dayjs, showtime: Showtime) => {
-        const currentEndTime = dayjs(`${showtime.date}T${showtime.endTime}`);
-        return currentEndTime.isAfter(latest) ? currentEndTime : latest;
-      },
-      dayjs(`${showtimes[0].date}T${showtimes[0].endTime}`)
-    );
-
-    // Thêm 30 phút vào endTime muộn nhất
-    return latestEndTime.add(30, "minute");
-  };
-
   const getOptions = (
     movie: Movie | null,
     property: keyof Movie,
@@ -307,13 +336,13 @@ function ShowtimesByAuditorium({
   };
 
   const graphicsMapping = {
-    _2D: "2D",
-    _3D: "3D",
+    _2D: t("GRAPHICS_2D"),
+    _3D: t("GRAPHICS_3D"),
   };
 
   const translationMapping = {
-    SUBTITLING: "Phụ đề",
-    DUBBING: "Lồng tiếng",
+    SUBTITLING: t("SUBTITLING"),
+    DUBBING: t("DUBBING"),
   };
 
   const getGraphicsTypeOptions = (movie: Movie | null) =>
@@ -386,7 +415,7 @@ function ShowtimesByAuditorium({
           title={`${t("ADD_SCREENINGS")} (${cinema.name} - ${auditorium.name})`}
           open={isModalOpen}
           footer={null}
-          onCancel={() => setIsModalOpen(false)}
+          onCancel={handleModalClose}
         >
           <Form
             form={form}
@@ -501,40 +530,44 @@ function ShowtimesByAuditorium({
             </Form.Item>
 
             <Form.Item
-              label={t("SHOW_TIME")}
-              name="time"
+              label={t("SHOW_TIME_SLOT")}
+              name="slotId"
               style={{ width: "100%" }}
               rules={[
                 {
                   required: true,
-                  message: t("SHOW_TIME_REQUIRED"),
+                  message: t("SLOT_REQUIRED"),
                 },
               ]}
             >
-              <TimePicker.RangePicker
-                style={{ width: "100%" }}
-                format="HH:mm"
-                minuteStep={5}
-                onCalendarChange={(dates) => {
-                  if (dates && dates.length === 2 && dates[0] && dates[1]) {
-                    handleTimeChange([dates[0], dates[1]]);
-                  }
-                }}
+              <Select
                 disabled={!selectedMovie}
-                placeholder={[t("START_TIME"), t("END_TIME")]}
-                disabledTime={(_current, type) => {
-                  if (type === "start") {
-                    return {
-                      disabledHours: disabledHours,
-                    };
-                  } else {
-                    return {
-                      disabledHours: () => [],
-                    };
-                  }
-                }}
+                style={{ width: "100%" }}
+                placeholder={t("SELECT_SLOT")}
+                onChange={handleSlotChange}
+                options={
+                  selectedMovie
+                    ? getSlotSelectOptions(selectedMovie.duration)
+                    : []
+                }
               />
             </Form.Item>
+
+            {previewTime && (
+              <Alert
+                message={`${t("ACTUAL_SHOW_TIME_PREFIX")}: ${previewTime.startTime} - ${previewTime.endTime}`}
+                type="info"
+                style={{ marginBottom: 16 }}
+              />
+            )}
+
+            {selectedMovie && requiresMultipleSlots(selectedMovie.duration) && (
+              <Alert
+                message={`${t("SLOT_OCCUPANCY_WARNING_PREFIX")} ${calculateSlotSpans(selectedMovie.duration)} ${t("SLOT_OCCUPANCY_WARNING_SUFFIX")}`}
+                type="warning"
+                style={{ marginBottom: 16 }}
+              />
+            )}
 
             <Form.Item>
               <Space>
@@ -542,6 +575,9 @@ function ShowtimesByAuditorium({
                   type="primary"
                   htmlType="submit"
                   loading={isLoadingCreateShowtimes}
+                  disabled={
+                    !selectedMovie || !selectedSlot || isLoadingCreateShowtimes
+                  }
                 >
                   {t("CREATE_SHOWTIME")}
                 </Button>
