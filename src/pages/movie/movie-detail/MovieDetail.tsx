@@ -40,6 +40,12 @@ import {
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 import { API_DOMAIN } from "@/data/constants";
 import { formatDate } from "@/utils/functionUtils";
+import {
+  compressImage,
+  validateImageFile,
+  formatFileSize,
+  MAX_FILE_SIZE,
+} from "@/utils/imageUtils";
 import ReviewList from "../review-list/ReviewList";
 
 const MovieDetail = () => {
@@ -195,19 +201,48 @@ const MovieDetail = () => {
     setImageSelected(image);
   };
 
-  const handleUploadImage = ({ file, onSuccess, onError }: any) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    uploadImage(formData)
-      .unwrap()
-      .then((_data) => {
-        onSuccess();
-        message.success(t("UPLOAD_SUCCESS"));
-      })
-      .catch((error) => {
+  const handleUploadImage = async ({ file, onSuccess, onError }: any) => {
+    try {
+      // Validate file first
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
+        message.error(validation.error);
         onError();
-        message.error(error.data.message);
-      });
+        return;
+      }
+
+      // Show original file size
+      const originalSize = formatFileSize(file.size);
+
+      // Compress image if needed
+      const compressedFile = await compressImage(file, MAX_FILE_SIZE);
+
+      // Show compression info if file was compressed
+      if (compressedFile.size < file.size) {
+        const newSize = formatFileSize(compressedFile.size);
+        message.info(t("IMAGE_COMPRESSED", { originalSize, newSize }));
+      }
+
+      const formData = new FormData();
+      formData.append("file", compressedFile);
+
+      await uploadImage(formData).unwrap();
+      onSuccess();
+      message.success(t("UPLOAD_SUCCESS"));
+    } catch (error: any) {
+      onError();
+      message.error(error?.data?.message || t("UPLOAD_FAILED"));
+    }
+  };
+
+  const beforeUpload = (file: File) => {
+    // Validate file type
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      message.error(validation.error);
+      return false;
+    }
+    return true;
   };
 
   const handleDeleteImage = () => {
@@ -649,6 +684,8 @@ const MovieDetail = () => {
                 <Space direction="horizontal">
                   <Upload
                     maxCount={1}
+                    accept="image/*"
+                    beforeUpload={beforeUpload}
                     customRequest={handleUploadImage}
                     showUploadList={false}
                   >
