@@ -1,22 +1,4 @@
-// Movie types
-export interface Movie {
-  id: string | number;
-  name: string;
-  description?: string;
-  duration?: number;
-  releaseDate?: string;
-  director?: string;
-  cast?: string;
-  genre?: string;
-  language?: string;
-  country?: string;
-  poster?: string;
-  trailer?: string;
-  rating?: number;
-  status?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import type { Movie } from './movie.types';
 
 // Schedule types
 export interface Schedule {

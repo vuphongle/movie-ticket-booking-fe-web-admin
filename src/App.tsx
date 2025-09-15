@@ -7,13 +7,16 @@ import {
   RevenueByMovie,
   ForgotPassword,
   ChangePassword,
-} from "@pages/index";
-import AppLayout from "@components/layout/AppLayout";
-import PrivateRoutes from "@components/private/PrivateRoutes";
+} from "@/pages/index";
+import AppLayout from "@/components/layout/AppLayout";
+import PrivateRoutes from "@/components/private/PrivateRoutes";
 import AuthorizeRoutes from "@/components/private/AuthorizeRoutes";
-import ShowTimesList from "@pages/showtimes/ShowTimesList";
+import ShowTimesList from "@/pages/showtimes/ShowTimesList";
 import ScheduleList from "@pages/schedule/ScheduleList";
 import CouponList from "@pages/coupon/CouponList";
+import MovieList from "@/pages/movie/movie-list/MovieList";
+import MovieDetail from "@/pages/movie/movie-detail/MovieDetail";
+import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
 
 function App() {
   return (
@@ -26,14 +29,19 @@ function App() {
             path="/"
             element={<Navigate to="/admin/dashboard" replace />}
           />
-          <Route path="/" element={<AppLayout />}>
-            <Route path="admin/dashboard" element={<Dashboard />} />
-            <Route path="admin/revenue/cinema" element={<RevenueByCinema />} />
-            <Route path="admin/revenue/movie" element={<RevenueByMovie />} />
-            <Route path="admin/showtimes" element={<ShowTimesList />} />
-            <Route path="admin/schedules" element={<ScheduleList />} />
-            <Route path="admin/coupons" element={<CouponList />} />
-            <Route path="admin/change-password" element={<ChangePassword />} />
+          <Route path="/admin" element={<AppLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="movies">
+              <Route index element={<MovieList />} />
+              <Route path=":movieId/detail" element={<MovieDetail />} />
+              <Route path="create" element={<MovieCreate />} />
+            </Route>
+            <Route path="revenue/cinema" element={<RevenueByCinema />} />
+            <Route path="revenue/movie" element={<RevenueByMovie />} />
+            <Route path="showtimes" element={<ShowTimesList />} />
+            <Route path="schedules" element={<ScheduleList />} />
+            <Route path="coupons" element={<CouponList />} />
+            <Route path="change-password" element={<ChangePassword />} />
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />
         </Route>
