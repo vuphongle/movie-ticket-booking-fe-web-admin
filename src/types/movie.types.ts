@@ -118,7 +118,7 @@ export interface ReviewTableProps {
   movieId: string | number;
 }
 
-export interface ModalUpdateProps {
+export interface MovieReviewModalUpdateProps {
   review: Review;
   open: boolean;
   onCancel: () => void;

@@ -1,18 +1,21 @@
 import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetMoviesQuery } from "@/app/services/movies.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 import MovieTable from "./MovieTable";
 
-const breadcrumb = [{ label: "Danh sách phim", href: "/admin/movies" }];
 const MovieList = () => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   const { data, isLoading: isFetchingMovies } = useGetMoviesQuery(undefined);
+
+  const breadcrumb = [{ label: t("MOVIE_LIST"), href: "/admin/movies" }];
 
   if (isFetchingMovies) {
     return <Spin size="large" fullscreen />;
@@ -21,7 +24,7 @@ const MovieList = () => {
   return (
     <>
       <Helmet>
-        <title>Danh sách phim</title>
+        <title>{t("MOVIE_LIST")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -39,7 +42,7 @@ const MovieList = () => {
               type="primary"
               icon={<PlusOutlined />}
             >
-              Tạo phim
+              {t("CREATE_MOVIE")}
             </Button>
           </RouterLink>
           <RouterLink to="/admin/movies">
@@ -48,7 +51,7 @@ const MovieList = () => {
               type="primary"
               icon={<ReloadOutlined />}
             >
-              Refresh
+              {t("REFRESH")}
             </Button>
           </RouterLink>
         </Space>

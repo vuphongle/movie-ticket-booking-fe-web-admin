@@ -25,7 +25,7 @@ export interface ScheduleTableProps {
   movies: Movie[];
 }
 
-export interface ModalUpdateProps {
+export interface ScheduleModalUpdateProps {
   open: boolean;
   onCancel: () => void;
   schedule: Schedule;

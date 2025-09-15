@@ -1,12 +1,14 @@
 import { DeleteOutlined, EditOutlined, StarOutlined } from "@ant-design/icons";
 import { Button, message, Modal, Space, Table, Typography } from "antd";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDeleteReviewMutation } from "@/app/services/reviews.service";
 import { formatDateTime } from "../../../utils/functionUtils";
 import ModalUpdate from "./ModalUpdate";
 import type { Review, ReviewTableProps } from "@/types/movie.types";
 
 const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(data);
   const [reviewUpdate, setReviewUpdate] = useState<Review | null>(null);
@@ -14,7 +16,7 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
 
   const columns = [
     {
-      title: "Họ tên",
+      title: t("FULL_NAME"),
       dataIndex: "user",
       key: "user",
       width: "15%",
@@ -23,7 +25,7 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
       },
     },
     {
-      title: "Đánh giá",
+      title: t("RATING"),
       dataIndex: "rating",
       key: "rating",
       width: "10%",
@@ -36,7 +38,7 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
       },
     },
     {
-      title: "Nội dung",
+      title: t("CONTENT"),
       dataIndex: "comment",
       key: "comment",
       render: (comment: string) => {
@@ -44,7 +46,7 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
       },
     },
     {
-      title: "Thời gian",
+      title: t("TIME"),
       dataIndex: "createdAt",
       key: "createdAt",
       width: "15%",
@@ -83,11 +85,11 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
 
   const handleConfirm = (id: string | number) => {
     Modal.confirm({
-      title: "Bạn có chắc chắn muốn xóa review này?",
-      content: "Hành động này không thể hoàn tác!",
-      okText: "Xóa",
+      title: t("DELETE_REVIEW_CONFIRM"),
+      content: t("ACTION_CANNOT_UNDONE"),
+      okText: t("DELETE"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("CANCEL"),
       okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
       onOk: () => {
         return new Promise<void>((resolve, reject) => {
@@ -95,7 +97,7 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
             .unwrap()
             .then(() => {
               setReviews(reviews.filter((review: Review) => review.id !== id));
-              message.success("Xóa review thành công!");
+              message.success(t("DELETE_REVIEW_SUCCESS"));
               resolve(); // Đóng modal sau khi xóa thành công
             })
             .catch((error) => {

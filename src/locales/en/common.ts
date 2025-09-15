@@ -7,6 +7,7 @@ const common = {
   CONFIRM: "Confirm",
   DELETE: "Delete",
   EDIT: "Edit",
+  REFRESH: "Refresh",
   CLOSE: "Close",
   BACK: "Back",
   NEXT: "Next",

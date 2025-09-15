@@ -1,4 +1,5 @@
 import { Table, Tag } from "antd";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import useSearchTable from "@/hooks/useSearchTable";
 import { formatDate } from "@/utils/functionUtils";
@@ -9,10 +10,11 @@ interface MovieTableProps {
 }
 
 const MovieTable = ({ data }: MovieTableProps) => {
+  const { t } = useTranslation();
   const { getColumnSearchProps } = useSearchTable();
   const columns = [
     {
-      title: "Tên phim",
+      title: t("MOVIE_NAME_COL"),
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
@@ -25,7 +27,7 @@ const MovieTable = ({ data }: MovieTableProps) => {
       },
     },
     {
-      title: "Năm phát hành",
+      title: t("RELEASE_YEAR_COL"),
       dataIndex: "releaseYear",
       key: "releaseYear",
       width: "12%",
@@ -36,7 +38,7 @@ const MovieTable = ({ data }: MovieTableProps) => {
       },
     },
     {
-      title: "Thể loại",
+      title: t("GENRES_COL"),
       dataIndex: "genres",
       key: "genres",
       render: (text: any) => {
@@ -48,7 +50,7 @@ const MovieTable = ({ data }: MovieTableProps) => {
       },
     },
     {
-      title: "Lịch chiếu",
+      title: t("SHOW_DATE_COL"),
       dataIndex: "showDate",
       key: "showDate",
       render: (text: string) => {
@@ -56,7 +58,7 @@ const MovieTable = ({ data }: MovieTableProps) => {
       },
     },
     {
-      title: "Trạng thái",
+      title: t("STATUS_COL"),
       dataIndex: "status",
       key: "status",
       width: "10%",
@@ -64,14 +66,14 @@ const MovieTable = ({ data }: MovieTableProps) => {
         (a.status || "").localeCompare(b.status || ""),
       render: (text: any) => {
         return text ? (
-          <Tag color="success">Công khai</Tag>
+          <Tag color="success">{t("PUBLIC")}</Tag>
         ) : (
-          <Tag color="warning">Nháp</Tag>
+          <Tag color="warning">{t("DRAFT")}</Tag>
         );
       },
     },
     {
-      title: "Ngày tạo",
+      title: t("CREATED_AT"),
       dataIndex: "createdAt",
       key: "createdAt",
       width: "15%",

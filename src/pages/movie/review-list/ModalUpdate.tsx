@@ -1,8 +1,8 @@
 import { Button, Form, Input, InputNumber, Modal, Space, message } from "antd";
 import { useUpdateReviewMutation } from "@/app/services/reviews.service";
-import type { ModalUpdateProps } from "@/types/movie.types";
+import type { MovieReviewModalUpdateProps } from "@/types/movie.types";
 
-const ModalUpdate = (props: ModalUpdateProps) => {
+const ModalUpdate = (props: MovieReviewModalUpdateProps) => {
   const { review, open, onCancel, onUpdateReview, movieId } = props;
   const [updateReview, { isLoading }] = useUpdateReviewMutation();
 

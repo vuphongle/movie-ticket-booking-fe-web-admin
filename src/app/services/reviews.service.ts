@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_ADMIN } from "@/data/constants";
+import type { RootState } from "@/app/Store";
 
 // Define a service using a base URL and expected endpoints
 const ENDPOINT = API_BASE_ADMIN;
@@ -9,7 +10,8 @@ export const reviewApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: ENDPOINT,
         prepareHeaders: (headers, { getState }) => {
-            const token = getState().auth.accessToken;
+            const state = getState() as RootState;
+            const token = state.auth.accessToken;
             if (token) {
                 headers.set("Authorization", `Bearer ${token}`);
             }

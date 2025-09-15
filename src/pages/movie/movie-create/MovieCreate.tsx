@@ -13,7 +13,9 @@ import {
   message,
   theme,
 } from "antd";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useGetActorsQuery } from "@/app/services/actors.service";
 import { useGetCountriesQuery } from "@/app/services/countries.service";
@@ -22,11 +24,8 @@ import { useGetGenresQuery } from "@/app/services/genres.service";
 import { useCreateMovieMutation } from "@/app/services/movies.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 
-const breadcrumb = [
-  { label: "Danh sách phim", href: "/admin/movies" },
-  { label: "Tạo phim", href: "/admin/movies/create" },
-];
 const MovieCreate = () => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -39,6 +38,30 @@ const MovieCreate = () => {
   const { data: directors, isLoading: isLoadingDirectors } =
     useGetDirectorsQuery();
   const { data: actors, isLoading: isLoadingActors } = useGetActorsQuery();
+
+  const breadcrumb = [
+    { label: t("MOVIE_LIST"), href: "/admin/movies" },
+    { label: t("MOVIE_CREATE"), href: "/admin/movies/create" },
+  ];
+
+  // Reset form validation when language changes
+  useEffect(() => {
+    if (form.isFieldsTouched()) {
+      // Clear all field errors first
+      const fieldsErrors = form.getFieldsError();
+      const fieldsWithErrors = fieldsErrors.filter(
+        ({ errors }) => errors.length > 0
+      );
+
+      if (fieldsWithErrors.length > 0) {
+        // Re-validate only fields that have errors to update error messages
+        const fieldNames = fieldsWithErrors.map(({ name }) => name);
+        form.validateFields(fieldNames).catch(() => {
+          // Ignore validation errors, just trigger re-validation with new language
+        });
+      }
+    }
+  }, [t, form]);
 
   if (
     isLoadingCountries ||
@@ -56,7 +79,7 @@ const MovieCreate = () => {
         return createMovie(values).unwrap();
       })
       .then((data) => {
-        message.success("Tạo phim thành công!");
+        message.success(t("CREATE_SUCCESS"));
         setTimeout(() => {
           navigate(`/admin/movies/${data.id}/detail`);
         }, 1500);
@@ -66,10 +89,25 @@ const MovieCreate = () => {
       });
   };
 
+  // Helper functions for validation rules that always use current translation
+  const getRequiredRule = (messageKey: string) => ({
+    required: true,
+    message: t(messageKey),
+  });
+
+  const getPositiveNumberRule = (messageKey: string) => ({
+    validator: (_: any, value: number) => {
+      if (value <= 0) {
+        return Promise.reject(t(messageKey));
+      }
+      return Promise.resolve();
+    },
+  });
+
   return (
     <>
       <Helmet>
-        <title>Tạo phim</title>
+        <title>{t("MOVIE_CREATE")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -83,7 +121,7 @@ const MovieCreate = () => {
         <Space style={{ marginBottom: "1rem" }}>
           <RouterLink to="/admin/movies">
             <Button type="default" icon={<LeftOutlined />}>
-              Quay lại
+              {t("BACK")}
             </Button>
           </RouterLink>
           <Button
@@ -93,7 +131,7 @@ const MovieCreate = () => {
             onClick={handleCreate}
             loading={isLoading}
           >
-            Tạo phim
+            {t("CREATE_MOVIE")}
           </Button>
         </Space>
 
@@ -106,63 +144,43 @@ const MovieCreate = () => {
           <Row gutter={16}>
             <Col span={16}>
               <Form.Item
-                label="Tên phim"
+                label={t("MOVIE_NAME")}
                 name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: "Tên phim không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("MOVIE_NAME_REQUIRED")]}
               >
-                <Input placeholder="Enter name" />
+                <Input placeholder={t("ENTER_NAME")} />
               </Form.Item>
 
               <Form.Item
-                label="Tên phim (tiếng anh)"
+                label={t("MOVIE_NAME_EN")}
                 name="nameEn"
-                rules={[
-                  {
-                    required: true,
-                    message: "Tên phim (tiếng anh) không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("MOVIE_NAME_EN_REQUIRED")]}
               >
-                <Input placeholder="Enter english name" />
+                <Input placeholder={t("ENTER_ENGLISH_NAME")} />
               </Form.Item>
 
               <Form.Item
-                label="Trailer"
+                label={t("TRAILER")}
                 name="trailer"
-                rules={[
-                  {
-                    required: true,
-                    message: "Trailer không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("TRAILER_REQUIRED")]}
               >
-                <Input placeholder="Enter trailer" />
+                <Input placeholder={t("ENTER_TRAILER")} />
               </Form.Item>
 
               <Form.Item
-                label="Mô tả"
+                label={t("DESCRIPTION")}
                 name="description"
-                rules={[
-                  {
-                    required: true,
-                    message: "Mô tả không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("DESCRIPTION_REQUIRED")]}
               >
-                <Input.TextArea rows={5} placeholder="Enter description" />
+                <Input.TextArea rows={5} placeholder={t("ENTER_DESCRIPTION")} />
               </Form.Item>
 
-              <Form.Item label="Thể loại" name="genreIds">
+              <Form.Item label={t("GENRES")} name="genreIds">
                 <Select
                   mode="multiple"
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select genres"
+                  placeholder={t("SELECT_GENRES")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     ((option?.label as string) ?? "")
@@ -176,12 +194,12 @@ const MovieCreate = () => {
                 />
               </Form.Item>
 
-              <Form.Item label="Đạo diễn" name="directorIds">
+              <Form.Item label={t("DIRECTORS")} name="directorIds">
                 <Select
                   mode="multiple"
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select directors"
+                  placeholder={t("SELECT_DIRECTORS")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     ((option?.label as string) ?? "")
@@ -195,12 +213,12 @@ const MovieCreate = () => {
                 />
               </Form.Item>
 
-              <Form.Item label="Diễn viên" name="actorIds">
+              <Form.Item label={t("ACTORS")} name="actorIds">
                 <Select
                   mode="multiple"
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select actors"
+                  placeholder={t("SELECT_ACTORS")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     ((option?.label as string) ?? "")
@@ -216,20 +234,15 @@ const MovieCreate = () => {
             </Col>
             <Col span={8}>
               <Form.Item
-                label="Hình thức chiếu"
+                label={t("GRAPHICS")}
                 name="graphics"
-                rules={[
-                  {
-                    required: true,
-                    message: "Hình thức chiếu không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("GRAPHICS_REQUIRED")]}
               >
                 <Select
                   mode="multiple"
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select a graphics"
+                  placeholder={t("SELECT_GRAPHICS")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     (option?.label ?? "")
@@ -243,20 +256,15 @@ const MovieCreate = () => {
                 />
               </Form.Item>
               <Form.Item
-                label="Hình thức dịch"
+                label={t("TRANSLATIONS")}
                 name="translations"
-                rules={[
-                  {
-                    required: true,
-                    message: "Hình thức dịch không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("TRANSLATIONS_REQUIRED")]}
               >
                 <Select
                   mode="multiple"
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select a graphics"
+                  placeholder={t("SELECT_TRANSLATIONS")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     (option?.label ?? "")
@@ -264,25 +272,20 @@ const MovieCreate = () => {
                       .includes(input.toLowerCase())
                   }
                   options={[
-                    { label: "Phụ đề", value: "SUBTITLING" },
-                    { label: "Lồng tiếng", value: "DUBBING" },
+                    { label: t("SUBTITLING"), value: "SUBTITLING" },
+                    { label: t("DUBBING"), value: "DUBBING" },
                   ]}
                 />
               </Form.Item>
               <Form.Item
-                label="Độ tuổi xem phim"
+                label={t("AGE_RATING")}
                 name="age"
-                rules={[
-                  {
-                    required: true,
-                    message: "Độ tuổi xem phim không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("AGE_RATING_REQUIRED")]}
               >
                 <Select
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select a age"
+                  placeholder={t("SELECT_AGE")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     (option?.label ?? "")
@@ -301,82 +304,54 @@ const MovieCreate = () => {
               </Form.Item>
 
               <Form.Item
-                label="Ngày chiếu"
+                label={t("SHOW_DATE")}
                 name="showDate"
-                rules={[
-                  {
-                    required: true,
-                    message: "Ngày chiếu không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("SHOW_DATE_REQUIRED")]}
               >
-                <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
+                <DatePicker
+                  style={{ width: "100%" }}
+                  format={"DD/MM/YYYY"}
+                  placeholder={t("SELECT_DATE")}
+                />
               </Form.Item>
 
               <Form.Item
-                label="Năm phát hành"
+                label={t("RELEASE_YEAR")}
                 name="releaseYear"
                 rules={[
-                  {
-                    required: true,
-                    message: "Năm phát hành không được để trống!",
-                  },
-                  {
-                    validator: (_, value) => {
-                      if (value <= 0) {
-                        return Promise.reject("Năm phát hành phải lớn hơn 0!");
-                      }
-                      return Promise.resolve();
-                    },
-                  },
+                  getRequiredRule("RELEASE_YEAR_REQUIRED"),
+                  getPositiveNumberRule("RELEASE_YEAR_POSITIVE"),
                 ]}
               >
                 <InputNumber
-                  placeholder="Enter release year"
+                  placeholder={t("ENTER_RELEASE_YEAR")}
                   style={{ width: "100%" }}
                 />
               </Form.Item>
 
               <Form.Item
-                label="Thời lượng phim (phút)"
+                label={t("DURATION")}
                 name="duration"
                 rules={[
-                  {
-                    required: true,
-                    message: "Thời lượng phim không được để trống!",
-                  },
-                  {
-                    validator: (_, value) => {
-                      if (value <= 0) {
-                        return Promise.reject(
-                          "Thời lượng phim phải lớn hơn 0!"
-                        );
-                      }
-                      return Promise.resolve();
-                    },
-                  },
+                  getRequiredRule("DURATION_REQUIRED"),
+                  getPositiveNumberRule("DURATION_POSITIVE"),
                 ]}
               >
                 <InputNumber
-                  placeholder="Enter duration"
+                  placeholder={t("ENTER_DURATION")}
                   style={{ width: "100%" }}
                 />
               </Form.Item>
 
               <Form.Item
-                label="Trạng thái"
+                label={t("STATUS")}
                 name="status"
-                rules={[
-                  {
-                    required: true,
-                    message: "Trạng thái không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("STATUS_REQUIRED")]}
               >
                 <Select
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select a status"
+                  placeholder={t("SELECT_STATUS")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     (option?.label ?? "")
@@ -384,26 +359,21 @@ const MovieCreate = () => {
                       .includes(input.toLowerCase())
                   }
                   options={[
-                    { label: "Nháp", value: false },
-                    { label: "Công khai", value: true },
+                    { label: t("DRAFT"), value: false },
+                    { label: t("PUBLIC"), value: true },
                   ]}
                 />
               </Form.Item>
 
               <Form.Item
-                label="Quốc gia"
+                label={t("COUNTRY")}
                 name="countryId"
-                rules={[
-                  {
-                    required: true,
-                    message: "Quốc gia không được để trống!",
-                  },
-                ]}
+                rules={[getRequiredRule("COUNTRY_REQUIRED")]}
               >
                 <Select
                   style={{ width: "100%" }}
                   showSearch
-                  placeholder="Select a country"
+                  placeholder={t("SELECT_COUNTRY")}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
                     ((option?.label as string) ?? "")
