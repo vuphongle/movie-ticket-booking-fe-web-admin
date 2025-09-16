@@ -21,6 +21,9 @@ import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
 import BasePriceList from "./pages/ticket-price/base-price/BasePriceList";
+import AdditionalServiceCreate from "./pages/additional-service/additional-service-create/AdditionalServiceCreate";
+import AdditionalServiceList from "./pages/additional-service/additional-service-list/AdditionalServiceList";
+import AdditionalServiceDetail from "./pages/additional-service/additional-service-detail/AdditionalServiceDetail";
 
 function App() {
   return (
@@ -54,6 +57,14 @@ function App() {
             <Route path="schedules" element={<ScheduleList />} />
             <Route path="coupons" element={<CouponList />} />
             <Route path="change-password" element={<ChangePassword />} />
+            <Route path="additional-services">
+              <Route index element={<AdditionalServiceList />} />
+              <Route
+                path=":additionalServiceId/detail"
+                element={<AdditionalServiceDetail />}
+              />
+              <Route path="create" element={<AdditionalServiceCreate />} />
+            </Route>
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />
         </Route>

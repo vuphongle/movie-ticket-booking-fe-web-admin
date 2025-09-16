@@ -16,6 +16,7 @@ import { imageApi } from "@/app/services/images.service";
 import { reviewApi } from "@/app/services/reviews.service";
 import { seatApi } from "@/app/services/seats.service";
 import { baseTicketPriceApi } from "@/app/services/baseTicketPrice.service";
+import { additionalServiceApi } from "@/app/services/additionalServices.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 
@@ -38,6 +39,7 @@ export const Store = configureStore({
     [reviewApi.reducerPath]: reviewApi.reducer,
     [seatApi.reducerPath]: seatApi.reducer,
     [baseTicketPriceApi.reducerPath]: baseTicketPriceApi.reducer,
+    [additionalServiceApi.reducerPath]: additionalServiceApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -57,6 +59,7 @@ export const Store = configureStore({
       reviewApi.middleware,
       seatApi.middleware,
       baseTicketPriceApi.middleware,
+      additionalServiceApi.middleware,
       checkStatusMiddleware,
       tokenMiddleware,
     ),

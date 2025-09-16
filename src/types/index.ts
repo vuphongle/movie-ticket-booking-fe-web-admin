@@ -8,3 +8,4 @@ export * from "./movie.types";
 export * from "./seat.types";
 export * from "./cinema.types";
 export * from "./ticketPrice.types";
+export * from "./additionalService.types";
