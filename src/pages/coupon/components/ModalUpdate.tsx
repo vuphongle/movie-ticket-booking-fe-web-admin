@@ -95,6 +95,32 @@ const ModalUpdate = (props: CouponModalProps) => {
           </Form.Item>
 
           <Form.Item
+            label={t("COUPON_MAX_DISCOUNT_LABEL")}
+            name="maxDiscount"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (value && value <= 0) {
+                    return Promise.reject(
+                      new Error(t("COUPON_MAX_DISCOUNT_MIN_ERROR"))
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              },
+            ]}
+          >
+            <InputNumber
+              placeholder={t("COUPON_MAX_DISCOUNT_PLACEHOLDER")}
+              style={{ width: "100%" }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+            />
+          </Form.Item>
+
+          <Form.Item
             label={t("COUPON_QUANTITY_LABEL")}
             name="quantity"
             rules={[

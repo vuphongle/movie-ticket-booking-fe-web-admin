@@ -37,6 +37,17 @@ const CouponTable = ({ data }: CouponTableProps) => {
       },
     },
     {
+      title: t("COUPON_TABLE_MAX_DISCOUNT"),
+      dataIndex: "maxDiscount",
+      key: "maxDiscount",
+      sorter: (a: Coupon, b: Coupon) =>
+        (a.maxDiscount || 0) - (b.maxDiscount || 0),
+      sortDirections: ["descend", "ascend"],
+      render: (text: number) => {
+        return text ? `${text.toLocaleString()} VND` : t("COUPON_UNLIMITED");
+      },
+    },
+    {
       title: t("COUPON_TABLE_QUANTITY"),
       dataIndex: "quantity",
       key: "quantity",

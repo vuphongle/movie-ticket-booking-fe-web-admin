@@ -18,6 +18,7 @@ const coupon = {
   // Form labels
   COUPON_CODE_LABEL: "Coupon Code",
   COUPON_DISCOUNT_LABEL: "Discount Percentage (%)",
+  COUPON_MAX_DISCOUNT_LABEL: "Maximum Discount (VND)",
   COUPON_QUANTITY_LABEL: "Quantity",
   COUPON_STATUS_LABEL: "Status",
   COUPON_START_DATE_LABEL: "Start Date",
@@ -26,12 +27,14 @@ const coupon = {
   // Form placeholders
   COUPON_CODE_PLACEHOLDER: "Enter coupon code",
   COUPON_DISCOUNT_PLACEHOLDER: "Enter discount percentage",
+  COUPON_MAX_DISCOUNT_PLACEHOLDER: "Enter maximum discount amount (leave blank for unlimited)",
   COUPON_QUANTITY_PLACEHOLDER: "Enter quantity",
   COUPON_STATUS_PLACEHOLDER: "Select a status",
   
   // Table columns
   COUPON_TABLE_CODE: "Coupon Code",
   COUPON_TABLE_DISCOUNT: "Discount Percentage",
+  COUPON_TABLE_MAX_DISCOUNT: "Maximum Discount",
   COUPON_TABLE_QUANTITY: "Quantity",
   COUPON_TABLE_USED: "Used",
   COUPON_TABLE_STATUS: "Status",
@@ -42,10 +45,14 @@ const coupon = {
   COUPON_STATUS_ACTIVE: "Active",
   COUPON_STATUS_INACTIVE: "Inactive",
   
+  // Common texts
+  COUPON_UNLIMITED: "Unlimited",
+  
   // Validation messages
   COUPON_CODE_REQUIRED: "Coupon code is required!",
   COUPON_DISCOUNT_REQUIRED: "Discount percentage is required!",
   COUPON_DISCOUNT_RANGE_ERROR: "Discount percentage must be between 0 and 100",
+  COUPON_MAX_DISCOUNT_MIN_ERROR: "Maximum discount must be greater than 0",
   COUPON_QUANTITY_REQUIRED: "Quantity is required!",
   COUPON_QUANTITY_MIN_ERROR: "Quantity must be greater than 0",
   COUPON_STATUS_REQUIRED: "Status is required!",

@@ -7,6 +7,7 @@ export interface Coupon {
   status: boolean;
   startDate: string;
   endDate: string;
+  maxDiscount?: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -18,6 +19,7 @@ export interface CreateCouponRequest {
   status: boolean;
   startDate: string;
   endDate: string;
+  maxDiscount?: number;
 }
 
 export interface UpdateCouponRequest extends CreateCouponRequest {

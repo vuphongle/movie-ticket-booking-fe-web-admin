@@ -18,6 +18,7 @@ const coupon = {
   // Form labels
   COUPON_CODE_LABEL: "Mã khuyến mại",
   COUPON_DISCOUNT_LABEL: "Phần trăm giảm giá (%)",
+  COUPON_MAX_DISCOUNT_LABEL: "Giảm tối đa (VND)",
   COUPON_QUANTITY_LABEL: "Số lượng",
   COUPON_STATUS_LABEL: "Trạng thái",
   COUPON_START_DATE_LABEL: "Ngày bắt đầu",
@@ -26,12 +27,14 @@ const coupon = {
   // Form placeholders
   COUPON_CODE_PLACEHOLDER: "Nhập mã khuyến mại",
   COUPON_DISCOUNT_PLACEHOLDER: "Nhập phần trăm giảm giá",
+  COUPON_MAX_DISCOUNT_PLACEHOLDER: "Nhập số tiền giảm tối đa (để trống nếu không giới hạn)",
   COUPON_QUANTITY_PLACEHOLDER: "Nhập số lượng",
   COUPON_STATUS_PLACEHOLDER: "Chọn trạng thái",
   
   // Table columns
   COUPON_TABLE_CODE: "Mã khuyến mại",
   COUPON_TABLE_DISCOUNT: "Phần trăm giảm giá",
+  COUPON_TABLE_MAX_DISCOUNT: "Giảm tối đa",
   COUPON_TABLE_QUANTITY: "Số lượng",
   COUPON_TABLE_USED: "Đã sử dụng",
   COUPON_TABLE_STATUS: "Trạng thái",
@@ -42,10 +45,14 @@ const coupon = {
   COUPON_STATUS_ACTIVE: "Kích hoạt",
   COUPON_STATUS_INACTIVE: "Ẩn",
   
+  // Common texts
+  COUPON_UNLIMITED: "Không giới hạn",
+  
   // Validation messages
   COUPON_CODE_REQUIRED: "Mã khuyến mại không được để trống!",
   COUPON_DISCOUNT_REQUIRED: "Phần trăm giảm giá không được để trống!",
   COUPON_DISCOUNT_RANGE_ERROR: "Phần trăm phải nằm trong khoảng 0 - 100",
+  COUPON_MAX_DISCOUNT_MIN_ERROR: "Giảm tối đa phải lớn hơn 0",
   COUPON_QUANTITY_REQUIRED: "Số lượng không được để trống!",
   COUPON_QUANTITY_MIN_ERROR: "Số lượng phải lớn hơn 0",
   COUPON_STATUS_REQUIRED: "Trạng thái không được để trống!",
