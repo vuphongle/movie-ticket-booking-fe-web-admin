@@ -58,9 +58,11 @@ const MovieDetail = () => {
 
   const { movieId } = useParams<{ movieId: string }>();
   const { data: imagesData, isLoading: isFetchingImages } = useGetImagesQuery();
-  const { data: movie, isLoading: isFetchingMovie } = useGetMovieByIdQuery(
-    movieId!
-  );
+  const {
+    data: movie,
+    isLoading: isFetchingMovie,
+    refetch: refetchMovie,
+  } = useGetMovieByIdQuery(movieId!);
 
   const { data: countries, isLoading: isLoadingCountries } =
     useGetCountriesQuery();
@@ -260,6 +262,11 @@ const MovieDetail = () => {
         // console.log(error);
         message.error(error.data.message);
       });
+  };
+
+  const handleReviewDeleted = () => {
+    // Refetch movie data to update review count
+    refetchMovie();
   };
 
   return (
@@ -763,7 +770,11 @@ const MovieDetail = () => {
             tab={`${t("MOVIE_REVIEWS")} (${movie.reviews?.length || 0})`}
             key={2}
           >
-            <ReviewList data={movie.reviews || []} movieId={movieId!} />
+            <ReviewList
+              data={movie.reviews || []}
+              movieId={movieId!}
+              onReviewDeleted={handleReviewDeleted}
+            />
           </Tabs.TabPane>
         </Tabs>
       </div>

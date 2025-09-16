@@ -7,7 +7,7 @@ import { formatDateTime } from "../../../utils/functionUtils";
 import ModalUpdate from "./ModalUpdate";
 import type { Review, ReviewTableProps } from "@/types/movie.types";
 
-const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
+const ReviewTable = ({ data, movieId, onReviewDeleted }: ReviewTableProps) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(data);
@@ -93,11 +93,15 @@ const ReviewTable = ({ data, movieId }: ReviewTableProps) => {
       okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
       onOk: () => {
         return new Promise<void>((resolve, reject) => {
-          deleteReview(id)
+          deleteReview({ reviewId: id })
             .unwrap()
             .then(() => {
               setReviews(reviews.filter((review: Review) => review.id !== id));
               message.success(t("DELETE_REVIEW_SUCCESS"));
+              // Call the callback to notify parent component
+              if (onReviewDeleted) {
+                onReviewDeleted();
+              }
               resolve(); // Đóng modal sau khi xóa thành công
             })
             .catch((error) => {

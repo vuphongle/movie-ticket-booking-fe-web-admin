@@ -116,6 +116,7 @@ export interface Review {
 export interface ReviewTableProps {
   data: Review[];
   movieId: string | number;
+  onReviewDeleted?: () => void;
 }
 
 export interface MovieReviewModalUpdateProps {
@@ -129,4 +130,5 @@ export interface MovieReviewModalUpdateProps {
 export interface ReviewListProps {
   data: Review[];
   movieId: string | number;
+  onReviewDeleted?: () => void;
 }

@@ -28,10 +28,10 @@ export const reviewApi = createApi({
             }),
         }),
         deleteReview: builder.mutation({
-            query: (reviewId) => ({
+            query: ({ reviewId }) => ({
                 url: `reviews/${reviewId}`,
                 method: "DELETE",
-            })
+            }),
         }),
     }),
 });

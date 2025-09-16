@@ -95,11 +95,22 @@ const movie = {
   UPLOAD_SUCCESS: "Tải ảnh lên thành công!",
   DELETE_IMAGE_SUCCESS: "Xóa ảnh thành công!",
   DELETE_REVIEW_SUCCESS: "Xóa review thành công!",
+  UPDATE_REVIEW_SUCCESS: "Cập nhật review thành công!",
 
   // Confirm messages
   DELETE_MOVIE_CONFIRM: "Bạn có chắc chắn muốn xóa phim này?",
   DELETE_REVIEW_CONFIRM: "Bạn có chắc chắn muốn xóa review này?",
   ACTION_CANNOT_UNDONE: "Hành động này không thể hoàn tác!",
+
+  // Review form
+  UPDATE_REVIEW: "Cập nhật Review",
+  UPDATE_REVIEW_MODAL_TITLE: "Cập nhật review",
+  RATING_REQUIRED: "Rating không được để trống!",
+  RATING_RANGE_ERROR: "Rating phải lớn hơn 0 và nhỏ hơn hoặc bằng 10!",
+  REVIEW_CONTENT_REQUIRED: "Nội dung review không được để trống!",
+  ENTER_RATING: "Nhập rating",
+  ENTER_REVIEW_CONTENT: "Nhập nội dung review",
+  UPDATE: "Cập nhật",
 
   // Other messages
   MOVIE_NOT_FOUND: "Không tìm thấy phim",

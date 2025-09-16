@@ -95,11 +95,22 @@ const movie = {
   UPLOAD_SUCCESS: "Image uploaded successfully!",
   DELETE_IMAGE_SUCCESS: "Image deleted successfully!",
   DELETE_REVIEW_SUCCESS: "Review deleted successfully!",
+  UPDATE_REVIEW_SUCCESS: "Review updated successfully!",
 
   // Confirm messages
   DELETE_MOVIE_CONFIRM: "Are you sure you want to delete this movie?",
   DELETE_REVIEW_CONFIRM: "Are you sure you want to delete this review?",
   ACTION_CANNOT_UNDONE: "This action cannot be undone!",
+
+  // Review form
+  UPDATE_REVIEW: "Update Review",
+  UPDATE_REVIEW_MODAL_TITLE: "Update Review",
+  RATING_REQUIRED: "Rating is required!",
+  RATING_RANGE_ERROR: "Rating must be between 1 and 10!",
+  REVIEW_CONTENT_REQUIRED: "Review content is required!",
+  ENTER_RATING: "Enter rating",
+  ENTER_REVIEW_CONTENT: "Enter review content",
+  UPDATE: "Update",
 
   // Other messages
   MOVIE_NOT_FOUND: "Movie not found",
