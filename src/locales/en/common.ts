@@ -7,6 +7,7 @@ const common = {
   CONFIRM: "Confirm",
   DELETE: "Delete",
   EDIT: "Edit",
+  REFRESH: "Refresh",
   CLOSE: "Close",
   BACK: "Back",
   NEXT: "Next",
@@ -28,6 +29,10 @@ const common = {
 
   SEARCH: "Search",
   SELECT_DATE: "Select Date",
+  
+  // Image upload messages
+  IMAGE_COMPRESSED: "Image compressed from {{originalSize}} to {{newSize}}",
+  UPLOAD_FAILED: "Upload failed",
 };
 
 export default common;

@@ -8,6 +8,13 @@ import { showtimesApi } from "@/app/services/showtimes.service";
 import { movieApi } from "@/app/services/movies.service";
 import { scheduleApi } from "@/app/services/schedules.service";
 import { couponApi } from "@/app/services/coupons.service";
+import { genreApi } from "@/app/services/genres.service";
+import { directorApi } from "@/app/services/directors.service";
+import { actorApi } from "@/app/services/actors.service";
+import { countryApi } from "@/app/services/countries.service";
+import { imageApi } from "@/app/services/images.service";
+import { reviewApi } from "@/app/services/reviews.service";
+import { seatApi } from "@/app/services/seats.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 
@@ -22,6 +29,13 @@ export const Store = configureStore({
     [movieApi.reducerPath]: movieApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
     [couponApi.reducerPath]: couponApi.reducer,
+    [genreApi.reducerPath]: genreApi.reducer,
+    [directorApi.reducerPath]: directorApi.reducer,
+    [actorApi.reducerPath]: actorApi.reducer,
+    [countryApi.reducerPath]: countryApi.reducer,
+    [imageApi.reducerPath]: imageApi.reducer,
+    [reviewApi.reducerPath]: reviewApi.reducer,
+    [seatApi.reducerPath]: seatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -33,6 +47,13 @@ export const Store = configureStore({
       movieApi.middleware,
       scheduleApi.middleware,
       couponApi.middleware,
+      genreApi.middleware,
+      directorApi.middleware,
+      actorApi.middleware,
+      countryApi.middleware,
+      imageApi.middleware,
+      reviewApi.middleware,
+      seatApi.middleware,
       checkStatusMiddleware,
       tokenMiddleware,
     ),

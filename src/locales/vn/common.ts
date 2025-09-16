@@ -7,6 +7,7 @@ const common = {
   CONFIRM: "Xác nhận",
   DELETE: "Xóa",
   EDIT: "Chỉnh sửa",
+  REFRESH: "Làm mới",
   CLOSE: "Đóng",
   BACK: "Quay lại",
   NEXT: "Tiếp theo",
@@ -29,6 +30,10 @@ const common = {
 
   SEARCH: "Tìm kiếm",
   SELECT_DATE: "Chọn ngày",
+  
+  // Image upload messages
+  IMAGE_COMPRESSED: "Ảnh đã được nén từ {{originalSize}} xuống {{newSize}}",
+  UPLOAD_FAILED: "Tải lên thất bại",
 };
 
 export default common;

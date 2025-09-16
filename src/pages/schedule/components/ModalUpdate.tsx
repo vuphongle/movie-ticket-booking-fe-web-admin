@@ -3,9 +3,9 @@ import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useUpdateScheduleMutation } from "@services/schedules.service";
 import { formatDate } from "@/utils/functionUtils";
-import type { ModalUpdateProps, ScheduleFormData } from "@/types";
+import type { ScheduleModalUpdateProps, ScheduleFormData } from "@/types";
 
-const ModalUpdate = (props: ModalUpdateProps) => {
+const ModalUpdate = (props: ScheduleModalUpdateProps) => {
   const { schedule, open, onCancel, movies } = props;
   const { t } = useTranslation();
   const [updateSchedule, { isLoading }] = useUpdateScheduleMutation();
