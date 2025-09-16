@@ -17,6 +17,9 @@ import CouponList from "@pages/coupon/CouponList";
 import MovieList from "@/pages/movie/movie-list/MovieList";
 import MovieDetail from "@/pages/movie/movie-detail/MovieDetail";
 import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
+import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
+import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
+import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
 
 function App() {
   return (
@@ -31,6 +34,11 @@ function App() {
           />
           <Route path="/admin" element={<AppLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="cinemas">
+              <Route index element={<CinemaList />} />
+              <Route path=":cinemaId/detail" element={<CinemaDetail />} />
+              <Route path="create" element={<CinemaCreate />} />
+            </Route>
             <Route path="movies">
               <Route index element={<MovieList />} />
               <Route path=":movieId/detail" element={<MovieDetail />} />

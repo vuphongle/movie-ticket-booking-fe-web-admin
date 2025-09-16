@@ -14,6 +14,7 @@ import { actorApi } from "@/app/services/actors.service";
 import { countryApi } from "@/app/services/countries.service";
 import { imageApi } from "@/app/services/images.service";
 import { reviewApi } from "@/app/services/reviews.service";
+import { seatApi } from "@/app/services/seats.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 
@@ -34,6 +35,7 @@ export const Store = configureStore({
     [countryApi.reducerPath]: countryApi.reducer,
     [imageApi.reducerPath]: imageApi.reducer,
     [reviewApi.reducerPath]: reviewApi.reducer,
+    [seatApi.reducerPath]: seatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -51,6 +53,7 @@ export const Store = configureStore({
       countryApi.middleware,
       imageApi.middleware,
       reviewApi.middleware,
+      seatApi.middleware,
       checkStatusMiddleware,
       tokenMiddleware,
     ),
