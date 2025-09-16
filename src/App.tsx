@@ -20,6 +20,7 @@ import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
 import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
+import BasePriceList from "./pages/ticket-price/base-price/BasePriceList";
 
 function App() {
   return (
@@ -46,6 +47,9 @@ function App() {
             </Route>
             <Route path="revenue/cinema" element={<RevenueByCinema />} />
             <Route path="revenue/movie" element={<RevenueByMovie />} />
+            <Route path="ticket-prices">
+              <Route path="base-price" element={<BasePriceList />} />
+            </Route>
             <Route path="showtimes" element={<ShowTimesList />} />
             <Route path="schedules" element={<ScheduleList />} />
             <Route path="coupons" element={<CouponList />} />

@@ -8,6 +8,7 @@ import schedule from "./schedule";
 import coupon from "./coupon";
 import movie from "./movie";
 import cinema from "./cinema";
+import ticketPrice from "./ticketPrice";
 
 const en = {
   ...common,
@@ -20,6 +21,7 @@ const en = {
   ...coupon,
   ...movie,
   ...cinema,
+  ...ticketPrice,
 };
 
 export default en;
