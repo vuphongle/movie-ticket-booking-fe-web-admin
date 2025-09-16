@@ -16,9 +16,9 @@ const CinemaCreate = () => {
   const [createCinema, { isLoading }] = useCreateCinemaMutation();
   const navigate = useNavigate();
 
-  // Force re-render when language changes
+  // Reset form when language changes to avoid validation errors
   useEffect(() => {
-    form.validateFields();
+    form.resetFields();
   }, [i18n.language, form]);
 
   const breadcrumb = [
@@ -80,16 +80,23 @@ const CinemaCreate = () => {
           layout="vertical"
           autoComplete="off"
           initialValues={{ status: false }}
+          validateTrigger="onBlur"
         >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
                 label={t("CINEMA_NAME")}
                 name="name"
+                hasFeedback
                 rules={[
                   {
                     required: true,
                     message: t("NAME_REQUIRED"),
+                  },
+                  {
+                    min: 2,
+                    message:
+                      t("CINEMA_NAME") + " must be at least 2 characters",
                   },
                 ]}
               >
@@ -99,10 +106,16 @@ const CinemaCreate = () => {
               <Form.Item
                 label={t("CINEMA_ADDRESS")}
                 name="address"
+                hasFeedback
                 rules={[
                   {
                     required: true,
                     message: t("ADDRESS_REQUIRED"),
+                  },
+                  {
+                    min: 5,
+                    message:
+                      t("CINEMA_ADDRESS") + " must be at least 5 characters",
                   },
                 ]}
               >
@@ -112,10 +125,16 @@ const CinemaCreate = () => {
               <Form.Item
                 label={t("MAP_LOCATION")}
                 name="mapLocation"
+                hasFeedback
                 rules={[
                   {
                     required: true,
                     message: t("MAP_LOCATION_REQUIRED"),
+                  },
+                  {
+                    min: 10,
+                    message:
+                      t("MAP_LOCATION") + " must be at least 10 characters",
                   },
                 ]}
               >
