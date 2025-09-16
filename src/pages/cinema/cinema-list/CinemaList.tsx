@@ -1,18 +1,21 @@
 import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetCinemasQuery } from "@/app/services/cinemas.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 import CinemaTable from "./CinemaTable";
 
-const breadcrumb = [{ label: "Danh sách rạp phim", href: "/admin/cinemas" }];
 const CinemaList = () => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   const { data, isLoading: isFetchingCinemas } = useGetCinemasQuery({});
+
+  const breadcrumb = [{ label: t("CINEMA_LIST"), href: "/admin/cinemas" }];
 
   if (isFetchingCinemas) {
     return <Spin size="large" fullscreen />;
@@ -21,7 +24,7 @@ const CinemaList = () => {
   return (
     <>
       <Helmet>
-        <title>Danh sách rạp chiếu</title>
+        <title>{t("CINEMA_LIST_TITLE")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -39,7 +42,7 @@ const CinemaList = () => {
               type="primary"
               icon={<PlusOutlined />}
             >
-              Tạo rạp chiếu
+              {t("CREATE_CINEMA_BUTTON")}
             </Button>
           </RouterLink>
           <RouterLink to="/admin/cinemas">
@@ -48,7 +51,7 @@ const CinemaList = () => {
               type="primary"
               icon={<ReloadOutlined />}
             >
-              Refresh
+              {t("REFRESH")}
             </Button>
           </RouterLink>
         </Space>

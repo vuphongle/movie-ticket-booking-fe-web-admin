@@ -1,21 +1,30 @@
 import { LeftOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Form, Input, Row, Space, message, theme } from "antd";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useCreateCinemaMutation } from "@/app/services/cinemas.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 
-const breadcrumb = [
-  { label: "Danh sách rạp chiếu", href: "/admin/cinemas" },
-  { label: "Tạo rạp chiếu", href: "/admin/cinemas/create" },
-];
 const CinemaCreate = () => {
+  const { t, i18n } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const [form] = Form.useForm();
   const [createCinema, { isLoading }] = useCreateCinemaMutation();
   const navigate = useNavigate();
+
+  // Force re-render when language changes
+  useEffect(() => {
+    form.validateFields();
+  }, [i18n.language, form]);
+
+  const breadcrumb = [
+    { label: t("CINEMA_LIST"), href: "/admin/cinemas" },
+    { label: t("CREATE_CINEMA"), href: "/admin/cinemas/create" },
+  ];
 
   const handleCreate = () => {
     form
@@ -24,7 +33,7 @@ const CinemaCreate = () => {
         return createCinema(values).unwrap();
       })
       .then((data) => {
-        message.success("Tạo rạp chiếu thành công!");
+        message.success(t("CREATE_SUCCESS"));
         setTimeout(() => {
           navigate(`/admin/cinemas/${data.id}/detail`);
         }, 1500);
@@ -37,7 +46,7 @@ const CinemaCreate = () => {
   return (
     <>
       <Helmet>
-        <title>Tạo rạp chiếu</title>
+        <title>{t("CREATE_CINEMA")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -51,7 +60,7 @@ const CinemaCreate = () => {
         <Space style={{ marginBottom: "1rem" }}>
           <RouterLink to="/admin/cinemas">
             <Button type="default" icon={<LeftOutlined />}>
-              Quay lại
+              {t("BACK")}
             </Button>
           </RouterLink>
           <Button
@@ -61,11 +70,12 @@ const CinemaCreate = () => {
             onClick={handleCreate}
             loading={isLoading}
           >
-            Tạo rạp chiếu
+            {t("CREATE_CINEMA_BUTTON")}
           </Button>
         </Space>
 
         <Form
+          key={i18n.language}
           form={form}
           layout="vertical"
           autoComplete="off"
@@ -74,42 +84,45 @@ const CinemaCreate = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Tên rạp chiếu"
+                label={t("CINEMA_NAME")}
                 name="name"
                 rules={[
                   {
                     required: true,
-                    message: "Tên không được để trống!",
+                    message: t("NAME_REQUIRED"),
                   },
                 ]}
               >
-                <Input placeholder="Enter name" />
+                <Input placeholder={t("ENTER_CINEMA_NAME")} />
               </Form.Item>
 
               <Form.Item
-                label="Địa chỉ"
+                label={t("CINEMA_ADDRESS")}
                 name="address"
                 rules={[
                   {
                     required: true,
-                    message: "Địa chỉ không được để trống!",
+                    message: t("ADDRESS_REQUIRED"),
                   },
                 ]}
               >
-                <Input.TextArea rows={4} placeholder="Enter address" />
+                <Input.TextArea rows={4} placeholder={t("ENTER_ADDRESS")} />
               </Form.Item>
 
               <Form.Item
-                label="Địa chỉ map"
+                label={t("MAP_LOCATION")}
                 name="mapLocation"
                 rules={[
                   {
                     required: true,
-                    message: "Địa chỉ map không được để trống!",
+                    message: t("MAP_LOCATION_REQUIRED"),
                   },
                 ]}
               >
-                <Input.TextArea rows={6} placeholder="Enter map location" />
+                <Input.TextArea
+                  rows={6}
+                  placeholder={t("ENTER_MAP_LOCATION")}
+                />
               </Form.Item>
             </Col>
           </Row>

@@ -1,4 +1,5 @@
 import { Table } from "antd";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import useSearchTable from "../../../hooks/useSearchTable";
 import { formatDate } from "../../../utils/functionUtils";
@@ -10,10 +11,11 @@ interface CinemaTableProps {
 }
 
 const CinemaTable = ({ data }: CinemaTableProps) => {
+  const { t } = useTranslation();
   const { getColumnSearchProps } = useSearchTable();
   const columns: ColumnsType<Cinema> = [
     {
-      title: "Tên rạp chiếu",
+      title: t("CINEMA_NAME_COLUMN"),
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
@@ -26,7 +28,7 @@ const CinemaTable = ({ data }: CinemaTableProps) => {
       },
     },
     {
-      title: "Địa chỉ",
+      title: t("ADDRESS_COLUMN"),
       dataIndex: "address",
       key: "address",
       ...getColumnSearchProps("address"),
@@ -35,7 +37,7 @@ const CinemaTable = ({ data }: CinemaTableProps) => {
       },
     },
     {
-      title: "Ngày tạo",
+      title: t("CREATED_AT"),
       dataIndex: "createdAt",
       key: "createdAt",
       sorter: (a: Cinema, b: Cinema) =>

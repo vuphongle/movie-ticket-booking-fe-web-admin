@@ -1,6 +1,7 @@
 import { EditOutlined } from "@ant-design/icons";
 import { Button, Form, message, Modal, Select, Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUpdateRowSeatMutation } from "@/app/services/seats.service";
 import type { Auditorium, RowSeatUpdateValues } from "@/types";
 
@@ -15,9 +16,15 @@ function RowSeatAction({
   isLastRow,
   auditorium,
 }: RowSeatActionProps) {
+  const { t, i18n } = useTranslation();
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateRowSeat, { isLoading }] = useUpdateRowSeatMutation();
+
+  useEffect(() => {
+    // Force form to re-render when language changes
+    form.validateFields();
+  }, [i18n.language, form]);
 
   const onFinish = (
     values: Omit<RowSeatUpdateValues, "rowIndex" | "auditoriumId">
@@ -25,7 +32,7 @@ function RowSeatAction({
     updateRowSeat({ auditoriumId: auditorium.id, rowIndex, ...values })
       .unwrap()
       .then((_data) => {
-        message.success("Cập nhật hàng ghế thành công!");
+        message.success(t("UPDATE_ROW_SEAT_SUCCESS"));
         setIsModalOpen(false);
       })
       .catch((error) => {
@@ -34,12 +41,12 @@ function RowSeatAction({
   };
 
   const options = [
-    { label: "Ghế thường", value: "NORMAL" },
-    { label: "Ghế VIP", value: "VIP" },
+    { label: t("NORMAL_SEAT"), value: "NORMAL" },
+    { label: t("VIP_SEAT"), value: "VIP" },
   ];
 
   if (isLastRow) {
-    options.push({ label: "Ghế đôi", value: "COUPLE" });
+    options.push({ label: t("COUPLE_SEAT"), value: "COUPLE" });
   }
 
   return (
@@ -59,7 +66,7 @@ function RowSeatAction({
       ></Button>
 
       <Modal
-        title="Cập nhật hàng ghế"
+        title={t("UPDATE_ROW_SEAT_TITLE")}
         open={isModalOpen}
         footer={null}
         onCancel={() => setIsModalOpen(false)}
@@ -71,21 +78,22 @@ function RowSeatAction({
           autoComplete="off"
           initialValues={{ status: true }}
           onFinish={onFinish}
+          key={i18n.language}
         >
           <Form.Item
-            label="Loại ghế"
+            label={t("SEAT_TYPE")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Loại ghế không được để trống!",
+                message: t("SEAT_TYPE_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a type"
+              placeholder={t("SELECT_SEAT_TYPE")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -97,19 +105,19 @@ function RowSeatAction({
           </Form.Item>
 
           <Form.Item
-            label="Trạng thái"
+            label={t("SEAT_STATUS")}
             name="status"
             rules={[
               {
                 required: true,
-                message: "Trạng thái không được để trống!",
+                message: t("SEAT_STATUS_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a status"
+              placeholder={t("SELECT_STATUS")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -117,8 +125,8 @@ function RowSeatAction({
                   .includes(input.toLowerCase())
               }
               options={[
-                { label: "Kích hoạt", value: true },
-                { label: "Khóa", value: false },
+                { label: t("ACTIVE_STATUS"), value: true },
+                { label: t("LOCKED_STATUS"), value: false },
               ]}
             />
           </Form.Item>
@@ -126,7 +134,7 @@ function RowSeatAction({
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={isLoading}>
-                Cập nhật
+                {t("UPDATE_CINEMA")}
               </Button>
             </Space>
           </Form.Item>

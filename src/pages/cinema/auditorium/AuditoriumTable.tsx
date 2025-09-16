@@ -1,6 +1,7 @@
 import { DeleteOutlined, EditOutlined, TableOutlined } from "@ant-design/icons";
 import { Button, message, Modal, Space, Table, Tag } from "antd";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDeleteAuditoriumMutation } from "@/app/services/auditorium.service";
 import { formatDate, rangeColumn, rangeRow } from "@/utils/functionUtils";
 import ModalUpdate from "./ModalUpdate";
@@ -8,16 +9,16 @@ import SeatModal from "./SeatModal";
 import type { Auditorium } from "@/types";
 import type { ColumnsType } from "antd/es/table";
 
-const parseAuditoriumType = (type: string) => {
+const parseAuditoriumType = (type: string, t: (key: string) => string) => {
   switch (type) {
     case "STANDARD":
-      return <Tag color="blue">Tiêu chuẩn</Tag>;
+      return <Tag color="blue">{t("STANDARD_LABEL")}</Tag>;
     case "IMAX":
-      return <Tag color="green">IMAX</Tag>;
+      return <Tag color="green">{t("IMAX_LABEL")}</Tag>;
     case "GOLDCLASS":
-      return <Tag color="gold">GOLD CLASS</Tag>;
+      return <Tag color="gold">{t("GOLDCLASS_LABEL")}</Tag>;
     default:
-      return <Tag color="default">Không xác định</Tag>;
+      return <Tag color="default">{t("UNKNOWN_TYPE")}</Tag>;
   }
 };
 
@@ -27,6 +28,7 @@ interface AuditoriumTableProps {
 }
 
 const AuditoriumTable = ({ data, cinemaId }: AuditoriumTableProps) => {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
   const [auditoriumUpdate, setAuditoriumUpdate] = useState<Auditorium | null>(
@@ -36,7 +38,7 @@ const AuditoriumTable = ({ data, cinemaId }: AuditoriumTableProps) => {
 
   const columns: ColumnsType<Auditorium> = [
     {
-      title: "Tên phòng chiếu",
+      title: t("AUDITORIUM_NAME_COLUMN"),
       dataIndex: "name",
       key: "name",
       render: (text: string, _record: Auditorium, _index: number) => {
@@ -44,34 +46,34 @@ const AuditoriumTable = ({ data, cinemaId }: AuditoriumTableProps) => {
       },
     },
     {
-      title: "Loại phòng chiếu",
+      title: t("AUDITORIUM_TYPE_COLUMN"),
       dataIndex: "type",
       key: "type",
       render: (text: string, _record: Auditorium, _index: number) => {
-        return parseAuditoriumType(text);
+        return parseAuditoriumType(text, t);
       },
     },
     {
-      title: "Số lượng ghế (tối đa)",
+      title: t("TOTAL_SEATS_COLUMN"),
       dataIndex: "totalSeats",
       key: "totalSeats",
       render: (text: number, _record: Auditorium, _index: number) => {
-        return text ? text : "Chưa cập nhật";
+        return text ? text : t("NOT_UPDATED");
       },
     },
     {
-      title: "Số hàng",
+      title: t("TOTAL_ROWS_COLUMN"),
       dataIndex: "totalRows",
       key: "totalRows",
       render: (text: number, _record: Auditorium, _index: number) => {
         const rows = rangeRow(text);
         const startRow = rows[0];
         const endRow = rows[rows.length - 1];
-        return text ? `${text} (${startRow} -> ${endRow})` : "Chưa cập nhật";
+        return text ? `${text} (${startRow} -> ${endRow})` : t("NOT_UPDATED");
       },
     },
     {
-      title: "Số cột",
+      title: t("TOTAL_COLUMNS_COLUMN"),
       dataIndex: "totalColumns",
       key: "totalColumns",
       render: (text: number, _record: Auditorium, _index: number) => {
@@ -80,11 +82,11 @@ const AuditoriumTable = ({ data, cinemaId }: AuditoriumTableProps) => {
         const endColumn = columns[columns.length - 1];
         return text
           ? `${text} (${startColumn} -> ${endColumn})`
-          : "Chưa cập nhật";
+          : t("NOT_UPDATED");
       },
     },
     {
-      title: "Ngày tạo",
+      title: t("CREATED_AT"),
       dataIndex: "createdAt",
       key: "createdAt",
       render: (text: string, _record: Auditorium, _index: number) => {
@@ -130,18 +132,18 @@ const AuditoriumTable = ({ data, cinemaId }: AuditoriumTableProps) => {
 
   const handleConfirm = (id: number) => {
     Modal.confirm({
-      title: "Bạn có chắc chắn muốn xóa phòng chiếu này?",
-      content: "Hành động này không thể hoàn tác!",
-      okText: "Xóa",
+      title: t("DELETE_AUDITORIUM_CONFIRM_TITLE"),
+      content: t("DELETE_AUDITORIUM_CONFIRM_CONTENT"),
+      okText: t("DELETE"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("CANCEL"),
       okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
       onOk: () => {
         return new Promise<void>((resolve, reject) => {
           deleteAuditorium(id)
             .unwrap()
             .then(() => {
-              message.success("Xóa phòng chiếu thành công!");
+              message.success(t("DELETE_AUDITORIUM_SUCCESS"));
               resolve(); // Đóng modal sau khi xóa thành công
             })
             .catch((error) => {

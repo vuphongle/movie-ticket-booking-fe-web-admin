@@ -1,5 +1,6 @@
 import { Button, Form, Modal, Select, Space, message } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useUpdateSeatMutation } from "@/app/services/seats.service";
 import type { Seat as SeatType, Auditorium, SeatFormValues } from "@/types";
 
@@ -10,15 +11,21 @@ interface SeatProps {
 }
 
 function Seat({ seat, isLastRow, auditorium }: SeatProps) {
+  const { t, i18n } = useTranslation();
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateSeat, { isLoading }] = useUpdateSeatMutation();
+
+  useEffect(() => {
+    // Force form to re-render when language changes
+    form.validateFields();
+  }, [i18n.language, form]);
 
   const onFinish = (values: SeatFormValues) => {
     updateSeat({ ...seat, ...values, auditoriumId: auditorium.id })
       .unwrap()
       .then((_data) => {
-        message.success("Cập nhật ghế thành công!");
+        message.success(t("UPDATE_SEAT_SUCCESS"));
         setIsModalOpen(false);
       })
       .catch((error) => {
@@ -44,12 +51,12 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
   };
 
   const options = [
-    { label: "Ghế thường", value: "NORMAL" },
-    { label: "Ghế VIP", value: "VIP" },
+    { label: t("NORMAL_SEAT"), value: "NORMAL" },
+    { label: t("VIP_SEAT"), value: "VIP" },
   ];
 
   if (isLastRow) {
-    options.push({ label: "Ghế đôi", value: "COUPLE" });
+    options.push({ label: t("COUPLE_SEAT"), value: "COUPLE" });
   }
 
   return (
@@ -71,7 +78,7 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
       </Button>
 
       <Modal
-        title="Cập nhật ghế"
+        title={t("UPDATE_SEAT")}
         open={isModalOpen}
         footer={null}
         onCancel={() => setIsModalOpen(false)}
@@ -83,14 +90,15 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
           autoComplete="off"
           initialValues={{ ...seat }}
           onFinish={onFinish}
+          key={i18n.language}
         >
           <Form.Item
-            label="Loại ghế"
+            label={t("SEAT_TYPE")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Loại ghế không được để trống!",
+                message: t("SEAT_TYPE_REQUIRED"),
               },
             ]}
           >
@@ -109,12 +117,12 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
           </Form.Item>
 
           <Form.Item
-            label="Trạng thái"
+            label={t("SEAT_STATUS")}
             name="status"
             rules={[
               {
                 required: true,
-                message: "Trạng thái không được để trống!",
+                message: t("SEAT_STATUS_REQUIRED"),
               },
             ]}
           >
@@ -129,8 +137,8 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
                   .includes(input.toLowerCase())
               }
               options={[
-                { label: "Kích hoạt", value: true },
-                { label: "Khóa", value: false },
+                { label: t("ACTIVE_STATUS"), value: true },
+                { label: t("LOCKED_STATUS"), value: false },
               ]}
             />
           </Form.Item>
@@ -138,7 +146,7 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={isLoading}>
-                Cập nhật
+                {t("UPDATE_BUTTON")}
               </Button>
             </Space>
           </Form.Item>

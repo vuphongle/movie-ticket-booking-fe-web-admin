@@ -13,7 +13,8 @@ import {
   theme,
   Typography,
 } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   useCreateAuditoriumMutation,
   useGetAuditoriumsByCinemaQuery,
@@ -26,6 +27,7 @@ interface AuditoriumListProps {
 }
 
 const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
+  const { t, i18n } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -38,6 +40,11 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
+  // Reset form when language changes
+  useEffect(() => {
+    form.resetFields();
+  }, [i18n.language, form]);
+
   if (isFetchingAuditoriums) {
     return <Spin size="large" fullscreen />;
   }
@@ -48,7 +55,7 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
       .then((_data) => {
         form.resetFields();
         setOpen(false);
-        message.success("Tạo phòng chiếu thành công!");
+        message.success(t("CREATE_AUDITORIUM_SUCCESS"));
       })
       .catch((error) => {
         message.error(error.data.message);
@@ -72,7 +79,7 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
           align="center"
           style={{ marginBottom: "1rem" }}
         >
-          <Typography.Title level={4}>Danh sách phòng chiếu</Typography.Title>
+          <Typography.Title level={4}>{t("AUDITORIUM_LIST")}</Typography.Title>
           <Button
             style={{ backgroundColor: "rgb(60, 141, 188)" }}
             type="primary"
@@ -82,7 +89,7 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
             }}
             loading={isLoadingCreate}
           >
-            Tạo phòng chiếu
+            {t("CREATE_AUDITORIUM")}
           </Button>
         </Flex>
 
@@ -90,12 +97,13 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
       </div>
       <Modal
         open={open}
-        title="Tạo phòng chiếu"
+        title={t("CREATE_AUDITORIUM")}
         footer={null}
         onCancel={() => setOpen(false)}
         confirmLoading={isLoadingCreate}
       >
         <Form
+          key={i18n.language}
           form={form}
           layout="vertical"
           onFinish={handleCreate}
@@ -106,26 +114,26 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
             rules={[
               {
                 required: true,
-                message: "Tên phòng chiếu không được để trống!",
+                message: t("AUDITORIUM_NAME_REQUIRED"),
               },
             ]}
           >
-            <Input placeholder="Nhập tên phòng chiếu" />
+            <Input placeholder={t("ENTER_AUDITORIUM_NAME")} />
           </Form.Item>
           <Form.Item
-            label="Loại phòng chiếu"
+            label={t("AUDITORIUM_TYPE")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Loại phòng chiếu không được để trống!",
+                message: t("AUDITORIUM_TYPE_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a type"
+              placeholder={t("SELECT_AUDITORIUM_TYPE")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -133,24 +141,26 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
                   .includes(input.toLowerCase())
               }
               options={[
-                { value: "STANDARD", label: "Phòng chiếu tiêu chuẩn" },
-                { value: "IMAX", label: "Phòng chiếu IMAX" },
-                { value: "GOLDCLASS", label: "Phòng chiếu GOLD CLASS" },
+                { value: "STANDARD", label: t("STANDARD_TYPE") },
+                { value: "IMAX", label: t("IMAX_TYPE") },
+                { value: "GOLDCLASS", label: t("GOLDCLASS_TYPE") },
               ]}
             />
           </Form.Item>
           <Form.Item
-            label="Số hàng"
+            label={t("TOTAL_ROWS")}
             name="totalRows"
             rules={[
               {
                 required: true,
-                message: "Số hàng không được để trống!",
+                message: t("TOTAL_ROWS_REQUIRED"),
               },
               {
                 validator: (_, value) => {
                   if (value <= 0) {
-                    return Promise.reject("Số hàng phải lớn hơn 0!");
+                    return Promise.reject(
+                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO")
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -158,22 +168,24 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
             ]}
           >
             <InputNumber
-              placeholder="Enter total rows"
+              placeholder={t("ENTER_TOTAL_ROWS")}
               style={{ width: "100%" }}
             />
           </Form.Item>
           <Form.Item
-            label="Số cột"
+            label={t("TOTAL_COLUMNS")}
             name="totalColumns"
             rules={[
               {
                 required: true,
-                message: "Số cột không được để trống!",
+                message: t("TOTAL_COLUMNS_REQUIRED"),
               },
               {
                 validator: (_, value) => {
                   if (value <= 0) {
-                    return Promise.reject("Số cột phải lớn hơn 0!");
+                    return Promise.reject(
+                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO")
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -181,7 +193,7 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
             ]}
           >
             <InputNumber
-              placeholder="Enter total columns"
+              placeholder={t("ENTER_TOTAL_COLUMNS")}
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -192,7 +204,7 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
                 htmlType="submit"
                 loading={isLoadingCreate}
               >
-                Lưu
+                {t("SAVE")}
               </Button>
             </Space>
           </Form.Item>

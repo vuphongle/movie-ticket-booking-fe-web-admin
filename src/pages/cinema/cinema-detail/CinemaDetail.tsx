@@ -12,7 +12,9 @@ import {
   Spin,
   theme,
 } from "antd";
+import { useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import {
   useDeleteCinemaMutation,
@@ -24,6 +26,7 @@ import AuditoriumList from "../auditorium/AuditoriumList";
 import MapIframeComponent from "./MapIframeComponent";
 
 const CinemaDetail = () => {
+  const { t, i18n } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -40,8 +43,15 @@ const CinemaDetail = () => {
   const [deleteCinema, { isLoading: isLoadingDeleteCinema }] =
     useDeleteCinemaMutation();
 
+  // Force re-render when language changes
+  useEffect(() => {
+    if (cinema) {
+      form.setFieldsValue(cinema);
+    }
+  }, [i18n.language, cinema, form]);
+
   const breadcrumb = [
-    { label: "Danh sách rạp chiếu", href: "/admin/cinemas" },
+    { label: t("CINEMA_LIST"), href: "/admin/cinemas" },
     { label: cinema?.name, href: `/admin/cinemas/${cinema?.id}/detail` },
   ];
 
@@ -56,7 +66,7 @@ const CinemaDetail = () => {
         return updateCinema({ cinemaId, ...values }).unwrap();
       })
       .then((_data) => {
-        message.success("Cập nhật rạp chiếu thành công!");
+        message.success(t("UPDATE_SUCCESS"));
       })
       .catch((error) => {
         message.error(error.data.message);
@@ -65,16 +75,16 @@ const CinemaDetail = () => {
 
   const handleDelete = () => {
     Modal.confirm({
-      title: "Bạn có chắc chắn muốn xóa rạp chiếu này?",
-      content: "Hành động này không thể hoàn tác!",
-      okText: "Xóa",
+      title: t("DELETE_CONFIRM_TITLE"),
+      content: t("DELETE_CONFIRM_CONTENT"),
+      okText: t("DELETE"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("CANCEL"),
       onOk: () => {
         deleteCinema(cinema!.id)
           .unwrap()
           .then((_data) => {
-            message.success("Xóa rạp chiếu thành công!");
+            message.success(t("DELETE_SUCCESS"));
             setTimeout(() => {
               navigate("/admin/cinemas");
             }, 1500);
@@ -114,7 +124,7 @@ const CinemaDetail = () => {
           <Space>
             <RouterLink to="/admin/cinemas">
               <Button type="default" icon={<LeftOutlined />}>
-                Quay lại
+                {t("BACK")}
               </Button>
             </RouterLink>
             <Button
@@ -124,7 +134,7 @@ const CinemaDetail = () => {
               onClick={handleUpdate}
               loading={isLoadingUpdateCinema}
             >
-              Cập nhật
+              {t("UPDATE_CINEMA")}
             </Button>
           </Space>
           <Button
@@ -134,11 +144,12 @@ const CinemaDetail = () => {
             onClick={handleDelete}
             loading={isLoadingDeleteCinema}
           >
-            Xóa rạp chiếu
+            {t("DELETE_CINEMA")}
           </Button>
         </Flex>
 
         <Form
+          key={i18n.language}
           form={form}
           layout="vertical"
           autoComplete="off"
@@ -149,42 +160,45 @@ const CinemaDetail = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Tên rạp chiếu"
+                label={t("CINEMA_NAME")}
                 name="name"
                 rules={[
                   {
                     required: true,
-                    message: "Tên không được để trống!",
+                    message: t("NAME_REQUIRED"),
                   },
                 ]}
               >
-                <Input placeholder="Enter name" />
+                <Input placeholder={t("ENTER_CINEMA_NAME")} />
               </Form.Item>
 
               <Form.Item
-                label="Địa chỉ"
+                label={t("CINEMA_ADDRESS")}
                 name="address"
                 rules={[
                   {
                     required: true,
-                    message: "Địa chỉ không được để trống!",
+                    message: t("ADDRESS_REQUIRED"),
                   },
                 ]}
               >
-                <Input.TextArea rows={4} placeholder="Enter address" />
+                <Input.TextArea rows={4} placeholder={t("ENTER_ADDRESS")} />
               </Form.Item>
 
               <Form.Item
-                label="Địa chỉ map"
+                label={t("MAP_LOCATION")}
                 name="mapLocation"
                 rules={[
                   {
                     required: true,
-                    message: "Địa chỉ map không được để trống!",
+                    message: t("MAP_LOCATION_REQUIRED"),
                   },
                 ]}
               >
-                <Input.TextArea rows={6} placeholder="Enter map location" />
+                <Input.TextArea
+                  rows={6}
+                  placeholder={t("ENTER_MAP_LOCATION")}
+                />
               </Form.Item>
             </Col>
 

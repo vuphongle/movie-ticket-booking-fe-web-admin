@@ -8,6 +8,7 @@ import {
   Select,
   Space,
 } from "antd";
+import { useTranslation } from "react-i18next";
 import { useUpdateAuditoriumMutation } from "@/app/services/auditorium.service";
 import type { Auditorium, AuditoriumCreateValues } from "@/types";
 
@@ -20,13 +21,14 @@ interface ModalUpdateProps {
 
 const ModalUpdate = (props: ModalUpdateProps) => {
   const { auditorium, open, onCancel, cinemaId } = props;
+  const { t, i18n } = useTranslation();
   const [updateAuditorium, { isLoading }] = useUpdateAuditoriumMutation();
 
   const onFinish = (values: Omit<AuditoriumCreateValues, "cinemaId">) => {
     updateAuditorium({ id: auditorium.id, ...values, cinemaId })
       .unwrap()
       .then((_data) => {
-        message.success("Cập nhật phòng chiếu thành công!");
+        message.success(t("UPDATE_AUDITORIUM_SUCCESS"));
         onCancel();
       })
       .catch((error) => {
@@ -38,12 +40,13 @@ const ModalUpdate = (props: ModalUpdateProps) => {
     <>
       <Modal
         open={open}
-        title="Cập nhật phòng chiếu"
+        title={t("UPDATE_AUDITORIUM")}
         footer={null}
         onCancel={onCancel}
         confirmLoading={isLoading}
       >
         <Form
+          key={i18n.language}
           layout="vertical"
           onFinish={onFinish}
           autoComplete="off"
@@ -54,26 +57,26 @@ const ModalUpdate = (props: ModalUpdateProps) => {
             rules={[
               {
                 required: true,
-                message: "Tên phòng chiếu không được để trống!",
+                message: t("AUDITORIUM_NAME_REQUIRED"),
               },
             ]}
           >
-            <Input placeholder="Nhập tên phòng chiếu" />
+            <Input placeholder={t("ENTER_AUDITORIUM_NAME")} />
           </Form.Item>
           <Form.Item
-            label="Loại phòng chiếu"
+            label={t("AUDITORIUM_TYPE")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Loại phòng chiếu không được để trống!",
+                message: t("AUDITORIUM_TYPE_REQUIRED"),
               },
             ]}
           >
             <Select
               style={{ width: "100%" }}
               showSearch
-              placeholder="Select a type"
+              placeholder={t("SELECT_AUDITORIUM_TYPE")}
               optionFilterProp="children"
               filterOption={(input, option) =>
                 (option?.label ?? "")
@@ -81,24 +84,26 @@ const ModalUpdate = (props: ModalUpdateProps) => {
                   .includes(input.toLowerCase())
               }
               options={[
-                { value: "STANDARD", label: "Phòng chiếu tiêu chuẩn" },
-                { value: "IMAX", label: "Phòng chiếu IMAX" },
-                { value: "GOLDCLASS", label: "Phòng chiếu GOLD CLASS" },
+                { value: "STANDARD", label: t("STANDARD_TYPE") },
+                { value: "IMAX", label: t("IMAX_TYPE") },
+                { value: "GOLDCLASS", label: t("GOLDCLASS_TYPE") },
               ]}
             />
           </Form.Item>
           <Form.Item
-            label="Số hàng"
+            label={t("TOTAL_ROWS")}
             name="totalRows"
             rules={[
               {
                 required: true,
-                message: "Số hàng không được để trống!",
+                message: t("TOTAL_ROWS_REQUIRED"),
               },
               {
                 validator: (_, value) => {
                   if (value <= 0) {
-                    return Promise.reject("Số hàng phải lớn hơn 0!");
+                    return Promise.reject(
+                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO")
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -106,22 +111,24 @@ const ModalUpdate = (props: ModalUpdateProps) => {
             ]}
           >
             <InputNumber
-              placeholder="Enter total rows"
+              placeholder={t("ENTER_TOTAL_ROWS")}
               style={{ width: "100%" }}
             />
           </Form.Item>
           <Form.Item
-            label="Số cột"
+            label={t("TOTAL_COLUMNS")}
             name="totalColumns"
             rules={[
               {
                 required: true,
-                message: "Số cột không được để trống!",
+                message: t("TOTAL_COLUMNS_REQUIRED"),
               },
               {
                 validator: (_, value) => {
                   if (value <= 0) {
-                    return Promise.reject("Số cột phải lớn hơn 0!");
+                    return Promise.reject(
+                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO")
+                    );
                   }
                   return Promise.resolve();
                 },
@@ -129,14 +136,14 @@ const ModalUpdate = (props: ModalUpdateProps) => {
             ]}
           >
             <InputNumber
-              placeholder="Enter total columns"
+              placeholder={t("ENTER_TOTAL_COLUMNS")}
               style={{ width: "100%" }}
             />
           </Form.Item>
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={isLoading}>
-                Cập nhật
+                {t("UPDATE_CINEMA")}
               </Button>
             </Space>
           </Form.Item>

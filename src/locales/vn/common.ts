@@ -7,7 +7,7 @@ const common = {
   CONFIRM: "Xác nhận",
   DELETE: "Xóa",
   EDIT: "Chỉnh sửa",
-  REFRESH: "Refresh",
+  REFRESH: "Làm mới",
   CLOSE: "Đóng",
   BACK: "Quay lại",
   NEXT: "Tiếp theo",

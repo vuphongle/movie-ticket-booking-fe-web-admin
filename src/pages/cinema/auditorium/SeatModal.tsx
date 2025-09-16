@@ -1,4 +1,5 @@
 import { Modal, Spin } from "antd";
+import { useTranslation } from "react-i18next";
 import { useGetSeatsByAuditoriumQuery } from "@/app/services/seats.service";
 import CinemaScreen from "./seat/CinemaScreen";
 import SeatLegend from "./seat/SeatLegend";
@@ -14,6 +15,7 @@ interface SeatModalProps {
 
 function SeatModal(props: SeatModalProps) {
   const { auditorium, open, onCancel } = props;
+  const { t } = useTranslation();
   const { data: seats, isLoading: isLoadingGetSeats } =
     useGetSeatsByAuditoriumQuery(auditorium.id);
 
@@ -25,7 +27,7 @@ function SeatModal(props: SeatModalProps) {
     <>
       <Modal
         open={open}
-        title="Cập nhật ghế phòng chiếu"
+        title={t("UPDATE_SEAT_TITLE")}
         footer={null}
         onCancel={onCancel}
         width={1000}
