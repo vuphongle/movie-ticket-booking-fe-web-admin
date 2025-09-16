@@ -1,11 +1,14 @@
 import { Col, Flex, Row } from "antd";
+import { useTranslation } from "react-i18next";
 
 const SeatLegend = () => {
+  const { t } = useTranslation();
+
   const legends = [
-    { label: "Ghế thường", color: "rgb(114, 46, 209)" },
-    { label: "Ghế VIP", color: "rgb(245, 34, 45)" },
-    { label: "Ghế COUPLE", color: "rgb(236, 47, 150)" },
-    { label: "Không khả dụng", color: "#404040" },
+    { label: t("NORMAL_SEAT"), color: "rgb(114, 46, 209)" },
+    { label: t("VIP_SEAT"), color: "rgb(245, 34, 45)" },
+    { label: t("COUPLE_SEAT"), color: "rgb(236, 47, 150)" },
+    { label: t("UNAVAILABLE_SEAT"), color: "#404040" },
   ];
 
   return (
