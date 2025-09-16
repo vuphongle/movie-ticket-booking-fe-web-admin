@@ -102,6 +102,8 @@ const cinema = {
   VIP_SEAT: "Ghế VIP",
   COUPLE_SEAT: "Ghế đôi",
   UNAVAILABLE_SEAT: "Không khả dụng",
+
+  SCREEN: "Màn hình",
   
   // Seat placeholders
   SELECT_SEAT_TYPE: "Chọn loại ghế",

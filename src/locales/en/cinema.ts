@@ -102,6 +102,8 @@ const cinema = {
   VIP_SEAT: "VIP Seat",
   COUPLE_SEAT: "Couple Seat",
   UNAVAILABLE_SEAT: "Unavailable",
+
+  SCREEN: "Screen",
   
   // Seat placeholders
   SELECT_SEAT_TYPE: "Select seat type",
