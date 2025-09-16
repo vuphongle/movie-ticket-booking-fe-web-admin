@@ -24,8 +24,8 @@ const menu = {
   TICKET_PRICE_MANAGEMENT: "Ticket Price Management",
   BASE_TICKET_PRICE: "Base Ticket Price",
 
-  COUPON_MANAGEMENT: "Promotion Management",
-  COUPON_LIST: "Promotion List",
+  COUPON_MANAGEMENT: "Coupon Management",
+  COUPON_LIST: "Coupon List",
 
   BLOG_MANAGEMENT: "Blog Management",
   ALL_BLOGS: "All Blogs",

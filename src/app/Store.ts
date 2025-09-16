@@ -6,6 +6,8 @@ import { cinemaApi } from "@/app/services/cinemas.service";
 import { auditoriumApi } from "@/app/services/auditorium.service";
 import { showtimesApi } from "@/app/services/showtimes.service";
 import { movieApi } from "@/app/services/movies.service";
+import { scheduleApi } from "@/app/services/schedules.service";
+import { couponApi } from "@/app/services/coupons.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 
@@ -18,6 +20,8 @@ export const Store = configureStore({
     [auditoriumApi.reducerPath]: auditoriumApi.reducer,
     [showtimesApi.reducerPath]: showtimesApi.reducer,
     [movieApi.reducerPath]: movieApi.reducer,
+    [scheduleApi.reducerPath]: scheduleApi.reducer,
+    [couponApi.reducerPath]: couponApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -27,6 +31,8 @@ export const Store = configureStore({
       auditoriumApi.middleware,
       showtimesApi.middleware,
       movieApi.middleware,
+      scheduleApi.middleware,
+      couponApi.middleware,
       checkStatusMiddleware,
       tokenMiddleware,
     ),

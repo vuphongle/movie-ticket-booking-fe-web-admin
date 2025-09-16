@@ -27,6 +27,7 @@ const common = {
   FORBIDDEN: "Forbidden",
 
   SEARCH: "Search",
+  SELECT_DATE: "Select Date",
 };
 
 export default common;

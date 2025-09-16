@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_ADMIN } from "../../data/constants";
 import type { RootState } from "../Store";
+import type { ShowtimeApiPayload, ShowtimeResponse } from "@/types/showtime.types";
 
 // Define a service using a base URL and expected endpoints
 const ENDPOINT = API_BASE_ADMIN;
@@ -20,7 +21,7 @@ export const showtimesApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        searchShowtimes: builder.query({
+        searchShowtimes: builder.query<ShowtimeResponse[], { cinemaId?: string; auditoriumId?: string; showDate?: string }>({
             query: ({ cinemaId, auditoriumId, showDate }) => {
                 const params = {
                     ...(cinemaId && { cinemaId }),
@@ -35,7 +36,7 @@ export const showtimesApi = createApi({
             },
             providesTags: ['Showtimes'],
         }),
-        createShowtimes: builder.mutation({
+        createShowtimes: builder.mutation<any, ShowtimeApiPayload>({
             query: (newShowtime) => ({
                 url: "showtimes",
                 method: "POST",
