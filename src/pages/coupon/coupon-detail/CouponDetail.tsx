@@ -54,8 +54,8 @@ const CouponDetail = () => {
           name: coupon.name || "",
           description: coupon.description || "",
           status: Boolean(coupon.status),
-          startAt: coupon.startAt ? dayjs(coupon.startAt) : null,
-          endAt: coupon.endAt ? dayjs(coupon.endAt) : null,
+          startDate: coupon.startDate ? dayjs(coupon.startDate) : null,
+          endDate: coupon.endDate ? dayjs(coupon.endDate) : null,
         });
       } catch {
         // Handle date parsing errors gracefully
@@ -64,8 +64,8 @@ const CouponDetail = () => {
           name: coupon.name || "",
           description: coupon.description || "",
           status: Boolean(coupon.status),
-          startAt: null,
-          endAt: null,
+          startDate: null,
+          endDate: null,
         });
       }
     }
@@ -96,8 +96,10 @@ const CouponDetail = () => {
   const handleUpdate = (values: any) => {
     const formattedValues = {
       ...values,
-      startAt: values.startAt ? values.startAt.format("YYYY-MM-DD") : null,
-      endAt: values.endAt ? values.endAt.format("YYYY-MM-DD") : null,
+      startDate: values.startDate
+        ? values.startDate.format("YYYY-MM-DD")
+        : null,
+      endDate: values.endDate ? values.endDate.format("YYYY-MM-DD") : null,
     };
 
     updateCoupon({
@@ -246,7 +248,7 @@ const CouponDetail = () => {
                 <Col span={12}>
                   <Form.Item
                     label="Ngày bắt đầu"
-                    name="startAt"
+                    name="startDate"
                     rules={[
                       {
                         required: true,
@@ -264,8 +266,8 @@ const CouponDetail = () => {
                 <Col span={12}>
                   <Form.Item
                     label="Ngày kết thúc"
-                    name="endAt"
-                    dependencies={["startAt"]}
+                    name="endDate"
+                    dependencies={["startDate"]}
                     rules={[
                       {
                         required: true,
@@ -275,9 +277,9 @@ const CouponDetail = () => {
                         validator: async (_rule, value) => {
                           if (
                             value &&
-                            getFieldValue("startAt") &&
+                            getFieldValue("startDate") &&
                             dayjs(value).isBefore(
-                              dayjs(getFieldValue("startAt"))
+                              dayjs(getFieldValue("startDate"))
                             )
                           ) {
                             return Promise.reject(

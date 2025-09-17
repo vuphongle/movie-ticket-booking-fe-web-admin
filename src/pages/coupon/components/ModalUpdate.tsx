@@ -46,8 +46,8 @@ const ModalUpdate = ({
           name: coupon.name,
           description: coupon.description,
           status: coupon.status,
-          startAt: coupon.startAt ? dayjs(coupon.startAt) : null,
-          endAt: coupon.endAt ? dayjs(coupon.endAt) : null,
+          startDate: coupon.startDate ? dayjs(coupon.startDate) : null,
+          endDate: coupon.endDate ? dayjs(coupon.endDate) : null,
         });
       } else {
         // Reset form for create
@@ -64,8 +64,8 @@ const ModalUpdate = ({
         name: values.name,
         description: values.description,
         status: values.status,
-        startAt: values.startAt ? values.startAt.toISOString() : null,
-        endAt: values.endAt ? values.endAt.toISOString() : null,
+        startDate: values.startDate ? values.startDate.toISOString() : null,
+        endDate: values.endDate ? values.endDate.toISOString() : null,
       };
 
       if (isEdit && coupon) {
@@ -92,7 +92,7 @@ const ModalUpdate = ({
 
   return (
     <Modal
-      title={isEdit ? "Chỉnh sửa coupon" : "Tạo coupon mới"}
+      title={isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới"}
       open={open}
       onCancel={handleCancel}
       onOk={() => form.submit()}
@@ -181,7 +181,7 @@ const ModalUpdate = ({
           <Col span={12}>
             <Form.Item
               label="Ngày bắt đầu"
-              name="startAt"
+              name="startDate"
               rules={[
                 { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
               ]}
@@ -197,17 +197,17 @@ const ModalUpdate = ({
           <Col span={12}>
             <Form.Item
               label="Ngày kết thúc"
-              name="endAt"
-              dependencies={["startAt"]}
+              name="endDate"
+              dependencies={["startDate"]}
               rules={[
                 { required: true, message: "Vui lòng chọn ngày kết thúc!" },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    const startAt = getFieldValue("startAt");
-                    if (!value || !startAt) {
+                    const startDate = getFieldValue("startDate");
+                    if (!value || !startDate) {
                       return Promise.resolve();
                     }
-                    if (value.isBefore(startAt)) {
+                    if (value.isBefore(startDate)) {
                       return Promise.reject(
                         new Error("Ngày kết thúc phải sau ngày bắt đầu!")
                       );

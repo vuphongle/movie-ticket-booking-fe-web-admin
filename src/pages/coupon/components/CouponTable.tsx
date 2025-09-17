@@ -11,12 +11,12 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
   // Computed classification logic (học từ ScheduleTable)
   const getCouponClassification = (record: Coupon): number => {
     const now = new Date();
-    const startAt = new Date(record.startAt);
-    const endAt = new Date(record.endAt);
+    const startDate = new Date(record.startDate);
+    const endDate = new Date(record.endDate);
 
     if (!record.status) return 0; // Disabled
-    if (now < startAt) return 1; // Upcoming
-    if (now >= startAt && now <= endAt) return 2; // Active
+    if (now < startDate) return 1; // Upcoming
+    if (now >= startDate && now <= endDate) return 2; // Active
     return 3; // Expired
   };
 
@@ -52,7 +52,7 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
       key: "timeWindow",
       width: 180,
       sorter: (a: Coupon, b: Coupon) =>
-        new Date(a.startAt).getTime() - new Date(b.startAt).getTime(),
+        new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       sortDirections: ["descend", "ascend"],
       render: (_: any, record: Coupon) => (
         <span style={{ fontSize: "12px" }}>{formatTimeWindow(record)}</span>

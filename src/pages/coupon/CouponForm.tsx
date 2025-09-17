@@ -71,7 +71,7 @@ const CouponForm = () => {
   const breadcrumb = [
     { label: "Quản lý khuyến mãi", href: "/admin/coupons" },
     {
-      label: isEdit ? "Chỉnh sửa coupon" : "Tạo coupon mới",
+      label: isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới",
       href: "#",
     },
   ];
@@ -84,8 +84,8 @@ const CouponForm = () => {
         name: couponData.name,
         description: couponData.description,
         status: couponData.status,
-        startAt: couponData.startAt ? dayjs(couponData.startAt) : null,
-        endAt: couponData.endAt ? dayjs(couponData.endAt) : null,
+        startDate: couponData.startDate ? dayjs(couponData.startDate) : null,
+        endDate: couponData.endDate ? dayjs(couponData.endDate) : null,
       });
     }
   }, [isEdit, couponData, form]);
@@ -98,8 +98,8 @@ const CouponForm = () => {
         name: values.name,
         description: values.description,
         status: values.status,
-        startAt: values.startAt ? values.startAt.toISOString() : null,
-        endAt: values.endAt ? values.endAt.toISOString() : null,
+        startDate: values.startDate ? values.startDate.toISOString() : null,
+        endDate: values.endDate ? values.endDate.toISOString() : null,
       };
 
       let result;
@@ -120,7 +120,7 @@ const CouponForm = () => {
 
         // Tạo coupon object từ result (API trả về Coupon, cần add derived fields)
         updatedCoupon = {
-          ...result, // Includes id, code, name, description, status, startAt, endAt, createdAt, updatedAt, createdBy, updatedBy
+          ...result, // Includes id, code, name, description, status, startDate, endDate, createdAt, updatedAt, createdBy, updatedBy
           // Add derived fields for display
           activeStatus: result.status
             ? ("ACTIVE" as const)
@@ -129,8 +129,8 @@ const CouponForm = () => {
           totalDetailsCount: 0,
           aggregateUsedCount: 0,
           timeWindow:
-            result.startAt && result.endAt
-              ? `${new Date(result.startAt).toLocaleDateString()} - ${new Date(result.endAt).toLocaleDateString()}`
+            result.startDate && result.endDate
+              ? `${new Date(result.startDate).toLocaleDateString()} - ${new Date(result.endDate).toLocaleDateString()}`
               : "",
         };
       }
@@ -186,7 +186,7 @@ const CouponForm = () => {
   return (
     <>
       <Helmet>
-        <title>{isEdit ? "Chỉnh sửa coupon" : "Tạo coupon mới"}</title>
+        <title>{isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới"}</title>
       </Helmet>
 
       <AppBreadCrumb items={breadcrumb} />
@@ -206,7 +206,7 @@ const CouponForm = () => {
                 </Button>
                 <Divider type="vertical" />
                 <Title level={4} style={{ margin: 0 }}>
-                  {isEdit ? "Chỉnh sửa coupon" : "Tạo coupon mới"}
+                  {isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới"}
                 </Title>
               </Space>
             </Col>
@@ -254,19 +254,25 @@ const CouponForm = () => {
                 <Title level={5}>Thông tin cơ bản</Title>
 
                 <Form.Item
-                  label="Mã coupon"
+                  label="Mã khuyến mại"
                   name="code"
                   rules={[
-                    { required: true, message: "Vui lòng nhập mã coupon!" },
-                    { min: 3, message: "Mã coupon phải có ít nhất 3 ký tự!" },
-                    { max: 50, message: "Mã coupon không được quá 50 ký tự!" },
+                    { required: true, message: "Vui lòng nhập mã khuyến mại!" },
                     {
-                      pattern: /^[A-Z0-9_-]+$/,
+                      min: 3,
+                      message: "Mã khuyến mại phải có ít nhất 3 ký tự!",
+                    },
+                    {
+                      max: 50,
+                      message: "Mã khuyến mại không được quá 50 ký tự!",
+                    },
+                    {
+                      pattern: /^[a-zA-Z0-9_-]+$/,
                       message:
                         "Mã chỉ chứa chữ hoa, số, dấu gạch dưới và gạch ngang!",
                     },
                   ]}
-                  extra="Mã duy nhất để xác định coupon"
+                  extra="Mã duy nhất để xác định khuyến mại"
                 >
                   <Input
                     placeholder="VD: SUMMER2024"
@@ -328,12 +334,12 @@ const CouponForm = () => {
                     placeholder="Chọn trạng thái"
                     options={[
                       {
-                        label: "🟢 Kích hoạt",
+                        label: "Kích hoạt",
                         value: true,
                         extra: "Hiển thị và có thể sử dụng",
                       },
                       {
-                        label: "🔒 Ẩn",
+                        label: "Ẩn",
                         value: false,
                         extra: "Không hiển thị cho khách hàng",
                       },
@@ -345,7 +351,7 @@ const CouponForm = () => {
                   <Col span={12}>
                     <Form.Item
                       label="Ngày bắt đầu"
-                      name="startAt"
+                      name="startDate"
                       rules={[
                         {
                           required: true,
@@ -364,8 +370,8 @@ const CouponForm = () => {
                   <Col span={12}>
                     <Form.Item
                       label="Ngày kết thúc"
-                      name="endAt"
-                      dependencies={["startAt"]}
+                      name="endDate"
+                      dependencies={["startDate"]}
                       rules={[
                         {
                           required: true,
@@ -373,11 +379,11 @@ const CouponForm = () => {
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
-                            const startAt = getFieldValue("startAt");
-                            if (!value || !startAt) {
+                            const startDate = getFieldValue("startDate");
+                            if (!value || !startDate) {
                               return Promise.resolve();
                             }
-                            if (value.isBefore(startAt)) {
+                            if (value.isBefore(startDate)) {
                               return Promise.reject(
                                 new Error(
                                   "Ngày kết thúc phải sau ngày bắt đầu!"
@@ -403,8 +409,8 @@ const CouponForm = () => {
                   message="Bước tiếp theo"
                   description={
                     isEdit
-                      ? "Sau khi cập nhật, bạn có thể quản lý thông tin chi tiết coupon."
-                      : "Sau khi tạo coupon, bạn sẽ được chuyển đến trang chi tiết để quản lý thông tin."
+                      ? "Sau khi cập nhật, bạn có thể quản lý thông tin chi tiết khuyến mại."
+                      : "Sau khi tạo khuyến mại, bạn sẽ được chuyển đến trang chi tiết để quản lý thông tin."
                   }
                   type="info"
                   showIcon

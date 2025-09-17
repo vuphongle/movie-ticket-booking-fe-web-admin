@@ -16,14 +16,14 @@ export const getActiveStatus = (coupon: Coupon): ActiveStatus => {
     return 'HIDDEN';
   }
   
-  const startAt = new Date(coupon.startAt);
-  const endAt = new Date(coupon.endAt);
-  
-  if (now > endAt) {
+  const startDate = new Date(coupon.startDate);
+  const endDate = new Date(coupon.endDate);
+
+  if (now > endDate) {
     return 'EXPIRED';
   }
-  
-  if (now < startAt) {
+
+  if (now < startDate) {
     return 'HIDDEN'; // Not yet started
   }
   
@@ -35,8 +35,8 @@ export const getActiveStatus = (coupon: Coupon): ActiveStatus => {
  */
 export const formatTimeWindow = (coupon: Coupon): string => {
   try {
-    const startAt = new Date(coupon.startAt);
-    const endAt = new Date(coupon.endAt);
+    const startDate = new Date(coupon.startDate);
+    const endDate = new Date(coupon.endDate);
     
     const formatter = new Intl.DateTimeFormat('vi-VN', {
       day: '2-digit',
@@ -44,7 +44,7 @@ export const formatTimeWindow = (coupon: Coupon): string => {
       year: 'numeric'
     });
     
-    return `${formatter.format(startAt)} - ${formatter.format(endAt)}`;
+    return `${formatter.format(startDate)} - ${formatter.format(endDate)}`;
   } catch {
     return 'N/A';
   }

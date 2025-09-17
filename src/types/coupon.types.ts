@@ -24,8 +24,8 @@ export interface Coupon {
   name: string;
   description?: string;
   status: boolean;
-  startAt: string; // ISO datetime string
-  endAt: string; // ISO datetime string
+  startDate: string; // ISO datetime string
+  endDate: string; // ISO datetime string
   createdAt?: string;
   updatedAt?: string;
 }
@@ -77,8 +77,8 @@ export interface UpsertCouponRequest {
   name: string;
   description?: string;
   status: boolean;
-  startAt: string;
-  endAt: string;
+  startDate: string;
+  endDate: string;
 }
 
 export interface UpsertCouponDetailRequest {
