@@ -138,6 +138,11 @@ export const getMenuData = (t: (key: string) => string) => [
         label: t("COUPON_LIST"),
         url: "/admin/coupons",
       },
+      {
+        id: 3002,
+        label: t("CREATE_COUPON"),
+        url: "/admin/coupons/create",
+      },
     ],
   },
   {

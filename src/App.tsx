@@ -14,6 +14,8 @@ import AuthorizeRoutes from "@/components/private/AuthorizeRoutes";
 import ShowTimesList from "@/pages/showtimes/ShowTimesList";
 import ScheduleList from "@pages/schedule/ScheduleList";
 import CouponList from "@pages/coupon/CouponList";
+import CouponForm from "@pages/coupon/CouponForm";
+import CouponDetail from "@pages/coupon/coupon-detail/CouponDetail";
 import MovieList from "@/pages/movie/movie-list/MovieList";
 import MovieDetail from "@/pages/movie/movie-detail/MovieDetail";
 import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
@@ -55,7 +57,12 @@ function App() {
             </Route>
             <Route path="showtimes" element={<ShowTimesList />} />
             <Route path="schedules" element={<ScheduleList />} />
-            <Route path="coupons" element={<CouponList />} />
+            <Route path="coupons">
+              <Route index element={<CouponList />} />
+              <Route path="create" element={<CouponForm />} />
+              <Route path=":id/edit" element={<CouponForm />} />
+              <Route path=":couponId/detail" element={<CouponDetail />} />
+            </Route>
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="additional-services">
               <Route index element={<AdditionalServiceList />} />

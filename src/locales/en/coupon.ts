@@ -10,10 +10,13 @@ const coupon = {
   COUPON_DELETE_BTN: "Delete",
   COUPON_REFRESH_BTN: "Refresh",
   COUPON_CANCEL_BTN: "Cancel",
+  ADD_COUPON_DETAIL: "Add Detail",
   
   // Modal titles
   COUPON_CREATE_MODAL_TITLE: "Create Coupon",
   COUPON_UPDATE_MODAL_TITLE: "Update Coupon",
+  CREATE_COUPON_DETAIL: "Create Coupon Detail",
+  EDIT_COUPON_DETAIL: "Edit Coupon Detail",
   
   // Form labels
   COUPON_CODE_LABEL: "Coupon Code",
@@ -63,6 +66,8 @@ const coupon = {
   COUPON_CREATE_SUCCESS: "Coupon created successfully!",
   COUPON_UPDATE_SUCCESS: "Coupon updated successfully!",
   COUPON_DELETE_SUCCESS: "Coupon deleted successfully!",
+  CREATE_COUPON_DETAIL_SUCCESS: "Coupon detail created successfully!",
+  UPDATE_COUPON_DETAIL_SUCCESS: "Coupon detail updated successfully!",
   
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Are you sure you want to delete this coupon?",
