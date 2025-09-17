@@ -6,6 +6,7 @@ import {
   useUpdateCouponDetailMutation,
 } from "@/app/services/coupons.service";
 import type { CouponDetail } from "@/types";
+import dayjs from "dayjs";
 
 interface CouponDetailTableProps {
   couponId: number;
@@ -24,6 +25,18 @@ const CouponDetailTable = ({
     useDeleteCouponDetailMutation();
   const [updateDetail, { isLoading: isUpdating }] =
     useUpdateCouponDetailMutation();
+
+  // Check if any data has certain fields to decide whether to show columns
+  const hasConditions = data.some(
+    (item) =>
+      item.minOrderTotal || item.minQuantity || item.limitQuantityApplied
+  );
+  const hasNotes = data.some((item) => item.notes);
+  const hasUsageLimit = data.some((item) => item.detailUsageLimit);
+  const hasMultipleStrategies = data.some(
+    (item) =>
+      item.selectionStrategy && item.selectionStrategy !== "HIGHEST_PRICE_FIRST"
+  );
 
   const getBenefitText = (detail: CouponDetail) => {
     switch (detail.benefitType) {
@@ -83,6 +96,16 @@ const CouponDetailTable = ({
     return conditions.length > 0 ? conditions.join("\n") : "-";
   };
 
+  const getDateRangeText = (detail: CouponDetail) => {
+    const startDate = dayjs(detail.startDate).format("DD/MM/YYYY");
+    const endDate = dayjs(detail.endDate).format("DD/MM/YYYY");
+
+    if (startDate === endDate) {
+      return startDate;
+    }
+    return `${startDate}\n${endDate}`;
+  };
+
   const handleToggleEnabled = async (detail: CouponDetail) => {
     try {
       await updateDetail({
@@ -103,12 +126,14 @@ const CouponDetailTable = ({
         selectionStrategy: detail.selectionStrategy,
         notes: detail.notes,
         targetRefId: detail.targetRefId,
+        startDate: detail.startDate,
+        endDate: detail.endDate,
       }).unwrap();
 
       message.success(
         detail.enabled
-          ? "Đã tắt coupon detail thành công"
-          : "Đã bật coupon detail thành công"
+          ? "Đã tắt khuyến mại detail thành công"
+          : "Đã bật khuyến mại detail thành công"
       );
     } catch (error: any) {
       message.error(error.data?.message || "Lỗi khi cập nhật trạng thái");
@@ -118,7 +143,7 @@ const CouponDetailTable = ({
   const handleDelete = (detail: CouponDetail) => {
     Modal.confirm({
       title: "Xác nhận xóa",
-      content: `Bạn có chắc chắn muốn xóa chi tiết coupon này?`,
+      content: `Bạn có chắc chắn muốn xóa chi tiết khuyến mại này?`,
       okText: "Xóa",
       okType: "danger",
       cancelText: "Hủy",
@@ -128,12 +153,12 @@ const CouponDetailTable = ({
           deleteDetail(detail.id)
             .unwrap()
             .then(() => {
-              message.success("Xóa chi tiết coupon thành công");
+              message.success("Xóa chi tiết khuyến mại thành công");
               resolve();
             })
             .catch((error: any) => {
               message.error(
-                error.data?.message || "Lỗi khi xóa chi tiết coupon"
+                error.data?.message || "Lỗi khi xóa chi tiết khuyến mại"
               );
               reject();
             });
@@ -171,64 +196,100 @@ const CouponDetailTable = ({
       title: "Đối tượng áp dụng",
       dataIndex: "targetType",
       key: "targetType",
-      width: 180,
+      width: 150,
       render: (_, record: CouponDetail) => getTargetText(record),
     },
     {
       title: "Lợi ích",
       dataIndex: "benefitType",
       key: "benefitType",
-      width: 220,
+      width: 200,
       render: (_, record: CouponDetail) => getBenefitText(record),
     },
+    // Chỉ hiển thị cột Điều kiện nếu có dữ liệu
+    ...(hasConditions
+      ? [
+          {
+            title: "Điều kiện",
+            key: "conditions",
+            width: 180,
+            render: (_value: any, record: CouponDetail) => (
+              <div style={{ fontSize: "12px", whiteSpace: "pre-line" }}>
+                {getConditionsText(record)}
+              </div>
+            ),
+          },
+        ]
+      : []),
+    // Chỉ hiển thị cột Sử dụng nếu có usage limit hoặc đã được sử dụng
+    ...(hasUsageLimit || data.some((item) => item.detailUsedCount > 0)
+      ? [
+          {
+            title: "Sử dụng",
+            dataIndex: "detailUsedCount",
+            key: "detailUsedCount",
+            width: 100,
+            render: (count: number, record: CouponDetail) => (
+              <span>
+                <strong>{count}</strong>
+                {record.detailUsageLimit
+                  ? ` / ${record.detailUsageLimit}`
+                  : " / ∞"}
+              </span>
+            ),
+          },
+        ]
+      : []),
+    // Chỉ hiển thị cột Chiến lược nếu có nhiều strategy khác nhau
+    ...(hasMultipleStrategies
+      ? [
+          {
+            title: "Chiến lược",
+            dataIndex: "selectionStrategy",
+            key: "selectionStrategy",
+            width: 120,
+            render: (strategy: string) => {
+              const strategyMap = {
+                HIGHEST_PRICE_FIRST: "Giá cao trước",
+                LOWEST_PRICE_FIRST: "Giá thấp trước",
+                FIFO: "Theo thứ tự",
+              };
+              return (
+                strategyMap[strategy as keyof typeof strategyMap] || strategy
+              );
+            },
+          },
+        ]
+      : []),
+    // Always show date range column (now required)
     {
-      title: "Điều kiện",
-      key: "conditions",
-      width: 200,
-      render: (_, record: CouponDetail) => (
+      title: "Thời gian hiệu lực",
+      key: "dateRange",
+      width: 150,
+      render: (_value: any, record: CouponDetail) => (
         <div style={{ fontSize: "12px", whiteSpace: "pre-line" }}>
-          {getConditionsText(record)}
+          {getDateRangeText(record)}
         </div>
       ),
     },
-    {
-      title: "Sử dụng",
-      dataIndex: "detailUsedCount",
-      key: "detailUsedCount",
-      width: 100,
-      render: (count: number, record: CouponDetail) => (
-        <span>
-          <strong>{count}</strong>
-          {record.detailUsageLimit ? ` / ${record.detailUsageLimit}` : " / ∞"}
-        </span>
-      ),
-    },
-    {
-      title: "Chiến lược",
-      dataIndex: "selectionStrategy",
-      key: "selectionStrategy",
-      width: 120,
-      render: (strategy: string) => {
-        const strategyMap = {
-          HIGHEST_PRICE_FIRST: "Giá cao trước",
-          LOWEST_PRICE_FIRST: "Giá thấp trước",
-          FIFO: "Theo thứ tự",
-        };
-        return strategyMap[strategy as keyof typeof strategyMap] || strategy;
-      },
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "notes",
-      key: "notes",
-      ellipsis: true,
-      render: (notes: string) => notes || "-",
-    },
+    // Chỉ hiển thị cột Ghi chú nếu có dữ liệu
+    ...(hasNotes
+      ? [
+          {
+            title: "Ghi chú",
+            dataIndex: "notes",
+            key: "notes",
+            width: 150,
+            ellipsis: true,
+            render: (notes: string) => notes || "-",
+          },
+        ]
+      : []),
     {
       title: "Thao tác",
       key: "actions",
       width: 120,
-      fixed: "right",
+      fixed: "right" as const,
       render: (_: any, record: CouponDetail) => (
         <Space size="small">
           <Button
@@ -257,7 +318,7 @@ const CouponDetailTable = ({
       rowKey={(record) => record.id}
       loading={loading}
       size="small"
-      scroll={{ x: 1200 }}
+      scroll={{ x: "max-content" }}
       pagination={{
         showSizeChanger: true,
         showQuickJumper: true,

@@ -121,7 +121,7 @@ const CouponDetail = () => {
     Modal.confirm({
       title: "Xác nhận xóa",
       content:
-        "Bạn có chắc chắn muốn xóa coupon này? Hành động này không thể hoàn tác.",
+        "Bạn có chắc chắn muốn xóa khuyến mại này? Hành động này không thể hoàn tác.",
       okText: "Xóa",
       okType: "danger",
       cancelText: "Hủy",
@@ -129,14 +129,14 @@ const CouponDetail = () => {
         deleteCoupon(parseInt(couponId!))
           .unwrap()
           .then((_data) => {
-            message.success("Xóa coupon thành công!");
+            message.success("Xóa khuyến mại thành công!");
             setTimeout(() => {
               navigate("/admin/coupons");
             }, 1500);
           })
           .catch((error) => {
             message.error(
-              error.data?.message || "Có lỗi xảy ra khi xóa coupon"
+              error.data?.message || "Có lỗi xảy ra khi xóa khuyến mại"
             );
           });
       },
@@ -152,7 +152,7 @@ const CouponDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{coupon?.name || "Chi tiết coupon"}</title>
+        <title>{coupon?.name || "Chi tiết khuyến mại"}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -191,7 +191,7 @@ const CouponDetail = () => {
             onClick={handleDelete}
             loading={isLoadingDeleteCoupon}
           >
-            Xóa coupon
+            Xóa khuyến mại
           </Button>
         </Flex>
 
@@ -304,7 +304,7 @@ const CouponDetail = () => {
         </Form>
       </div>
 
-      <CouponDetailList couponId={parseInt(couponId!)} />
+      <CouponDetailList couponId={parseInt(couponId!)} coupon={coupon} />
     </>
   );
 };

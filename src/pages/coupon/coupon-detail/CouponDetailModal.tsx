@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   message,
+  DatePicker,
 } from "antd";
 import { useEffect } from "react";
 import {
@@ -15,13 +16,20 @@ import {
   useUpdateCouponDetailMutation,
 } from "@/app/services/coupons.service";
 import { useGetSeatTypeOptionsQuery } from "@/app/services/seatType.service";
-import type { CouponDetail } from "@/types";
+import type { CouponDetail, Coupon } from "@/types";
+import dayjs from "dayjs";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 interface CouponDetailModalProps {
   couponId: number;
+  coupon?: Coupon; // Add coupon prop for default dates
   detail?: CouponDetail;
   open: boolean;
   onCancel: () => void;
@@ -30,6 +38,7 @@ interface CouponDetailModalProps {
 
 const CouponDetailModal = ({
   couponId,
+  coupon,
   detail,
   open,
   onCancel,
@@ -48,27 +57,53 @@ const CouponDetailModal = ({
     useGetSeatTypeOptionsQuery();
   useEffect(() => {
     if (detail) {
-      form.setFieldsValue(detail);
+      // Convert date strings to dayjs objects for DatePicker
+      const formValues = {
+        ...detail,
+        startDate: detail.startDate ? dayjs(detail.startDate) : undefined,
+        endDate: detail.endDate ? dayjs(detail.endDate) : undefined,
+      };
+      form.setFieldsValue(formValues);
     } else {
+      // Set default values for new detail, using parent coupon dates
+      const defaultValues = {
+        enabled: true,
+        linePriority: 1,
+        selectionStrategy: "HIGHEST_PRICE_FIRST",
+        startDate: coupon?.startDate ? dayjs(coupon.startDate) : undefined,
+        endDate: coupon?.endDate ? dayjs(coupon.endDate) : undefined,
+      };
       form.resetFields();
+      form.setFieldsValue(defaultValues);
     }
-  }, [detail, form]);
+  }, [detail, form, coupon]);
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
 
+      // Convert dayjs objects to date-only strings for API (preserving local timezone)
+      const submitValues = {
+        ...values,
+        startDate: values.startDate
+          ? values.startDate.startOf("day").toISOString()
+          : undefined,
+        endDate: values.endDate
+          ? values.endDate.endOf("day").toISOString()
+          : undefined,
+      };
+
       if (isEditing) {
         await updateDetail({
           couponId,
           detailId: detail!.id,
-          ...values,
+          ...submitValues,
         }).unwrap();
         message.success("Cập nhật chi tiết coupon thành công!");
       } else {
         await createDetail({
           couponId,
-          ...values,
+          ...submitValues,
         }).unwrap();
         message.success("Tạo chi tiết coupon thành công!");
       }
@@ -324,6 +359,177 @@ const CouponDetailModal = ({
         <Form.Item label="Ghi chú" name="notes">
           <TextArea rows={3} placeholder="Nhập ghi chú..." />
         </Form.Item>
+
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
+              label="Ngày bắt đầu"
+              name="startDate"
+              tooltip="Ngày bắt đầu hiệu lực của chi tiết coupon này"
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || !dayjs.isDayjs(value)) {
+                      return Promise.resolve();
+                    }
+
+                    // Validate against parent coupon start date
+                    if (coupon?.startDate) {
+                      const parentStartDate = dayjs(coupon.startDate);
+                      if (value.isBefore(parentStartDate, "day")) {
+                        return Promise.reject(
+                          new Error(
+                            `Ngày bắt đầu không thể trước ngày bắt đầu của coupon cha (${parentStartDate.format("DD/MM/YYYY")})`
+                          )
+                        );
+                      }
+                    }
+
+                    // Validate against parent coupon end date
+                    if (coupon?.endDate) {
+                      const parentEndDate = dayjs(coupon.endDate);
+                      if (value.isAfter(parentEndDate, "day")) {
+                        return Promise.reject(
+                          new Error(
+                            `Ngày bắt đầu không thể sau ngày kết thúc của coupon cha (${parentEndDate.format("DD/MM/YYYY")})`
+                          )
+                        );
+                      }
+                    }
+
+                    // Validate against form end date
+                    const endDate = getFieldValue("endDate");
+                    if (
+                      endDate &&
+                      dayjs.isDayjs(endDate) &&
+                      value.isAfter(endDate, "day")
+                    ) {
+                      return Promise.reject(
+                        new Error(
+                          "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc!"
+                        )
+                      );
+                    }
+
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <DatePicker
+                style={{ width: "100%" }}
+                placeholder="Chọn ngày bắt đầu"
+                format="DD/MM/YYYY"
+                disabledDate={(current) => {
+                  if (!current) return false;
+
+                  // Disable dates before parent coupon start date
+                  if (
+                    coupon?.startDate &&
+                    current.isBefore(dayjs(coupon.startDate), "day")
+                  ) {
+                    return true;
+                  }
+
+                  // Disable dates after parent coupon end date
+                  if (
+                    coupon?.endDate &&
+                    current.isAfter(dayjs(coupon.endDate), "day")
+                  ) {
+                    return true;
+                  }
+
+                  return false;
+                }}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Ngày kết thúc"
+              name="endDate"
+              tooltip="Ngày kết thúc hiệu lực của chi tiết coupon này"
+              rules={[
+                { required: true, message: "Vui lòng chọn ngày kết thúc!" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || !dayjs.isDayjs(value)) {
+                      return Promise.resolve();
+                    }
+
+                    // Validate against parent coupon start date
+                    if (coupon?.startDate) {
+                      const parentStartDate = dayjs(coupon.startDate);
+                      if (value.isBefore(parentStartDate, "day")) {
+                        return Promise.reject(
+                          new Error(
+                            `Ngày kết thúc không thể trước ngày bắt đầu của coupon cha (${parentStartDate.format("DD/MM/YYYY")})`
+                          )
+                        );
+                      }
+                    }
+
+                    // Validate against parent coupon end date
+                    if (coupon?.endDate) {
+                      const parentEndDate = dayjs(coupon.endDate);
+                      if (value.isAfter(parentEndDate, "day")) {
+                        return Promise.reject(
+                          new Error(
+                            `Ngày kết thúc không thể sau ngày kết thúc của coupon cha (${parentEndDate.format("DD/MM/YYYY")})`
+                          )
+                        );
+                      }
+                    }
+
+                    // Validate against form start date
+                    const startDate = getFieldValue("startDate");
+                    if (
+                      startDate &&
+                      dayjs.isDayjs(startDate) &&
+                      value.isBefore(startDate, "day")
+                    ) {
+                      return Promise.reject(
+                        new Error(
+                          "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu!"
+                        )
+                      );
+                    }
+
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+            >
+              <DatePicker
+                style={{ width: "100%" }}
+                placeholder="Chọn ngày kết thúc"
+                format="DD/MM/YYYY"
+                disabledDate={(current) => {
+                  if (!current) return false;
+
+                  // Disable dates before parent coupon start date
+                  if (
+                    coupon?.startDate &&
+                    current.isBefore(dayjs(coupon.startDate), "day")
+                  ) {
+                    return true;
+                  }
+
+                  // Disable dates after parent coupon end date
+                  if (
+                    coupon?.endDate &&
+                    current.isAfter(dayjs(coupon.endDate), "day")
+                  ) {
+                    return true;
+                  }
+
+                  return false;
+                }}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );

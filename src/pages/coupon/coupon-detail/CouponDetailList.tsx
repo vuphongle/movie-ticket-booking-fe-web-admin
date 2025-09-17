@@ -4,13 +4,14 @@ import { useState } from "react";
 import { useGetCouponDetailsQuery } from "@/app/services/coupons.service";
 import CouponDetailTable from "./CouponDetailTable";
 import CouponDetailModal from "./CouponDetailModal";
-import type { CouponDetail } from "@/types";
+import type { CouponDetail, Coupon } from "@/types";
 
 interface CouponDetailListProps {
   couponId: number;
+  coupon?: Coupon; // Add coupon prop
 }
 
-const CouponDetailList = ({ couponId }: CouponDetailListProps) => {
+const CouponDetailList = ({ couponId, coupon }: CouponDetailListProps) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -70,6 +71,7 @@ const CouponDetailList = ({ couponId }: CouponDetailListProps) => {
       {openModal && (
         <CouponDetailModal
           couponId={couponId}
+          coupon={coupon}
           detail={editingDetail}
           open={openModal}
           onCancel={handleCloseModal}

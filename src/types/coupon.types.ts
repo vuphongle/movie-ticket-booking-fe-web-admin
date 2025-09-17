@@ -59,6 +59,10 @@ export interface CouponDetail {
   linePriority: number;
   selectionStrategy: SelectionStrategy;
   
+  // Date range (required)
+  startDate: string; // ISO datetime string - required
+  endDate: string; // ISO datetime string - required
+  
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -105,6 +109,10 @@ export interface UpsertCouponDetailRequest {
   // Priority & Selection
   linePriority: number;
   selectionStrategy?: SelectionStrategy;
+  
+  // Date range (required)
+  startDate: string; // ISO datetime string - required
+  endDate: string; // ISO datetime string - required
   
   notes?: string;
 }
