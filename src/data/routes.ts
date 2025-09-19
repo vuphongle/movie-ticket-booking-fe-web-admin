@@ -13,6 +13,7 @@ import {
   TeamOutlined,
   UserOutlined,
   TrophyOutlined,
+  ShoppingOutlined,
 } from "@ant-design/icons";
 
 export const getMenuData = (t: (key: string) => string) => [
@@ -49,12 +50,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 71,
         label: t("CINEMA_LIST"),
         url: "/admin/cinemas",
-      },
-      {
-        id: 72,
-        label: t("CREATE_CINEMA"),
-        url: "/admin/cinemas/create",
-      },
+      }
     ],
   },
   {
@@ -67,12 +63,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 81,
         label: t("MOVIE_LIST"),
         url: "/admin/movies",
-      },
-      {
-        id: 82,
-        label: t("CREATE_MOVIE"),
-        url: "/admin/movies/create",
-      },
+      }
     ],
   },
   {
@@ -156,11 +147,6 @@ export const getMenuData = (t: (key: string) => string) => [
         label: t("MY_BLOGS"),
         url: "/admin/blogs/own-blogs",
       },
-      {
-        id: 23,
-        label: t("CREATE_BLOG"),
-        url: "/admin/blogs/create",
-      },
     ],
   },
   {
@@ -173,12 +159,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 31,
         label: t("USER_LIST"),
         url: "/admin/users",
-      },
-      {
-        id: 32,
-        label: t("CREATE_USER"),
-        url: "/admin/users/create",
-      },
+      }
     ],
   },
   {
@@ -217,12 +198,20 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 61,
         label: t("ADDITIONAL_SERVICE_LIST"),
         url: "/admin/additional-services",
-      },
+      }
+    ],
+  },
+  {
+    id: 700,
+    label: t("PRODUCT_MANAGEMENT"),
+    icon: ShoppingOutlined,
+    url: "/admin/products",
+    subs: [
       {
-        id: 62,
-        label: t("CREATE_ADDITIONAL_SERVICE"),
-        url: "/admin/additional-services/create",
-      },
+        id: 7001,
+        label: t("PRODUCT_LIST"),
+        url: "/admin/products",
+      }
     ],
   },
   {
@@ -236,11 +225,6 @@ export const getMenuData = (t: (key: string) => string) => [
         label: t("DIRECTOR_LIST"),
         url: "/admin/directors",
       },
-      {
-        id: 5002,
-        label: t("CREATE_DIRECTOR"),
-        url: "/admin/directors/create",
-      },
     ],
   },
   {
@@ -253,11 +237,6 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 6001,
         label: t("ACTOR_LIST"),
         url: "/admin/actors",
-      },
-      {
-        id: 6002,
-        label: t("CREATE_ACTOR"),
-        url: "/admin/actors/create",
       },
     ],
   },

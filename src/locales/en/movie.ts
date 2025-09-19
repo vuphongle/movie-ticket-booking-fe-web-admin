@@ -10,13 +10,7 @@ const movie = {
   CREATE_MOVIE: "Create Movie",
   UPDATE_MOVIE: "Update",
   DELETE_MOVIE: "Delete Movie",
-  BACK: "Back",
-  REFRESH: "Refresh",
   CHANGE_POSTER: "Change Movie Poster",
-  SELECT_IMAGE: "Select Image",
-  UPLOAD_IMAGE: "Upload Image",
-  DELETE_IMAGE: "Delete Image",
-  CHOOSE_IMAGE: "Select your image",
 
   // Form labels
   MOVIE_NAME: "Movie Name",
@@ -65,8 +59,7 @@ const movie = {
   TIME: "Time",
 
   // Status values
-  DRAFT: "Draft",
-  PUBLIC: "Public",
+  COMING_SOON: "Coming Soon",
 
   // Translation options
   SUBTITLING: "Subtitles",
@@ -100,7 +93,6 @@ const movie = {
   // Confirm messages
   DELETE_MOVIE_CONFIRM: "Are you sure you want to delete this movie?",
   DELETE_REVIEW_CONFIRM: "Are you sure you want to delete this review?",
-  ACTION_CANNOT_UNDONE: "This action cannot be undone!",
 
   // Review form
   UPDATE_REVIEW: "Update Review",
@@ -110,7 +102,6 @@ const movie = {
   REVIEW_CONTENT_REQUIRED: "Review content is required!",
   ENTER_RATING: "Enter rating",
   ENTER_REVIEW_CONTENT: "Enter review content",
-  UPDATE: "Update",
 
   // Other messages
   MOVIE_NOT_FOUND: "Movie not found",

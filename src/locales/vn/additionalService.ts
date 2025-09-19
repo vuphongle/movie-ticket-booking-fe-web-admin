@@ -8,13 +8,7 @@ const additionalService = {
   CREATE_ADDITIONAL_SERVICE: "Tạo combo-nước",
   UPDATE_ADDITIONAL_SERVICE: "Cập nhật",
   DELETE_ADDITIONAL_SERVICE: "Xóa combo-nước",
-  BACK: "Quay lại",
-  REFRESH: "Refresh",
   CHANGE_THUMBNAIL: "Thay đổi ảnh combo-nước",
-  SELECT_IMAGE: "Chọn ảnh",
-  UPLOAD_IMAGE: "Tải ảnh lên",
-  DELETE_IMAGE: "Xóa ảnh",
-  CHOOSE_IMAGE: "Chọn ảnh của bạn",
 
   // Form labels
   SERVICE_NAME: "Tên combo-nước",
@@ -37,8 +31,8 @@ const additionalService = {
   CREATED_AT: "Ngày tạo",
 
   // Status values
-  DRAFT: "Nháp",
-  PUBLIC: "Công khai",
+  AVAILABLE: "Có sẵn",
+  UNAVAILABLE: "Không có sẵn",
 
   // Validation messages
   SERVICE_NAME_REQUIRED: "Tên không được để trống!",

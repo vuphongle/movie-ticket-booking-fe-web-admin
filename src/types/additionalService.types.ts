@@ -17,10 +17,10 @@ export interface AdditionalServiceItem {
   id: string;
   productId: number;
   quantity: number;
-  product?: Product;
+  product?: ProductItem;
 }
 
-export interface Product {
+export interface ProductItem {
   id: number;
   sku: string;
   name: string;

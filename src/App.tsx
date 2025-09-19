@@ -7,6 +7,9 @@ import {
   RevenueByMovie,
   ForgotPassword,
   ChangePassword,
+  ProductList,
+  ProductCreate,
+  ProductDetail,
 } from "@/pages/index";
 import AppLayout from "@/components/layout/AppLayout";
 import PrivateRoutes from "@/components/private/PrivateRoutes";
@@ -71,6 +74,11 @@ function App() {
                 element={<AdditionalServiceDetail />}
               />
               <Route path="create" element={<AdditionalServiceCreate />} />
+            </Route>
+            <Route path="products">
+              <Route index element={<ProductList />} />
+              <Route path=":productId/detail" element={<ProductDetail />} />
+              <Route path="create" element={<ProductCreate />} />
             </Route>
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />

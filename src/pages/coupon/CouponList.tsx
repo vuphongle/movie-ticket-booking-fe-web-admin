@@ -25,12 +25,14 @@ import CouponTable from "./components/CouponTable";
 import ModalUpdate from "./components/ModalUpdate";
 import type { CouponFilter } from "@/types";
 import { getActiveStatus } from "../../utils/couponUtils";
+import { useTranslation } from "react-i18next";
 
 const CouponList = () => {
   const navigate = useNavigate();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const { t } = useTranslation();
 
   const { data, isLoading: isFetchingCoupons, refetch } = useGetCouponsQuery();
 
@@ -122,11 +124,13 @@ const CouponList = () => {
                 Tạo khuyến mãi
               </Button>
               <Button
+                style={{ backgroundColor: "rgb(0, 192, 239)" }}
+                type="primary"
                 icon={<ReloadOutlined />}
                 onClick={handleRefresh}
                 loading={isFetchingCoupons}
               >
-                Làm mới
+                {t("REFRESH")}
               </Button>
             </Space>
           </Col>

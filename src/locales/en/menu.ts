@@ -53,5 +53,9 @@ const menu = {
   ACTOR_MANAGEMENT: "Actor Management",
   ACTOR_LIST: "Actor List",
   CREATE_ACTOR: "Create Actor",
+
+  PRODUCT_MANAGEMENT: "Product Management",
+  PRODUCT_LIST: "Product List",
+  CREATE_PRODUCT: "Create Product",
 };
 export default menu;

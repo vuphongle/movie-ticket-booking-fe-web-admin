@@ -13,9 +13,17 @@ const CinemaList = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const { data, isLoading: isFetchingCinemas } = useGetCinemasQuery({});
+  const {
+    data,
+    isLoading: isFetchingCinemas,
+    refetch,
+  } = useGetCinemasQuery({});
 
   const breadcrumb = [{ label: t("CINEMA_LIST"), href: "/admin/cinemas" }];
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   if (isFetchingCinemas) {
     return <Spin size="large" fullscreen />;
@@ -45,15 +53,15 @@ const CinemaList = () => {
               {t("CREATE_CINEMA_BUTTON")}
             </Button>
           </RouterLink>
-          <RouterLink to="/admin/cinemas">
-            <Button
-              style={{ backgroundColor: "rgb(0, 192, 239)" }}
-              type="primary"
-              icon={<ReloadOutlined />}
-            >
-              {t("REFRESH")}
-            </Button>
-          </RouterLink>
+          <Button
+            style={{ backgroundColor: "rgb(0, 192, 239)" }}
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={handleRefresh}
+            loading={isFetchingCinemas}
+          >
+            {t("REFRESH")}
+          </Button>
         </Space>
 
         <CinemaTable data={data} />

@@ -7,7 +7,6 @@ const ticketPrice = {
   
   // Buttons
   CREATE_TICKET_PRICE_BUTTON: "Create Ticket Price",
-  UPDATE: "Update",
   UPDATE_BUTTON: "Update",
   DELETE_BUTTON: "Delete",
   SAVE_BUTTON: "Save",

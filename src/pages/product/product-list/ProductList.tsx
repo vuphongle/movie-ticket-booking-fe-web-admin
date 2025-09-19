@@ -3,11 +3,11 @@ import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
-import { useGetAdditionalServicesQuery } from "@/app/services/additionalServices.service";
+import { useGetProductsQuery } from "@/app/services/products.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
-import AdditionalServiceTable from "./AdditionalServiceTable";
+import ProductTable from "./ProductTable";
 
-const AdditionalServiceList = () => {
+const ProductList = () => {
   const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -15,26 +15,24 @@ const AdditionalServiceList = () => {
 
   const {
     data,
-    isLoading: isFetchingAdditionalServices,
+    isLoading: isFetchingProducts,
     refetch,
-  } = useGetAdditionalServicesQuery();
+  } = useGetProductsQuery(undefined);
+
+  const breadcrumb = [{ label: t("PRODUCT_LIST"), href: "/admin/products" }];
 
   const handleRefresh = () => {
     refetch();
   };
 
-  const breadcrumb = [
-    { label: t("ADDITIONAL_SERVICE_LIST"), href: "/admin/additional-services" },
-  ];
-
-  if (isFetchingAdditionalServices) {
+  if (isFetchingProducts) {
     return <Spin size="large" fullscreen />;
   }
 
   return (
     <>
       <Helmet>
-        <title>{t("ADDITIONAL_SERVICE_LIST")}</title>
+        <title>{t("PRODUCT_LIST")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -46,13 +44,13 @@ const AdditionalServiceList = () => {
         }}
       >
         <Space style={{ marginBottom: "1rem" }}>
-          <RouterLink to="/admin/additional-services/create">
+          <RouterLink to="/admin/products/create">
             <Button
               style={{ backgroundColor: "rgb(60, 141, 188)" }}
               type="primary"
               icon={<PlusOutlined />}
             >
-              {t("CREATE_ADDITIONAL_SERVICE")}
+              {t("CREATE_PRODUCT")}
             </Button>
           </RouterLink>
           <Button
@@ -60,16 +58,16 @@ const AdditionalServiceList = () => {
             type="primary"
             icon={<ReloadOutlined />}
             onClick={handleRefresh}
-            loading={isFetchingAdditionalServices}
+            loading={isFetchingProducts}
           >
             {t("REFRESH")}
           </Button>
         </Space>
 
-        <AdditionalServiceTable data={data || []} />
+        <ProductTable data={data} />
       </div>
     </>
   );
 };
 
-export default AdditionalServiceList;
+export default ProductList;

@@ -749,7 +749,10 @@ const AdditionalServiceDetail = () => {
                               const newItems = [...comboItems];
                               newItems[index] = {
                                 ...item,
-                                productId: product?.id || null,
+                                productId:
+                                  product?.id != null
+                                    ? Number(product.id)
+                                    : null,
                                 product: product,
                               };
                               setComboItems(newItems);

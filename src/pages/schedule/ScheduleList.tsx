@@ -13,7 +13,6 @@ import {
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink } from "react-router-dom";
 import dayjs from "dayjs";
 import { useGetMoviesQuery } from "@services/movies.service";
 import {
@@ -31,14 +30,21 @@ const ScheduleList = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const { data, isLoading: isFetchingSchedules } =
-    useGetSchedulesQuery(undefined);
+  const {
+    data,
+    isLoading: isFetchingSchedules,
+    refetch,
+  } = useGetSchedulesQuery(undefined);
   const { data: movies, isLoading: isFetchingMovies } = useGetMoviesQuery(true);
   const [createSchedule, { isLoading: isLoadingCreate }] =
     useCreateScheduleMutation();
 
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   // Filter states
   const [searchText, setSearchText] = useState("");
@@ -168,15 +174,15 @@ const ScheduleList = () => {
           >
             {t("CREATE_SCHEDULE")}
           </Button>
-          <RouterLink to="/admin/Schedules">
-            <Button
-              style={{ backgroundColor: "rgb(0, 192, 239)" }}
-              type="primary"
-              icon={<ReloadOutlined />}
-            >
-              {t("REFRESH")}
-            </Button>
-          </RouterLink>
+          <Button
+            style={{ backgroundColor: "rgb(0, 192, 239)" }}
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={handleRefresh}
+            loading={isFetchingSchedules}
+          >
+            {t("REFRESH")}
+          </Button>
         </Space>
 
         <ScheduleFilters

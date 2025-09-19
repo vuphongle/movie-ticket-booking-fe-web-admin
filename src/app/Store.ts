@@ -18,7 +18,7 @@ import { seatApi } from "@/app/services/seats.service";
 import { seatTypeApi } from "@/app/services/seatType.service";
 import { baseTicketPriceApi } from "@/app/services/baseTicketPrice.service";
 import { additionalServiceApi } from "@/app/services/additionalServices.service";
-import { productApi } from "@/app/services/product.service";
+import { productApi } from "@/app/services/products.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 

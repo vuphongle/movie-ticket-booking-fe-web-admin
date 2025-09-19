@@ -8,13 +8,7 @@ const additionalService = {
   CREATE_ADDITIONAL_SERVICE: "Create Additional Service",
   UPDATE_ADDITIONAL_SERVICE: "Update",
   DELETE_ADDITIONAL_SERVICE: "Delete Additional Service",
-  BACK: "Back",
-  REFRESH: "Refresh",
   CHANGE_THUMBNAIL: "Change Additional Service Image",
-  SELECT_IMAGE: "Select Image",
-  UPLOAD_IMAGE: "Upload Image",
-  DELETE_IMAGE: "Delete Image",
-  CHOOSE_IMAGE: "Select your image",
 
   // Form labels
   SERVICE_NAME: "Service Name",
@@ -37,8 +31,8 @@ const additionalService = {
   CREATED_AT: "Created At",
 
   // Status values
-  DRAFT: "Draft",
-  PUBLIC: "Public",
+  AVAILABLE: "Available",
+  UNAVAILABLE: "Unavailable",
 
   // Validation messages
   SERVICE_NAME_REQUIRED: "Service name is required!",
@@ -61,9 +55,6 @@ const additionalService = {
 
   // Confirm messages
   DELETE_CONFIRM: "Are you sure you want to delete this additional service?",
-  ACTION_CANNOT_UNDONE: "This action cannot be undone!",
-  DELETE: "Delete",
-  CANCEL: "Cancel",
 
   // Other messages
   SERVICE_NOT_FOUND: "Additional service not found",
