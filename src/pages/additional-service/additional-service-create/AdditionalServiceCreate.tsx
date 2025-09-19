@@ -1,4 +1,8 @@
-import { LeftOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  PlusOutlined,
+  MinusCircleOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -8,14 +12,17 @@ import {
   Row,
   Select,
   Space,
+  Card,
   message,
   theme,
 } from "antd";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useCreateAdditionalServiceMutation } from "@/app/services/additionalServices.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
+import ProductSelect from "@/components/ProductSelect";
 
 const AdditionalServiceCreate = () => {
   const { t } = useTranslation();
@@ -26,6 +33,7 @@ const AdditionalServiceCreate = () => {
   const [createAdditionalService, { isLoading }] =
     useCreateAdditionalServiceMutation();
   const navigate = useNavigate();
+  const [serviceType, setServiceType] = useState<"SINGLE" | "COMBO">("SINGLE");
 
   const breadcrumb = [
     { label: t("ADDITIONAL_SERVICE_LIST"), href: "/admin/additional-services" },
@@ -39,11 +47,60 @@ const AdditionalServiceCreate = () => {
     form
       .validateFields()
       .then((values) => {
-        // Add default thumbnail if not provided
         const createData = {
           ...values,
-          thumbnail: values.thumbnail || "", // Ensure thumbnail is never undefined
+          type: serviceType,
+          thumbnail: values.thumbnail || "",
         };
+
+        // Validate dựa trên type
+        if (serviceType === "SINGLE") {
+          if (!createData.productId || !createData.defaultQuantity) {
+            throw new Error(
+              "Vui lòng chọn sản phẩm và số lượng cho dịch vụ đơn"
+            );
+          }
+          // Remove items for SINGLE type
+          delete createData.items;
+        } else if (serviceType === "COMBO") {
+          if (!createData.items || createData.items.length === 0) {
+            throw new Error("Vui lòng thêm ít nhất một sản phẩm cho combo");
+          }
+
+          // Merge duplicate products and validate minimum 2 different products
+          const mergedItems: Array<{ productId: string; quantity: number }> =
+            [];
+          const productMap = new Map<
+            string,
+            { productId: string; quantity: number }
+          >();
+
+          createData.items.forEach((item: any) => {
+            if (productMap.has(item.productId)) {
+              // Merge quantities for duplicate products
+              const existingItem = productMap.get(item.productId);
+              if (existingItem) {
+                existingItem.quantity += item.quantity;
+              }
+            } else {
+              productMap.set(item.productId, { ...item });
+            }
+          });
+
+          // Convert map back to array
+          productMap.forEach((item) => mergedItems.push(item));
+
+          if (mergedItems.length < 2) {
+            throw new Error("Combo phải có ít nhất 2 sản phẩm khác nhau");
+          }
+
+          createData.items = mergedItems;
+
+          // Remove single product fields for COMBO type
+          delete createData.productId;
+          delete createData.defaultQuantity;
+        }
+
         return createAdditionalService(createData).unwrap();
       })
       .then((data) => {
@@ -53,8 +110,16 @@ const AdditionalServiceCreate = () => {
         }, 1500);
       })
       .catch((error) => {
-        message.error(error?.data?.message || t("CREATE_FAILED"));
+        message.error(
+          error?.data?.message || error?.message || t("CREATE_FAILED")
+        );
       });
+  };
+
+  const handleTypeChange = (type: "SINGLE" | "COMBO") => {
+    setServiceType(type);
+    // Reset form khi thay đổi type
+    form.resetFields(["productId", "defaultQuantity", "items"]);
   };
 
   return (
@@ -92,7 +157,7 @@ const AdditionalServiceCreate = () => {
           form={form}
           layout="vertical"
           autoComplete="off"
-          initialValues={{ status: false }}
+          initialValues={{ status: false, type: "SINGLE" }}
         >
           <Row gutter={16}>
             <Col span={16}>
@@ -124,28 +189,157 @@ const AdditionalServiceCreate = () => {
             </Col>
             <Col span={8}>
               <Form.Item
-                label={t("PRICE")}
-                name="price"
+                label="Loại dịch vụ"
+                name="type"
                 rules={[
                   {
                     required: true,
-                    message: t("PRICE_REQUIRED"),
-                  },
-                  {
-                    validator: (_, value) => {
-                      if (value <= 0) {
-                        return Promise.reject(t("PRICE_POSITIVE"));
-                      }
-                      return Promise.resolve();
-                    },
+                    message: "Vui lòng chọn loại dịch vụ",
                   },
                 ]}
               >
-                <InputNumber
-                  placeholder={t("ENTER_PRICE")}
-                  style={{ width: "100%" }}
+                <Select
+                  value={serviceType}
+                  onChange={handleTypeChange}
+                  options={[
+                    { label: t("SINGLE_PRODUCT"), value: "SINGLE" },
+                    { label: t("COMBO_PRODUCTS"), value: "COMBO" },
+                  ]}
                 />
               </Form.Item>
+
+              {serviceType === "SINGLE" && (
+                <>
+                  <Form.Item
+                    label="Sản phẩm"
+                    name="productId"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng chọn sản phẩm",
+                      },
+                    ]}
+                  >
+                    <ProductSelect placeholder={t("SELECT_PRODUCT")} />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Số lượng mặc định"
+                    name="defaultQuantity"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập số lượng",
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      min={1}
+                      placeholder="Nhập số lượng"
+                      style={{ width: "100%" }}
+                    />
+                  </Form.Item>
+                </>
+              )}
+
+              {serviceType === "COMBO" && (
+                <Form.List name="items">
+                  {(fields, { add, remove }) => (
+                    <>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <label style={{ fontWeight: 500 }}>
+                          Sản phẩm trong combo
+                        </label>
+                        <Button
+                          type="dashed"
+                          onClick={() => add()}
+                          icon={<PlusOutlined />}
+                          size="small"
+                        >
+                          Thêm sản phẩm
+                        </Button>
+                      </div>
+                      {fields.map(({ key, name, ...restField }) => {
+                        const currentItems = form.getFieldValue("items") || [];
+                        const currentProductId = currentItems[name]?.productId;
+                        const duplicateCount = currentItems.filter(
+                          (item: any) =>
+                            item?.productId === currentProductId &&
+                            currentProductId
+                        ).length;
+
+                        return (
+                          <Card
+                            key={key}
+                            size="small"
+                            style={{ marginTop: 8 }}
+                            extra={
+                              <Button
+                                type="text"
+                                danger
+                                icon={<MinusCircleOutlined />}
+                                onClick={() => remove(name)}
+                              />
+                            }
+                          >
+                            <Form.Item
+                              {...restField}
+                              name={[name, "productId"]}
+                              label="Sản phẩm"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng chọn sản phẩm",
+                                },
+                              ]}
+                              extra={
+                                duplicateCount > 1 ? (
+                                  <div
+                                    style={{
+                                      color: "#faad14",
+                                      fontSize: "12px",
+                                    }}
+                                  >
+                                    ⚠️ Sản phẩm trùng lặp sẽ được gộp số lượng
+                                    khi lưu
+                                  </div>
+                                ) : null
+                              }
+                            >
+                              <ProductSelect
+                                placeholder={t("SELECT_PRODUCT")}
+                              />
+                            </Form.Item>
+                            <Form.Item
+                              {...restField}
+                              name={[name, "quantity"]}
+                              label="Số lượng"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Vui lòng nhập số lượng",
+                                },
+                              ]}
+                            >
+                              <InputNumber
+                                min={1}
+                                placeholder="Số lượng"
+                                style={{ width: "100%" }}
+                              />
+                            </Form.Item>
+                          </Card>
+                        );
+                      })}
+                    </>
+                  )}
+                </Form.List>
+              )}
 
               <Form.Item
                 label={t("STATUS")}

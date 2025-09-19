@@ -3,7 +3,7 @@ import type { ColumnsType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import useSearchTable from "@/hooks/useSearchTable";
-import { formatCurrency, formatDate } from "@/utils/functionUtils";
+import { formatDate } from "@/utils/functionUtils";
 import type { AdditionalService } from "@/types";
 
 interface AdditionalServiceTableProps {
@@ -37,13 +37,20 @@ const AdditionalServiceTable = ({ data }: AdditionalServiceTableProps) => {
       },
     },
     {
-      title: t("PRICE_COL"),
-      dataIndex: "price",
-      key: "price",
-      sorter: (a: AdditionalService, b: AdditionalService) => a.price - b.price,
-      sortDirections: ["descend" as const, "ascend" as const],
-      render: (text: number) => {
-        return formatCurrency(text);
+      title: t("SERVICE_TYPE_COL"),
+      dataIndex: "type",
+      key: "type",
+      filters: [
+        { text: t("SINGLE_PRODUCT"), value: "SINGLE" },
+        { text: t("COMBO_PRODUCTS"), value: "COMBO" },
+      ],
+      onFilter: (value: any, record: AdditionalService) =>
+        record.type === value,
+      render: (type: string) => {
+        const color = type === "SINGLE" ? "blue" : "purple";
+        const text =
+          type === "SINGLE" ? t("SINGLE_PRODUCT") : t("COMBO_PRODUCTS");
+        return <Tag color={color}>{text}</Tag>;
       },
     },
     {

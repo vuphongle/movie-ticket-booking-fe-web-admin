@@ -1,4 +1,9 @@
-import { DeleteOutlined, LeftOutlined, SaveOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  LeftOutlined,
+  SaveOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -13,6 +18,8 @@ import {
   Space,
   Spin,
   Upload,
+  Card,
+  Tag,
   message,
   theme,
 } from "antd";
@@ -23,6 +30,8 @@ import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import {
   useDeleteAdditionalServiceMutation,
   useGetAdditionalServiceByIdQuery,
+  useGetAdditionalServicePriceQuery,
+  useGetAdditionalServiceItemsQuery,
   useUpdateAdditionalServiceMutation,
 } from "@/app/services/additionalServices.service";
 import {
@@ -31,6 +40,9 @@ import {
   useUploadImageMutation,
 } from "@/app/services/images.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
+import ProductSelect from "@/components/ProductSelect";
+import SafeImage from "@/components/SafeImage";
+import useImageLoading from "@/hooks/useImageLoading";
 import { API_DOMAIN } from "@/data/constants";
 import {
   compressImage,
@@ -38,6 +50,35 @@ import {
   formatFileSize,
   MAX_FILE_SIZE,
 } from "@/utils/imageUtils";
+
+// Types for combo items
+interface ComboItem {
+  id?: number | string;
+  productId: number | null;
+  product?: any; // Use Product type from actual API response
+  quantity: number;
+  isEditing?: boolean;
+  isNew?: boolean;
+}
+
+// Constants
+const DEFAULT_QUANTITY = 1;
+const MIN_COMBO_ITEMS = 2;
+
+// Styles
+const EDITING_CARD_STYLE = {
+  border: "2px dashed #faad14",
+  backgroundColor: "#fffbe6",
+};
+
+const WARNING_BANNER_STYLE = {
+  color: "#faad14",
+  backgroundColor: "#fffbe6",
+  padding: "4px 8px",
+  borderRadius: "4px",
+  border: "1px solid #faad14",
+  fontSize: "12px",
+};
 
 const AdditionalServiceDetail = () => {
   const { t } = useTranslation();
@@ -55,7 +96,42 @@ const AdditionalServiceDetail = () => {
       skip: !additionalServiceId,
     });
 
-  // Fix useSelector with proper typing
+  // Get additional service items for COMBO type
+  const { data: additionalServiceItems, isLoading: isFetchingItems } =
+    useGetAdditionalServiceItemsQuery(additionalServiceId!, {
+      skip: !additionalServiceId || additionalService?.type !== "COMBO",
+    });
+
+  const [comboItems, setComboItems] = useState<ComboItem[]>([]);
+  const [originalComboItems, setOriginalComboItems] = useState<ComboItem[]>([]);
+  const [backupComboItems, setBackupComboItems] = useState<ComboItem[]>([]);
+  const [currentFormType, setCurrentFormType] = useState<string>("");
+
+  useEffect(() => {
+    if (additionalServiceItems) {
+      const itemsWithProductInfo = additionalServiceItems.map((item) => ({
+        ...item,
+        productId: item.product?.id || null,
+        isEditing: false,
+      }));
+      setComboItems(itemsWithProductInfo);
+      setOriginalComboItems(additionalServiceItems);
+      setBackupComboItems(itemsWithProductInfo);
+    }
+  }, [additionalServiceItems]);
+
+  useEffect(() => {
+    const formType = form.getFieldValue("type");
+    if (formType) {
+      setCurrentFormType(formType);
+    }
+  }, [form]);
+
+  const { data: pricingData, isLoading: isFetchingPricing } =
+    useGetAdditionalServicePriceQuery(additionalServiceId!, {
+      skip: !additionalServiceId,
+    });
+
   const { data: imagesData, isLoading: isFetchingImages } = useGetImagesQuery();
 
   const images =
@@ -83,7 +159,12 @@ const AdditionalServiceDetail = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [imageSelected, setImageSelected] = useState<string | null>(null);
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
+
+  // Use safe image loading hook
+  const { imageUrl: thumbnail, setImageUrl: setThumbnail } = useImageLoading(
+    additionalService?.thumbnail,
+    API_DOMAIN
+  );
 
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12; // số lượng hình ảnh mỗi trang
@@ -100,18 +181,87 @@ const AdditionalServiceDetail = () => {
     },
   ];
 
-  useEffect(() => {
-    if (additionalService && thumbnail === null) {
-      setThumbnail(
-        additionalService?.thumbnail &&
-          additionalService.thumbnail.startsWith("/api")
-          ? `${API_DOMAIN}${additionalService.thumbnail}`
-          : additionalService?.thumbnail || ""
-      );
+  // Helper functions for combo items management
+  const handleSaveComboItem = (index: number) => {
+    const item = comboItems[index];
+    if (!item.productId || !item.quantity) {
+      message.error("Vui lòng chọn sản phẩm và nhập số lượng");
+      return;
     }
-  }, [additionalService, thumbnail]);
 
-  if (isFetchingAdditionalService || isFetchingImages) {
+    let updatedItems = [...comboItems];
+
+    // Check for duplicates
+    const existingIndex = updatedItems.findIndex(
+      (existingItem, idx) =>
+        idx !== index &&
+        existingItem.productId === item.productId &&
+        !existingItem.isEditing
+    );
+
+    if (existingIndex !== -1) {
+      // Merge with existing item
+      updatedItems[existingIndex] = {
+        ...updatedItems[existingIndex],
+        quantity: updatedItems[existingIndex].quantity + item.quantity,
+      };
+      // Remove the duplicate item
+      updatedItems = updatedItems.filter((_, idx) => idx !== index);
+    } else {
+      // Update the item
+      updatedItems[index] = { ...item, isEditing: false };
+    }
+
+    // Only update state, don't save to backend yet
+    setComboItems(updatedItems);
+    message.success("Đã lưu item. Nhấn 'Cập nhật' để lưu thay đổi.");
+  };
+
+  const handleCancelEditComboItem = (index: number) => {
+    const item = comboItems[index];
+    if (item.isNew) {
+      // Remove new item
+      const newItems = comboItems.filter((_, idx) => idx !== index);
+      setComboItems(newItems);
+    } else {
+      // Restore original data
+      const originalItem = originalComboItems.find(
+        (orig) => orig.id === item.id
+      );
+      if (originalItem) {
+        const newItems = [...comboItems];
+        newItems[index] = { ...originalItem, isEditing: false };
+        setComboItems(newItems);
+      }
+    }
+  };
+
+  const handleRemoveComboItem = (index: number) => {
+    const newItems = comboItems.filter((_, idx) => idx !== index);
+
+    // Only update state, don't save to backend yet
+    setComboItems(newItems);
+    message.success("Đã xóa item. Nhấn 'Cập nhật' để lưu thay đổi.");
+  };
+
+  useEffect(() => {
+    if (additionalService) {
+      form.setFieldsValue({
+        ...additionalService,
+        type: additionalService.type || "SINGLE",
+        defaultQuantity: additionalService.defaultQuantity || DEFAULT_QUANTITY,
+      });
+      // Set the current form type
+      setCurrentFormType(additionalService.type || "SINGLE");
+    }
+  }, [additionalService, form]);
+
+  if (
+    isFetchingAdditionalService ||
+    isFetchingImages ||
+    isFetchingItems ||
+    isFetchingPricing
+  ) {
     return <Spin size="large" fullscreen />;
   }
 
@@ -129,6 +279,45 @@ const AdditionalServiceDetail = () => {
     form
       .validateFields()
       .then((values) => {
+        // Additional validation for COMBO type
+        if (values.type === "COMBO") {
+          // Check for unsaved items (still in editing mode)
+          const editingItems = (comboItems || []).filter(
+            (item) => item.isEditing
+          );
+
+          if (editingItems.length > 0) {
+            message.error(
+              "Vui lòng lưu tất cả các items đang chỉnh sửa trước khi cập nhật"
+            );
+            return Promise.reject("Items still in editing mode");
+          }
+
+          const validItems = (comboItems || []).filter(
+            (item) => item.productId && !item.isEditing
+          );
+
+          if (validItems.length < MIN_COMBO_ITEMS) {
+            message.error("Combo phải có ít nhất 2 sản phẩm khác nhau");
+            return Promise.reject("Combo validation failed");
+          }
+
+          // Check for duplicate products
+          const uniqueProductIds = new Set(
+            validItems.map((item) => item.productId)
+          );
+          if (uniqueProductIds.size !== validItems.length) {
+            message.error("Không thể có sản phẩm trùng lặp trong combo");
+            return Promise.reject("Duplicate products in combo");
+          }
+
+          // Add combo items to values
+          values.items = validItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          }));
+        }
+
         return updateAdditionalService({
           additionalServiceId,
           ...values,
@@ -138,6 +327,9 @@ const AdditionalServiceDetail = () => {
         message.success(t("UPDATE_SUCCESS"));
       })
       .catch((error: any) => {
+        if (typeof error === "string") {
+          return;
+        }
         message.error(error?.data?.message || t("UPDATE_FAILED"));
       });
   };
@@ -323,27 +515,119 @@ const AdditionalServiceDetail = () => {
             </Col>
             <Col span={8}>
               <Form.Item
-                label={t("PRICE")}
-                name="price"
+                label={t("SERVICE_TYPE")}
+                name="type"
                 rules={[
                   {
                     required: true,
-                    message: t("PRICE_REQUIRED"),
-                  },
-                  {
-                    validator: (_, value) => {
-                      if (value <= 0) {
-                        return Promise.reject(t("PRICE_POSITIVE"));
-                      }
-                      return Promise.resolve();
-                    },
+                    message: t("SERVICE_TYPE_REQUIRED"),
                   },
                 ]}
               >
-                <InputNumber
-                  placeholder={t("ENTER_PRICE")}
+                <Select
+                  placeholder={t("SELECT_SERVICE_TYPE")}
                   style={{ width: "100%" }}
+                  options={[
+                    { label: t("SINGLE_PRODUCT"), value: "SINGLE" },
+                    { label: t("COMBO_PRODUCTS"), value: "COMBO" },
+                  ]}
+                  onChange={(value) => {
+                    // Update current form type state
+                    setCurrentFormType(value);
+
+                    // Reset form fields when type changes
+                    if (value === "SINGLE") {
+                      form.setFieldsValue({
+                        productId: null,
+                        defaultQuantity: DEFAULT_QUANTITY,
+                      });
+                      // Backup current combo items before clearing
+                      if (comboItems && comboItems.length > 0) {
+                        setBackupComboItems([...comboItems]);
+                      }
+                      // Reset combo items to empty
+                      setComboItems([]);
+                    } else if (value === "COMBO") {
+                      form.setFieldsValue({
+                        productId: null,
+                        defaultQuantity: null,
+                      });
+                      // Restore from backup if available, otherwise initialize new
+                      if (backupComboItems && backupComboItems.length > 0) {
+                        setComboItems([...backupComboItems]);
+                      } else if (!comboItems || comboItems.length === 0) {
+                        setComboItems([
+                          {
+                            productId: null,
+                            quantity: DEFAULT_QUANTITY,
+                            isNew: true,
+                            isEditing: true,
+                          },
+                          {
+                            productId: null,
+                            quantity: DEFAULT_QUANTITY,
+                            isNew: true,
+                            isEditing: true,
+                          },
+                        ]);
+                      }
+                    }
+                  }}
                 />
+              </Form.Item>
+
+              <Form.Item
+                noStyle
+                shouldUpdate={(prevValues, currentValues) =>
+                  prevValues.type !== currentValues.type
+                }
+              >
+                {({ getFieldValue }) => {
+                  const serviceType = getFieldValue("type");
+                  return serviceType === "SINGLE" ? (
+                    <>
+                      <Form.Item
+                        label={t("PRODUCT")}
+                        name="productId"
+                        rules={[
+                          {
+                            required: true,
+                            message: t("PRODUCT_REQUIRED"),
+                          },
+                        ]}
+                      >
+                        <ProductSelect placeholder={t("SELECT_PRODUCT")} />
+                      </Form.Item>
+
+                      <Form.Item
+                        label={t("DEFAULT_QUANTITY")}
+                        name="defaultQuantity"
+                        rules={[
+                          {
+                            required: true,
+                            message: t("DEFAULT_QUANTITY_REQUIRED"),
+                          },
+                          {
+                            validator: (_, value) => {
+                              if (value <= 0) {
+                                return Promise.reject(
+                                  t("DEFAULT_QUANTITY_POSITIVE")
+                                );
+                              }
+                              return Promise.resolve();
+                            },
+                          },
+                        ]}
+                      >
+                        <InputNumber
+                          placeholder={t("ENTER_DEFAULT_QUANTITY")}
+                          style={{ width: "100%" }}
+                          min={1}
+                        />
+                      </Form.Item>
+                    </>
+                  ) : null;
+                }}
               </Form.Item>
 
               <Form.Item
@@ -375,22 +659,15 @@ const AdditionalServiceDetail = () => {
 
               <Form.Item name="thumbnail">
                 <Space direction="vertical" style={{ width: "100%" }}>
-                  <img
-                    style={{
-                      width: "100%",
-                      height: 300,
-                      objectFit: "cover",
-                      backgroundColor: "#f5f5f5",
-                    }}
-                    src={
-                      thumbnail ||
-                      "https://via.placeholder.com/300x300?text=No+Image"
-                    }
+                  <SafeImage
+                    src={thumbnail}
                     alt="Thumbnail"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src =
-                        "https://via.placeholder.com/300x300?text=No+Image";
+                    width="100%"
+                    height={300}
+                    placeholderText={t("NO_IMAGE_SELECTED") || "Chưa chọn ảnh"}
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      borderRadius: "6px",
                     }}
                   />
                   <Button type="primary" onClick={() => setIsModalOpen(true)}>
@@ -401,6 +678,223 @@ const AdditionalServiceDetail = () => {
             </Col>
           </Row>
         </Form>
+
+        {/* COMBO Items Section */}
+        {((currentFormType === "COMBO" &&
+          additionalService?.type === "COMBO") ||
+          currentFormType === "COMBO") && (
+          <Card
+            title={t("COMBO_ITEMS")}
+            style={{ marginTop: 16 }}
+            extra={
+              <Space>
+                <Tag color="blue">
+                  {t("CURRENT_PRICE")}:{" "}
+                  {pricingData
+                    ? `${pricingData.toLocaleString()} VND`
+                    : t("NOT_SET")}
+                </Tag>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  size="small"
+                  onClick={() => {
+                    const newItems = [...(comboItems || [])];
+                    newItems.push({
+                      productId: null,
+                      quantity: DEFAULT_QUANTITY,
+                      isNew: true,
+                      isEditing: true,
+                    });
+                    setComboItems(newItems);
+                  }}
+                >
+                  {t("ADD_PRODUCT")}
+                </Button>
+              </Space>
+            }
+          >
+            {/* Warning for unsaved items */}
+            {(comboItems || []).some((item) => item.isEditing) && (
+              <div style={{ marginBottom: 16 }}>
+                <span style={WARNING_BANNER_STYLE}>
+                  ⚠️ Có{" "}
+                  {(comboItems || []).filter((item) => item.isEditing).length}{" "}
+                  item(s) chưa lưu. Vui lòng lưu tất cả trước khi cập nhật.
+                </span>
+              </div>
+            )}
+            {comboItems && comboItems.length > 0 ? (
+              <Space direction="vertical" style={{ width: "100%" }}>
+                {comboItems.map((item, index) => (
+                  <Card
+                    key={item.id || index}
+                    size="small"
+                    style={{
+                      marginBottom: 8,
+                      ...(item.isEditing ? EDITING_CARD_STYLE : {}),
+                    }}
+                  >
+                    <Row gutter={16} align="middle">
+                      <Col span={6}>
+                        <strong>
+                          {t("ITEM")} {index + 1}
+                        </strong>
+                      </Col>
+                      <Col span={6}>
+                        {item.isEditing ? (
+                          <ProductSelect
+                            value={item.productId || item.product?.id}
+                            onProductChange={(product) => {
+                              const newItems = [...comboItems];
+                              newItems[index] = {
+                                ...item,
+                                productId: product?.id || null,
+                                product: product,
+                              };
+                              setComboItems(newItems);
+                            }}
+                            placeholder={t("SELECT_PRODUCT")}
+                          />
+                        ) : (
+                          <Space>
+                            <span>
+                              {item.product?.name || t("PRODUCT_NOT_FOUND")}
+                            </span>
+                            {item.product?.sku && <Tag>{item.product.sku}</Tag>}
+                          </Space>
+                        )}
+                      </Col>
+                      <Col span={4}>
+                        {item.isEditing ? (
+                          <InputNumber
+                            min={1}
+                            value={item.quantity}
+                            onChange={(value) => {
+                              const newItems = [...comboItems];
+                              newItems[index] = {
+                                ...item,
+                                quantity: value || DEFAULT_QUANTITY,
+                              };
+                              setComboItems(newItems);
+                            }}
+                            style={{ width: "100%" }}
+                          />
+                        ) : (
+                          <Space>
+                            <span>{t("QUANTITY")}:</span>
+                            <Tag color="green">{item.quantity}</Tag>
+                          </Space>
+                        )}
+                      </Col>
+                      <Col span={4}>
+                        <Space>
+                          <span>{t("UNIT")}:</span>
+                          <Tag color="orange">
+                            {item.product?.unit ||
+                              (item.productId
+                                ? t("NOT_SET")
+                                : t("SELECT_PRODUCT_FIRST"))}
+                          </Tag>
+                        </Space>
+                      </Col>
+                      <Col span={4}>
+                        <Space>
+                          {item.isEditing ? (
+                            <>
+                              <Button
+                                type="primary"
+                                size="small"
+                                onClick={() => handleSaveComboItem(index)}
+                                loading={isLoadingUpdateAdditionalService}
+                              >
+                                {t("SAVE")}
+                              </Button>
+                              <Button
+                                size="small"
+                                onClick={() => handleCancelEditComboItem(index)}
+                              >
+                                {t("CANCEL")}
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                type="text"
+                                size="small"
+                                onClick={() => {
+                                  const newItems = [...comboItems];
+                                  newItems[index] = {
+                                    ...item,
+                                    isEditing: true,
+                                  };
+                                  setComboItems(newItems);
+                                }}
+                              >
+                                {t("EDIT")}
+                              </Button>
+                              <Button
+                                type="text"
+                                danger
+                                size="small"
+                                onClick={() => handleRemoveComboItem(index)}
+                                loading={isLoadingUpdateAdditionalService}
+                              >
+                                {t("REMOVE")}
+                              </Button>
+                            </>
+                          )}
+                        </Space>
+                      </Col>
+                    </Row>
+                  </Card>
+                ))}
+              </Space>
+            ) : (
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <span>{t("NO_COMBO_ITEMS_FOUND")}</span>
+              </div>
+            )}
+          </Card>
+        )}
+
+        {/* Pricing Information Section */}
+        {((currentFormType === "SINGLE" &&
+          additionalService?.type === "SINGLE") ||
+          currentFormType == "SINGLE") && (
+          <Card title={t("PRICING_INFORMATION")} style={{ marginTop: 16 }}>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Space direction="vertical">
+                  <span>
+                    <strong>{t("CURRENT_PRICE")}:</strong>
+                  </span>
+                  <Tag
+                    color="green"
+                    style={{ fontSize: "16px", padding: "8px 12px" }}
+                  >
+                    {pricingData
+                      ? `${pricingData.toLocaleString()} VND`
+                      : t("NOT_SET")}
+                  </Tag>
+                </Space>
+              </Col>
+              <Col span={12}>
+                <Space direction="vertical">
+                  <span>
+                    <strong>{t("DEFAULT_QUANTITY")}:</strong>
+                  </span>
+                  <Tag
+                    color="blue"
+                    style={{ fontSize: "16px", padding: "8px 12px" }}
+                  >
+                    {additionalService.defaultQuantity || DEFAULT_QUANTITY}
+                  </Tag>
+                </Space>
+              </Col>
+            </Row>
+          </Card>
+        )}
 
         <Modal
           title={t("CHOOSE_IMAGE")}
@@ -471,10 +965,11 @@ const AdditionalServiceDetail = () => {
                       } image-item`}
                       onClick={selecteImage(image.url)}
                     >
-                      <img
+                      <SafeImage
                         src={image.url}
                         alt={`image-${index}`}
                         style={{ width: "100%" }}
+                        placeholderText={`Image ${index + 1}`}
                       />
                     </div>
                   </Col>
