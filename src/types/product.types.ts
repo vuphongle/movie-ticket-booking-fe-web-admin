@@ -5,6 +5,7 @@ export interface Product {
   name: string;
   description?: string;
   unit?: string;
+  quantity?: number; // Số lượng tồn kho
   thumbnail?: string;
   status: boolean;
   createdAt?: string;
@@ -17,6 +18,7 @@ export interface ProductFormData {
   name: string;
   description?: string;
   unit?: string;
+  quantity?: number;
   thumbnail?: string;
   status: boolean;
 }
@@ -27,6 +29,7 @@ export interface CreateProductRequest {
   name: string;
   description?: string;
   unit?: string;
+  quantity?: number;
   thumbnail?: string;
   status: boolean;
 }
@@ -36,6 +39,7 @@ export interface UpdateProductRequest {
   name: string;
   description?: string;
   unit?: string;
+  quantity?: number;
   thumbnail?: string;
   status: boolean;
 }
@@ -47,6 +51,7 @@ export interface ProductResponse {
   name: string;
   description?: string;
   unit?: string;
+  quantity?: number;
   thumbnail?: string;
   status: boolean;
   createdAt: string;

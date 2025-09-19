@@ -5,6 +5,7 @@ import {
   Flex,
   Form,
   Input,
+  InputNumber,
   Modal,
   Pagination,
   Row,
@@ -274,6 +275,26 @@ const ProductCreate = () => {
                   placeholder={t("SELECT_UNIT")}
                   allowClear
                   options={getUnitOptions(t)}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label={t("QUANTITY")}
+                name="quantity"
+                rules={[
+                  {
+                    type: "number",
+                    min: 0,
+                    message:
+                      t("QUANTITY_MIN_ERROR") ||
+                      "Số lượng phải lớn hơn hoặc bằng 0",
+                  },
+                ]}
+              >
+                <InputNumber
+                  min={0}
+                  placeholder={t("ENTER_QUANTITY") || "Nhập số lượng"}
+                  style={{ width: "100%" }}
                 />
               </Form.Item>
 

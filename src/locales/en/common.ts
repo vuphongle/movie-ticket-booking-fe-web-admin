@@ -29,6 +29,11 @@ const common = {
 
   SEARCH: "Search",
   SELECT_DATE: "Select Date",
+  SELECT_PRODUCT: "Select Product",
+  LOADING_PRODUCTS: "Loading products...",
+  ERROR_LOADING_PRODUCTS: "Error loading products",
+  NO_PRODUCTS_AVAILABLE: "No products available",
+  NO_MATCHING_PRODUCTS: "No matching products found",
   
   // Image upload messages
   IMAGE_COMPRESSED: "Image compressed from {{originalSize}} to {{newSize}}",
@@ -57,6 +62,7 @@ const common = {
   PRODUCT_NAME: "Product Name",
   DESCRIPTION: "Description",
   UNIT: "Unit",
+  QUANTITY: "Quantity",
   THUMBNAIL: "Thumbnail",
   STATUS: "Status",
   ACTIVE: "Active",
@@ -79,6 +85,7 @@ const common = {
   ENTER_SKU: "Enter SKU",
   ENTER_PRODUCT_NAME: "Enter product name",
   ENTER_DESCRIPTION: "Enter description",
+  ENTER_QUANTITY: "Enter quantity",
   ENTER_THUMBNAIL_URL: "Enter thumbnail URL",
   SELECT_UNIT: "Select unit",
   SELECT_STATUS: "Select status",
@@ -87,7 +94,10 @@ const common = {
   SKU_REQUIRED: "SKU is required",
   PRODUCT_NAME_REQUIRED: "Product name is required",
   STATUS_REQUIRED: "Status is required",
+  QUANTITY_MIN_ERROR: "Quantity must be greater than or equal to 0",
   SKU_ALREADY_EXISTS: "SKU already exists",
+  CANNOT_DEACTIVATE_PRODUCT: "Cannot Deactivate Product",
+  PRODUCT_IN_USE_MESSAGE: "This product is currently being used in active promotions or additional services. Please deactivate those first before changing this product's status.",
   
   // Success/Error messages
   CREATE_SUCCESS: "Created successfully",

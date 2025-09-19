@@ -147,6 +147,11 @@ export const productApi = createApi({
       },
     }),
 
+    // Check if product can be deactivated
+    checkCanDeactivateProduct: builder.query<{ canDeactivate: boolean; message?: string }, number>({
+      query: (productId) => `products/${productId}/can-deactivate`,
+    }),
+
     // Get product price
     getProductPrice: builder.query<number, string | number>({
       query: (productId) => `products/${productId}/price`,
@@ -168,5 +173,7 @@ export const {
   useToggleProductStatusMutation,
   useCheckSkuExistsQuery,
   useLazyCheckSkuExistsQuery,
+  useCheckCanDeactivateProductQuery,
+  useLazyCheckCanDeactivateProductQuery,
   useGetProductPriceQuery,
 } = productApi;

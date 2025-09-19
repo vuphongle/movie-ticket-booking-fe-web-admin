@@ -16,6 +16,8 @@ import {
   useUpdateCouponDetailMutation,
 } from "@/app/services/coupons.service";
 import { useGetSeatTypeOptionsQuery } from "@/app/services/seatType.service";
+import { useGetAdditionalServicesQuery } from "@/app/services/additionalServices.service";
+import ProductSelect from "@/components/ProductSelect";
 import type { CouponDetail, Coupon } from "@/types";
 import dayjs from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -29,7 +31,7 @@ const { TextArea } = Input;
 
 interface CouponDetailModalProps {
   couponId: number;
-  coupon?: Coupon; // Add coupon prop for default dates
+  coupon?: Coupon;
   detail?: CouponDetail;
   open: boolean;
   onCancel: () => void;
@@ -55,6 +57,10 @@ const CouponDetailModal = ({
   // Get seat type options for dropdown
   const { data: seatTypeOptions = [], isLoading: isLoadingSeatTypes } =
     useGetSeatTypeOptionsQuery();
+
+  // Get additional services for dropdown
+  const { data: additionalServices = [], isLoading: isLoadingServices } =
+    useGetAdditionalServicesQuery();
   useEffect(() => {
     if (detail) {
       // Convert date strings to dayjs objects for DatePicker
@@ -117,12 +123,35 @@ const CouponDetailModal = ({
   const benefitType = Form.useWatch("benefitType", form);
   const targetType = Form.useWatch("targetType", form);
 
-  // Reset targetRefId when targetType changes
+  // Reset targetRefId when targetType changes and re-validate
   useEffect(() => {
     if (targetType === "ORDER") {
       form.setFieldValue("targetRefId", null);
     }
+    // Re-validate targetRefId field when targetType changes
+    form.validateFields(["targetRefId"]).catch(() => {
+      // Ignore validation errors, just trigger re-validation
+    });
   }, [targetType, form]);
+
+  // Reset benefit-related fields when benefitType changes
+  useEffect(() => {
+    if (benefitType === "DISCOUNT_PERCENT") {
+      form.setFieldsValue({
+        amount: undefined,
+        giftServiceId: undefined,
+        giftQuantity: undefined,
+      });
+    } else if (benefitType === "DISCOUNT_AMOUNT") {
+      form.setFieldsValue({
+        percent: undefined,
+        giftServiceId: undefined,
+        giftQuantity: undefined,
+      });
+    } else if (benefitType === "FREE_PRODUCT") {
+      form.setFieldsValue({ percent: undefined, amount: undefined });
+    }
+  }, [benefitType, form]);
 
   return (
     <Modal
@@ -184,8 +213,32 @@ const CouponDetailModal = ({
                   ? "Không cần thiết cho đơn hàng"
                   : targetType === "SEAT_TYPE"
                     ? "Chọn loại ghế cụ thể"
-                    : "ID của dịch vụ cụ thể"
+                    : "Chọn dịch vụ bổ sung cụ thể"
               }
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    const currentTargetType = getFieldValue("targetType");
+
+                    // Bắt buộc phải chọn ID tham chiếu khi targetType là SEAT_TYPE hoặc SERVICE
+                    if (
+                      (currentTargetType === "SEAT_TYPE" ||
+                        currentTargetType === "SERVICE") &&
+                      !value
+                    ) {
+                      return Promise.reject(
+                        new Error(
+                          currentTargetType === "SEAT_TYPE"
+                            ? "Vui lòng chọn loại ghế cụ thể!"
+                            : "Vui lòng chọn dịch vụ bổ sung cụ thể!"
+                        )
+                      );
+                    }
+
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
             >
               {targetType === "ORDER" ? (
                 <Input
@@ -207,11 +260,33 @@ const CouponDetailModal = ({
                   ))}
                 </Select>
               ) : (
-                <InputNumber
-                  min={1}
-                  placeholder="Nhập ID dịch vụ"
+                <Select
+                  placeholder="Chọn dịch vụ bổ sung"
                   style={{ width: "100%" }}
-                />
+                  allowClear
+                  loading={isLoadingServices}
+                  showSearch
+                  optionFilterProp="label"
+                  filterOption={(input, option) => {
+                    return (
+                      (option?.label as string)
+                        ?.toLowerCase()
+                        .includes(input.toLowerCase()) || false
+                    );
+                  }}
+                >
+                  {additionalServices
+                    .filter((service) => service.status) // Only show active services
+                    .map((service) => (
+                      <Option
+                        key={service.id}
+                        value={service.id}
+                        label={`${service.name} (${service.type})`}
+                      >
+                        {service.name} ({service.type})
+                      </Option>
+                    ))}
+                </Select>
               )}
             </Form.Item>
           </Col>
@@ -240,6 +315,12 @@ const CouponDetailModal = ({
                 name="percent"
                 rules={[
                   { required: true, message: "Vui lòng nhập phần trăm!" },
+                  {
+                    type: "number",
+                    min: 0.01,
+                    max: 100,
+                    message: "Phần trăm phải từ 0.01 đến 100!",
+                  },
                 ]}
               >
                 <InputNumber
@@ -254,7 +335,14 @@ const CouponDetailModal = ({
               <Form.Item
                 label="Số tiền giảm"
                 name="amount"
-                rules={[{ required: true, message: "Vui lòng nhập số tiền!" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập số tiền!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Số tiền phải lớn hơn 0!",
+                  },
+                ]}
               >
                 <InputNumber min={0} suffix="VND" style={{ width: "100%" }} />
               </Form.Item>
@@ -262,13 +350,17 @@ const CouponDetailModal = ({
             {benefitType === "FREE_PRODUCT" && (
               <>
                 <Form.Item
-                  label="ID sản phẩm tặng"
+                  label="Sản phẩm tặng"
                   name="giftServiceId"
                   rules={[
-                    { required: true, message: "Vui lòng nhập ID sản phẩm!" },
+                    { required: true, message: "Vui lòng chọn sản phẩm tặng!" },
                   ]}
                 >
-                  <InputNumber min={1} style={{ width: "100%" }} />
+                  <ProductSelect
+                    placeholder="Chọn sản phẩm tặng"
+                    style={{ width: "100%" }}
+                    allowClear
+                  />
                 </Form.Item>
               </>
             )}
@@ -281,7 +373,14 @@ const CouponDetailModal = ({
               <Form.Item
                 label="Số lượng tặng"
                 name="giftQuantity"
-                rules={[{ required: true, message: "Vui lòng nhập số lượng!" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập số lượng!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Số lượng phải lớn hơn 0!",
+                  },
+                ]}
               >
                 <InputNumber min={1} style={{ width: "100%" }} />
               </Form.Item>

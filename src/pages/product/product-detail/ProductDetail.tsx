@@ -5,6 +5,7 @@ import {
   Flex,
   Form,
   Input,
+  InputNumber,
   Modal,
   Pagination,
   Row,
@@ -27,6 +28,7 @@ import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
   useLazyCheckSkuExistsQuery,
+  useLazyCheckCanDeactivateProductQuery,
 } from "@/app/services/products.service";
 import {
   useDeleteImageMutation,
@@ -77,6 +79,7 @@ const ProductDetail = () => {
     useUploadImageMutation();
   const [deleteImage, { isLoading: isLoadingDeleteImage }] =
     useDeleteImageMutation();
+  const [checkCanDeactivate] = useLazyCheckCanDeactivateProductQuery();
   const [checkSkuExists] = useLazyCheckSkuExistsQuery();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -202,18 +205,32 @@ const ProductDetail = () => {
       });
   };
 
-  const handleUpdate = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        return updateProduct({ productId: product.id, ...values }).unwrap();
-      })
-      .then(() => {
-        message.success(t("UPDATE_SUCCESS"));
-      })
-      .catch((error) => {
-        message.error(error?.data?.message || t("UPDATE_FAILED"));
-      });
+  const handleUpdate = async () => {
+    try {
+      const values = await form.validateFields();
+
+      // Kiểm tra nếu đang thay đổi status từ true sang false
+      if (product.status && !values.status) {
+        const result = await checkCanDeactivate(Number(product.id)).unwrap();
+        if (!result.canDeactivate) {
+          Modal.confirm({
+            title: t("CANNOT_DEACTIVATE_PRODUCT"),
+            content: t("PRODUCT_IN_USE_MESSAGE"),
+            okText: t("OK"),
+            cancelText: t("CANCEL"),
+            onOk: () => {
+              // User acknowledges, do nothing
+            },
+          });
+          return;
+        }
+      }
+
+      await updateProduct({ productId: product.id, ...values }).unwrap();
+      message.success(t("UPDATE_SUCCESS"));
+    } catch (error: any) {
+      message.error(error?.data?.message || t("UPDATE_FAILED"));
+    }
   };
 
   const handleDelete = () => {
@@ -334,6 +351,9 @@ const ProductDetail = () => {
                 <Descriptions.Item label={t("UNIT")}>
                   {product.unit || "-"}
                 </Descriptions.Item>
+                <Descriptions.Item label={t("QUANTITY")}>
+                  {product.quantity !== undefined ? product.quantity : "-"}
+                </Descriptions.Item>
                 <Descriptions.Item label={t("CREATED_AT")}>
                   {product.createdAt ? formatDate(product.createdAt) : "-"}
                 </Descriptions.Item>
@@ -374,6 +394,7 @@ const ProductDetail = () => {
                   unit: product.unit,
                   thumbnail: product.thumbnail,
                   status: product.status,
+                  quantity: product.quantity || 0,
                 }}
               >
                 <Row gutter={16}>
@@ -415,6 +436,25 @@ const ProductDetail = () => {
                         placeholder={t("SELECT_UNIT")}
                         allowClear
                         options={getUnitOptions(t)}
+                      />
+                    </Form.Item>
+
+                    <Form.Item
+                      label={t("QUANTITY")}
+                      name="quantity"
+                      rules={[
+                        {
+                          type: "number",
+                          min: 0,
+                          message: t("QUANTITY_MIN_ERROR"),
+                        },
+                      ]}
+                    >
+                      <InputNumber
+                        style={{ width: "100%" }}
+                        placeholder={t("ENTER_QUANTITY")}
+                        min={0}
+                        precision={0}
                       />
                     </Form.Item>
 

@@ -30,6 +30,11 @@ const common = {
 
   SEARCH: "Tìm kiếm",
   SELECT_DATE: "Chọn ngày",
+  SELECT_PRODUCT: "Chọn sản phẩm",
+  LOADING_PRODUCTS: "Đang tải sản phẩm...",
+  ERROR_LOADING_PRODUCTS: "Lỗi tải danh sách sản phẩm",
+  NO_PRODUCTS_AVAILABLE: "Không có sản phẩm nào",
+  NO_MATCHING_PRODUCTS: "Không tìm thấy sản phẩm phù hợp",
   
   // Image upload messages
   IMAGE_COMPRESSED: "Ảnh đã được nén từ {{originalSize}} xuống {{newSize}}",
@@ -57,6 +62,7 @@ const common = {
   PRODUCT_NAME: "Tên sản phẩm",
   DESCRIPTION: "Mô tả",
   UNIT: "Đơn vị",
+  QUANTITY: "Số lượng",
   THUMBNAIL: "Ảnh đại diện",
   STATUS: "Trạng thái",
   ACTIVE: "Hoạt động",
@@ -79,6 +85,7 @@ const common = {
   ENTER_SKU: "Nhập mã SKU",
   ENTER_PRODUCT_NAME: "Nhập tên sản phẩm",
   ENTER_DESCRIPTION: "Nhập mô tả",
+  ENTER_QUANTITY: "Nhập số lượng",
   ENTER_THUMBNAIL_URL: "Nhập URL ảnh đại diện",
   SELECT_UNIT: "Chọn đơn vị",
   SELECT_STATUS: "Chọn trạng thái",
@@ -87,7 +94,10 @@ const common = {
   SKU_REQUIRED: "Mã SKU là bắt buộc",
   PRODUCT_NAME_REQUIRED: "Tên sản phẩm là bắt buộc",
   STATUS_REQUIRED: "Trạng thái là bắt buộc",
+  QUANTITY_MIN_ERROR: "Số lượng phải lớn hơn hoặc bằng 0",
   SKU_ALREADY_EXISTS: "Mã SKU đã tồn tại",
+  CANNOT_DEACTIVATE_PRODUCT: "Không thể vô hiệu hóa sản phẩm",
+  PRODUCT_IN_USE_MESSAGE: "Sản phẩm này hiện đang được sử dụng trong các chương trình khuyến mãi hoặc dịch vụ bổ sung đang hoạt động. Vui lòng vô hiệu hóa những phần đó trước khi thay đổi trạng thái của sản phẩm này.",
   
   // Success/Error messages
   CREATE_SUCCESS: "Tạo thành công",

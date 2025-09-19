@@ -1,21 +1,5 @@
-import {
-  PlusOutlined,
-  ReloadOutlined,
-  SearchOutlined,
-  FilterOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Col,
-  Input,
-  Row,
-  Select,
-  Space,
-  Spin,
-  theme,
-  Switch,
-} from "antd";
+import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { Button, Col, Row, Space, Spin, theme } from "antd";
 import { useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
@@ -37,8 +21,7 @@ const CouponList = () => {
   const { data, isLoading: isFetchingCoupons, refetch } = useGetCouponsQuery();
 
   // State for filtering
-  const [filter, setFilter] = useState<CouponFilter>({
-    search: "",
+  const [filter] = useState<CouponFilter>({
     activeStatus: "ALL",
     hasEnabledDetails: undefined,
   });
@@ -53,14 +36,6 @@ const CouponList = () => {
     if (!data) return [];
 
     return data.filter((coupon) => {
-      // Search filter (code/name)
-      if (filter.search) {
-        const searchLower = filter.search.toLowerCase();
-        const matchCode = coupon.code.toLowerCase().includes(searchLower);
-        const matchName = coupon.name.toLowerCase().includes(searchLower);
-        if (!matchCode && !matchName) return false;
-      }
-
       // Active status filter
       if (filter.activeStatus && filter.activeStatus !== "ALL") {
         if (getActiveStatus(coupon) !== filter.activeStatus) return false;
@@ -83,18 +58,6 @@ const CouponList = () => {
 
   const handleRefresh = () => {
     refetch();
-  };
-
-  const handleFilterChange = (key: keyof CouponFilter, value: any) => {
-    setFilter((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const clearFilters = () => {
-    setFilter({
-      search: "",
-      activeStatus: "ALL",
-      hasEnabledDetails: undefined,
-    });
   };
 
   return (
@@ -135,67 +98,6 @@ const CouponList = () => {
             </Space>
           </Col>
         </Row>
-
-        {/* Filter Section */}
-        <Card size="small" style={{ marginBottom: 16 }}>
-          <Row gutter={[16, 16]} align="middle">
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Input
-                placeholder="Tìm theo mã hoặc tên..."
-                prefix={<SearchOutlined />}
-                value={filter.search}
-                onChange={(e) => handleFilterChange("search", e.target.value)}
-                allowClear
-              />
-            </Col>
-
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Select
-                style={{ width: "100%" }}
-                placeholder="Trạng thái"
-                value={filter.activeStatus}
-                onChange={(value) => handleFilterChange("activeStatus", value)}
-                options={[
-                  { label: "Tất cả", value: "ALL" },
-                  { label: "Kích hoạt", value: "ACTIVE" },
-                  { label: "Ẩn", value: "HIDDEN" },
-                  { label: "Hết hạn", value: "EXPIRED" },
-                ]}
-              />
-            </Col>
-
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Space>
-                <span>Có details enabled:</span>
-                <Switch
-                  checked={filter.hasEnabledDetails}
-                  onChange={(checked) =>
-                    handleFilterChange(
-                      "hasEnabledDetails",
-                      checked ? true : undefined
-                    )
-                  }
-                  checkedChildren="Có"
-                  unCheckedChildren="Tất cả"
-                />
-              </Space>
-            </Col>
-
-            <Col xs={24} sm={12} md={8} lg={6}>
-              <Button icon={<FilterOutlined />} onClick={clearFilters}>
-                Xóa bộ lọc
-              </Button>
-            </Col>
-          </Row>
-
-          <Row style={{ marginTop: 8 }}>
-            <Col span={24}>
-              <span style={{ color: "#666", fontSize: "12px" }}>
-                Hiển thị {filteredData.length} / {data?.length || 0} mục
-              </span>
-            </Col>
-          </Row>
-        </Card>
 
         {/* Table */}
         <CouponTable data={filteredData} loading={isFetchingCoupons} />

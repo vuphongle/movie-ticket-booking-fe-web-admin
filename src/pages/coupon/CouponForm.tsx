@@ -87,6 +87,11 @@ const CouponForm = () => {
         startDate: couponData.startDate ? dayjs(couponData.startDate) : null,
         endDate: couponData.endDate ? dayjs(couponData.endDate) : null,
       });
+    } else if (!isEdit) {
+      // Set default values for new coupon
+      form.setFieldsValue({
+        status: false, // Always false for new coupons
+      });
     }
   }, [isEdit, couponData, form]);
 
@@ -97,7 +102,7 @@ const CouponForm = () => {
         code: values.code,
         name: values.name,
         description: values.description,
-        status: values.status,
+        status: isEdit ? values.status : false, // Force false for new coupons
         startDate: values.startDate ? values.startDate.toISOString() : null,
         endDate: values.endDate ? values.endDate.toISOString() : null,
       };
@@ -116,15 +121,15 @@ const CouponForm = () => {
         };
       } else {
         result = await createCoupon(payload).unwrap();
-        message.success("Tạo coupon thành công!");
+        message.success(
+          "Tạo coupon thành công! Coupon được tạo ở trạng thái ẩn."
+        );
 
         // Tạo coupon object từ result (API trả về Coupon, cần add derived fields)
         updatedCoupon = {
           ...result, // Includes id, code, name, description, status, startDate, endDate, createdAt, updatedAt, createdBy, updatedBy
           // Add derived fields for display
-          activeStatus: result.status
-            ? ("ACTIVE" as const)
-            : ("HIDDEN" as const),
+          activeStatus: "HIDDEN" as const, // Always hidden for new coupons
           enabledDetailsCount: 0,
           totalDetailsCount: 0,
           aggregateUsedCount: 0,
@@ -328,10 +333,16 @@ const CouponForm = () => {
                   rules={[
                     { required: true, message: "Vui lòng chọn trạng thái!" },
                   ]}
-                  extra="Chế độ hiển thị của coupon"
+                  extra={
+                    isEdit
+                      ? "Chế độ hiển thị của coupon"
+                      : "Coupon mới tạo sẽ ở trạng thái ẩn"
+                  }
+                  style={{ display: isEdit ? "block" : "none" }} // Ẩn khi tạo mới
                 >
                   <Select
                     placeholder="Chọn trạng thái"
+                    disabled={!isEdit} // Disable khi tạo mới
                     options={[
                       {
                         label: "Kích hoạt",
@@ -410,12 +421,22 @@ const CouponForm = () => {
                   description={
                     isEdit
                       ? "Sau khi cập nhật, bạn có thể quản lý thông tin chi tiết khuyến mại."
-                      : "Sau khi tạo khuyến mại, bạn sẽ được chuyển đến trang chi tiết để quản lý thông tin."
+                      : "Coupon mới tạo sẽ ở trạng thái ẩn. Sau khi tạo, bạn cần thêm điều kiện chi tiết trước khi có thể kích hoạt khuyến mại."
                   }
                   type="info"
                   showIcon
                   style={{ marginTop: 16 }}
                 />
+
+                {!isEdit && (
+                  <Alert
+                    message="Lưu ý"
+                    description="Coupon mới tạo luôn có trạng thái ẩn để đảm bảo an toàn. Bạn cần thêm ít nhất một điều kiện chi tiết trước khi có thể kích hoạt."
+                    type="warning"
+                    showIcon
+                    style={{ marginTop: 8 }}
+                  />
+                )}
               </Col>
             </Row>
           </Form>

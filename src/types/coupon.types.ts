@@ -70,7 +70,6 @@ export interface CouponDetail {
 
 // Filter interface for UI
 export interface CouponFilter {
-  search?: string;
   activeStatus?: 'ALL' | 'ACTIVE' | 'HIDDEN' | 'EXPIRED';
   hasEnabledDetails?: boolean;
 }
@@ -215,7 +214,6 @@ export interface CouponPreviewModalProps {
 
 // Filter & Search types
 export interface CouponFilter {
-  search?: string; // code/name search
   activeStatus?: 'ACTIVE' | 'HIDDEN' | 'EXPIRED' | 'ALL';
   hasEnabledDetails?: boolean;
 }

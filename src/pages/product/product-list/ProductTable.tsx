@@ -1,4 +1,4 @@
-import { Table, Tag, Button, Popconfirm, Space, Tooltip } from "antd";
+import { Table, Tag, Button, Popconfirm, Space, Tooltip, Modal } from "antd";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
@@ -8,6 +8,7 @@ import { getUnitLabel } from "@/utils/productUtils";
 import {
   useDeleteProductMutation,
   useToggleProductStatusMutation,
+  useLazyCheckCanDeactivateProductQuery,
 } from "@/app/services/products.service";
 import { message } from "antd";
 import type { Product } from "@/types";
@@ -22,6 +23,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
   const [toggleStatus, { isLoading: isToggling }] =
     useToggleProductStatusMutation();
+  const [checkCanDeactivate] = useLazyCheckCanDeactivateProductQuery();
 
   const handleDelete = async (id: string | number) => {
     try {
@@ -32,8 +34,28 @@ const ProductTable = ({ data }: ProductTableProps) => {
     }
   };
 
-  const handleToggleStatus = async (id: string | number) => {
+  const handleToggleStatus = async (
+    id: string | number,
+    currentStatus: boolean
+  ) => {
     try {
+      // Nếu đang chuyển từ active sang inactive, kiểm tra trước
+      if (currentStatus) {
+        const result = await checkCanDeactivate(Number(id)).unwrap();
+        if (!result.canDeactivate) {
+          Modal.confirm({
+            title: t("CANNOT_DEACTIVATE_PRODUCT"),
+            content: t("PRODUCT_IN_USE_MESSAGE"),
+            okText: t("OK"),
+            cancelText: t("CANCEL"),
+            onOk: () => {
+              // User acknowledges, do nothing
+            },
+          });
+          return;
+        }
+      }
+
       await toggleStatus(id).unwrap();
       message.success(t("UPDATE_SUCCESS"));
     } catch (error: any) {
@@ -90,6 +112,17 @@ const ProductTable = ({ data }: ProductTableProps) => {
       render: (text: string) => getUnitLabel(text, t),
     },
     {
+      title: t("QUANTITY"),
+      dataIndex: "quantity",
+      key: "quantity",
+      width: "8%",
+      align: "center" as const,
+      sorter: (a: Product, b: Product) => (a.quantity || 0) - (b.quantity || 0),
+      render: (quantity: number) => {
+        return quantity !== undefined ? quantity : "-";
+      },
+    },
+    {
       title: t("STATUS"),
       dataIndex: "status",
       key: "status",
@@ -102,7 +135,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
           <Tag
             color={status ? "success" : "warning"}
             style={{ cursor: "pointer" }}
-            onClick={() => handleToggleStatus(record.id)}
+            onClick={() => handleToggleStatus(record.id, status)}
           >
             {status ? t("ACTIVE") : t("INACTIVE")}
           </Tag>
