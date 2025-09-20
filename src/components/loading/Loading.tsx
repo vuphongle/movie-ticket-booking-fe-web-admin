@@ -1,10 +1,13 @@
+import { useTranslation } from "react-i18next";
 import React from "react";
 
 const Loading: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div style={styles.overlay}>
       <div style={styles.spinner} />
-      <span style={styles.srOnly}>Loading...</span>
+      <span style={styles.srOnly}>{t("LOADING")}</span>
     </div>
   );
 };
@@ -41,7 +44,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-// Keyframe animation (hiệu ứng xoay cho module kết hợp css động)
 const style = document.createElement("style");
 style.innerHTML = `
 @keyframes spin {

@@ -3,6 +3,7 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { getMenuData } from "@data/routes";
 import type { MenuProps } from "antd";
+import styles from "./AppMenu.module.css";
 
 function mapMenuToItems(
   menu: ReturnType<typeof getMenuData>,
@@ -61,6 +62,7 @@ function AppMenu() {
       defaultSelectedKeys={defaultSelectedKey ? [defaultSelectedKey] : []}
       defaultOpenKeys={defaultOpenKey ? [defaultOpenKey] : []}
       style={{ background: "white", border: "none", paddingBottom: 64 }}
+      className={styles.menuHover}
     />
   );
 }

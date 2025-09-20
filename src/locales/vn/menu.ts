@@ -53,5 +53,9 @@ const menu = {
   ACTOR_MANAGEMENT: "Quản lý diễn viên",
   ACTOR_LIST: "Danh sách diễn viên",
   CREATE_ACTOR: "Tạo diễn viên",
+
+  PRODUCT_MANAGEMENT: "Quản lý sản phẩm",
+  PRODUCT_LIST: "Danh sách sản phẩm",
+  CREATE_PRODUCT: "Tạo sản phẩm",
 };
 export default menu;

@@ -1,12 +1,13 @@
-//Loading hoạt động trong module cha
-
+import { useTranslation } from "react-i18next";
 import React from "react";
 
 const LoadingInside: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div style={styles.container}>
       <div style={styles.spinner} />
-      <span style={styles.srOnly}>Loading...</span>
+      <span style={styles.srOnly}>{t("LOADING")}</span>
     </div>
   );
 };
