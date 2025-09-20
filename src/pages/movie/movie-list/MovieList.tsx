@@ -13,9 +13,17 @@ const MovieList = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const { data, isLoading: isFetchingMovies } = useGetMoviesQuery(undefined);
+  const {
+    data,
+    isLoading: isFetchingMovies,
+    refetch,
+  } = useGetMoviesQuery(undefined);
 
   const breadcrumb = [{ label: t("MOVIE_LIST"), href: "/admin/movies" }];
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   if (isFetchingMovies) {
     return <Spin size="large" fullscreen />;
@@ -45,15 +53,15 @@ const MovieList = () => {
               {t("CREATE_MOVIE")}
             </Button>
           </RouterLink>
-          <RouterLink to="/admin/movies">
-            <Button
-              style={{ backgroundColor: "rgb(0, 192, 239)" }}
-              type="primary"
-              icon={<ReloadOutlined />}
-            >
-              {t("REFRESH")}
-            </Button>
-          </RouterLink>
+          <Button
+            style={{ backgroundColor: "rgb(0, 192, 239)" }}
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={handleRefresh}
+            loading={isFetchingMovies}
+          >
+            {t("REFRESH")}
+          </Button>
         </Space>
 
         <MovieTable data={data} />

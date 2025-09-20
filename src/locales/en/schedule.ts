@@ -27,12 +27,9 @@ const schedule = {
   ENDED: "Ended",
   
   // Actions
-  REFRESH: "Refresh",
-  UPDATE: "Update",
   
   // Placeholders
   SELECT_MOVIE: "Select a movie",
-  SELECT_STATUS: "Select status",
   SEARCH_PLACEHOLDER: "Search by movie name or time...",
   
   // Filter labels

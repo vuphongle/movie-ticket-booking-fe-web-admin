@@ -1,172 +1,118 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Modal, Space, Table, Tag } from "antd";
+import { Table, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useDeleteCouponMutation } from "../../../app/services/coupons.service";
-import useSearchTable from "../../../hooks/useSearchTable";
-import { formatDate } from "../../../utils/functionUtils";
-import ModalUpdate from "./ModalUpdate";
+import { Link as RouterLink } from "react-router-dom";
+import useSearchTable from "@/hooks/useSearchTable";
 import type { CouponTableProps, Coupon } from "@/types";
+import { formatTimeWindow } from "@/utils/couponUtils";
 
-const CouponTable = ({ data }: CouponTableProps) => {
-  const { t } = useTranslation();
+const CouponTable = ({ data, loading = false }: CouponTableProps) => {
   const { getColumnSearchProps } = useSearchTable();
-  const [open, setOpen] = useState(false);
-  const [couponUpdate, setCouponUpdate] = useState<Coupon | null>(null);
-  const [deleteCoupon, { isLoading }] = useDeleteCouponMutation();
+
+  // Computed classification logic (học từ ScheduleTable)
+  const getCouponClassification = (record: Coupon): number => {
+    const now = new Date();
+    const startDate = new Date(record.startDate);
+    const endDate = new Date(record.endDate);
+
+    if (!record.status) return 0; // Disabled
+    if (now < startDate) return 1; // Upcoming
+    if (now >= startDate && now <= endDate) return 2; // Active
+    return 3; // Expired
+  };
 
   const columns: ColumnsType<Coupon> = [
     {
-      title: t("COUPON_TABLE_CODE"),
+      title: "Mã",
       dataIndex: "code",
       key: "code",
+      width: 120,
       ...getColumnSearchProps("code"),
-      render: (text: string) => {
-        return text;
-      },
+      render: (text: string, record: Coupon) => (
+        <RouterLink to={`/admin/coupons/${record.id}/detail`}>
+          <span style={{ fontWeight: "bold", color: "#1890ff" }}>{text}</span>
+        </RouterLink>
+      ),
     },
     {
-      title: t("COUPON_TABLE_DISCOUNT"),
-      dataIndex: "discount",
-      key: "discount",
-      sorter: (a: Coupon, b: Coupon) => a.discount - b.discount,
-      sortDirections: ["descend", "ascend"],
-      render: (text: number) => {
-        return `${text}%`;
-      },
+      title: "Tên",
+      dataIndex: "name",
+      key: "name",
+      width: 200,
+      ...getColumnSearchProps("name"),
+      ellipsis: { showTitle: false },
+      render: (text: string, record: Coupon) => (
+        <Tooltip title={record.description || text}>
+          <span>{text}</span>
+        </Tooltip>
+      ),
     },
     {
-      title: t("COUPON_TABLE_MAX_DISCOUNT"),
-      dataIndex: "maxDiscount",
-      key: "maxDiscount",
-      sorter: (a: Coupon, b: Coupon) =>
-        (a.maxDiscount || 0) - (b.maxDiscount || 0),
-      sortDirections: ["descend", "ascend"],
-      render: (text: number) => {
-        return text ? `${text.toLocaleString()} VND` : t("COUPON_UNLIMITED");
-      },
-    },
-    {
-      title: t("COUPON_TABLE_QUANTITY"),
-      dataIndex: "quantity",
-      key: "quantity",
-      sorter: (a: Coupon, b: Coupon) => a.quantity - b.quantity,
-      sortDirections: ["descend", "ascend"],
-      render: (text: number) => {
-        return text;
-      },
-    },
-    {
-      title: t("COUPON_TABLE_USED"),
-      dataIndex: "used",
-      key: "used",
-      sorter: (a: Coupon, b: Coupon) => (a.used || 0) - (b.used || 0),
-      sortDirections: ["descend", "ascend"],
-      render: (text: number) => {
-        return text || 0;
-      },
-    },
-    {
-      title: t("COUPON_TABLE_STATUS"),
-      dataIndex: "status",
-      key: "status",
-      sorter: (a: Coupon, b: Coupon) => Number(a.status) - Number(b.status),
-      sortDirections: ["descend", "ascend"],
-      render: (_text: boolean, record: Coupon) => {
-        if (record.status) {
-          return <Tag color="success">{t("COUPON_STATUS_ACTIVE")}</Tag>;
-        } else {
-          return <Tag color="default">{t("COUPON_STATUS_INACTIVE")}</Tag>;
-        }
-      },
-    },
-    {
-      title: t("COUPON_TABLE_VALIDITY_PERIOD"),
-      dataIndex: "startDate",
-      key: "startDate",
+      title: "Thời gian",
+      dataIndex: "timeWindow",
+      key: "timeWindow",
+      width: 180,
       sorter: (a: Coupon, b: Coupon) =>
         new Date(a.startDate).getTime() - new Date(b.startDate).getTime(),
       sortDirections: ["descend", "ascend"],
-      render: (_text: string, record: Coupon) => {
-        return `${formatDate(record.startDate)} - ${formatDate(record.endDate)}`;
-      },
+      render: (_: any, record: Coupon) => (
+        <span style={{ fontSize: "12px" }}>{formatTimeWindow(record)}</span>
+      ),
     },
     {
-      title: t("COUPON_TABLE_ACTIONS"),
-      dataIndex: "",
-      key: "action",
-      render: (_text: any, record: Coupon) => {
-        return (
-          <Space>
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setCouponUpdate(record);
-                setOpen(true);
-              }}
-            ></Button>
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                handleConfirm(record.id);
-              }}
-            ></Button>
-          </Space>
-        );
+      title: "Trạng thái",
+      dataIndex: "activeStatus",
+      key: "activeStatus",
+      width: 100,
+      filters: [
+        { text: "Kích hoạt", value: 2 },
+        { text: "Sắp có hiệu lực", value: 1 },
+        { text: "Ẩn", value: 0 },
+        { text: "Hết hạn", value: 3 },
+      ],
+      onFilter: (value, record) => getCouponClassification(record) === value,
+      sorter: (a: Coupon, b: Coupon) => {
+        return getCouponClassification(a) - getCouponClassification(b);
+      },
+      sortDirections: ["descend", "ascend"],
+      render: (_: any, record: Coupon) => {
+        const classification = getCouponClassification(record);
+        const color =
+          classification === 0
+            ? "default"
+            : classification === 1
+              ? "processing"
+              : classification === 2
+                ? "success"
+                : "warning";
+        const statusText =
+          classification === 0
+            ? "Ẩn"
+            : classification === 1
+              ? "Sắp có hiệu lực"
+              : classification === 2
+                ? "Kích hoạt"
+                : "Hết hạn";
+
+        return <Tag color={color}>{statusText}</Tag>;
       },
     },
   ];
 
-  const handleConfirm = (id: string) => {
-    Modal.confirm({
-      title: t("COUPON_DELETE_CONFIRM_TITLE"),
-      content: t("COUPON_DELETE_CONFIRM_CONTENT"),
-      okText: t("COUPON_DELETE_BTN"),
-      okType: "danger",
-      cancelText: t("COUPON_CANCEL_BTN"),
-      okButtonProps: { loading: isLoading }, // Hiển thị loading trên nút OK
-      onOk: () => {
-        return new Promise<void>((resolve, reject) => {
-          deleteCoupon(id)
-            .unwrap()
-            .then(() => {
-              message.success(t("COUPON_DELETE_SUCCESS"));
-              resolve(); // Đóng modal sau khi xóa thành công
-            })
-            .catch((error: any) => {
-              message.error(error.data?.message || t("COUPON_DELETE_ERROR"));
-              reject(); // Không đóng modal nếu xóa thất bại
-            });
-        });
-      },
-      footer: (_, { OkBtn, CancelBtn }) => (
-        <>
-          <CancelBtn />
-          <OkBtn />
-        </>
-      ),
-    });
-  };
-
   return (
-    <>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey={(record) => record.id}
-      />
-
-      {open && couponUpdate && (
-        <ModalUpdate
-          open={open}
-          onCancel={() => setOpen(false)}
-          coupon={couponUpdate}
-        />
-      )}
-    </>
+    <Table
+      columns={columns}
+      dataSource={data}
+      rowKey={(record) => record.id}
+      loading={loading}
+      size="small"
+      scroll={{ x: 800 }}
+      pagination={{
+        showSizeChanger: true,
+        showQuickJumper: true,
+        showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} mục`,
+      }}
+    />
   );
 };
+
 export default CouponTable;

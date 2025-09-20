@@ -10,10 +10,13 @@ const coupon = {
   COUPON_DELETE_BTN: "Xóa",
   COUPON_REFRESH_BTN: "Refresh",
   COUPON_CANCEL_BTN: "Hủy",
+  ADD_COUPON_DETAIL: "Thêm quy tắc",
   
   // Modal titles
   COUPON_CREATE_MODAL_TITLE: "Tạo khuyến mại",
   COUPON_UPDATE_MODAL_TITLE: "Cập nhật khuyến mại",
+  CREATE_COUPON_DETAIL: "Tạo quy tắc khuyến mại",
+  EDIT_COUPON_DETAIL: "Sửa quy tắc khuyến mại",
   
   // Form labels
   COUPON_CODE_LABEL: "Mã khuyến mại",
@@ -63,6 +66,8 @@ const coupon = {
   COUPON_CREATE_SUCCESS: "Tạo khuyến mại thành công!",
   COUPON_UPDATE_SUCCESS: "Cập nhật khuyến mại thành công!",
   COUPON_DELETE_SUCCESS: "Xóa khuyến mại thành công!",
+  CREATE_COUPON_DETAIL_SUCCESS: "Tạo quy tắc khuyến mại thành công!",
+  UPDATE_COUPON_DETAIL_SUCCESS: "Cập nhật quy tắc khuyến mại thành công!",
   
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa khuyến mại này?",

@@ -7,6 +7,9 @@ import {
   RevenueByMovie,
   ForgotPassword,
   ChangePassword,
+  ProductList,
+  ProductCreate,
+  ProductDetail,
 } from "@/pages/index";
 import AppLayout from "@/components/layout/AppLayout";
 import PrivateRoutes from "@/components/private/PrivateRoutes";
@@ -14,12 +17,18 @@ import AuthorizeRoutes from "@/components/private/AuthorizeRoutes";
 import ShowTimesList from "@/pages/showtimes/ShowTimesList";
 import ScheduleList from "@pages/schedule/ScheduleList";
 import CouponList from "@pages/coupon/CouponList";
+import CouponForm from "@pages/coupon/CouponForm";
+import CouponDetail from "@pages/coupon/coupon-detail/CouponDetail";
 import MovieList from "@/pages/movie/movie-list/MovieList";
 import MovieDetail from "@/pages/movie/movie-detail/MovieDetail";
 import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
 import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
+import BasePriceList from "./pages/ticket-price/base-price/BasePriceList";
+import AdditionalServiceCreate from "./pages/additional-service/additional-service-create/AdditionalServiceCreate";
+import AdditionalServiceList from "./pages/additional-service/additional-service-list/AdditionalServiceList";
+import AdditionalServiceDetail from "./pages/additional-service/additional-service-detail/AdditionalServiceDetail";
 
 function App() {
   return (
@@ -46,10 +55,31 @@ function App() {
             </Route>
             <Route path="revenue/cinema" element={<RevenueByCinema />} />
             <Route path="revenue/movie" element={<RevenueByMovie />} />
+            <Route path="ticket-prices">
+              <Route path="base-price" element={<BasePriceList />} />
+            </Route>
             <Route path="showtimes" element={<ShowTimesList />} />
             <Route path="schedules" element={<ScheduleList />} />
-            <Route path="coupons" element={<CouponList />} />
+            <Route path="coupons">
+              <Route index element={<CouponList />} />
+              <Route path="create" element={<CouponForm />} />
+              <Route path=":id/edit" element={<CouponForm />} />
+              <Route path=":couponId/detail" element={<CouponDetail />} />
+            </Route>
             <Route path="change-password" element={<ChangePassword />} />
+            <Route path="additional-services">
+              <Route index element={<AdditionalServiceList />} />
+              <Route
+                path=":additionalServiceId/detail"
+                element={<AdditionalServiceDetail />}
+              />
+              <Route path="create" element={<AdditionalServiceCreate />} />
+            </Route>
+            <Route path="products">
+              <Route index element={<ProductList />} />
+              <Route path=":productId/detail" element={<ProductDetail />} />
+              <Route path="create" element={<ProductCreate />} />
+            </Route>
           </Route>
           <Route path="*" element={<div>404 Not Found</div>} />
         </Route>

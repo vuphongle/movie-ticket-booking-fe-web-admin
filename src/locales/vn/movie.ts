@@ -10,13 +10,7 @@ const movie = {
   CREATE_MOVIE: "Tạo phim",
   UPDATE_MOVIE: "Cập nhật",
   DELETE_MOVIE: "Xóa phim",
-  BACK: "Quay lại",
-  REFRESH: "Refresh",
   CHANGE_POSTER: "Thay đổi ảnh phim",
-  SELECT_IMAGE: "Chọn ảnh",
-  UPLOAD_IMAGE: "Tải ảnh lên",
-  DELETE_IMAGE: "Xóa ảnh",
-  CHOOSE_IMAGE: "Chọn ảnh của bạn",
 
   // Form labels
   MOVIE_NAME: "Tên phim",
@@ -65,8 +59,7 @@ const movie = {
   TIME: "Thời gian",
 
   // Status values
-  DRAFT: "Nháp",
-  PUBLIC: "Công khai",
+  COMING_SOON: "Sắp chiếu",
 
   // Translation options
   SUBTITLING: "Phụ đề",

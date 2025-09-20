@@ -27,12 +27,9 @@ const schedule = {
   ENDED: "Đã chiếu",
   
   // Actions
-  REFRESH: "Làm mới",
-  UPDATE: "Cập nhật",
   
   // Placeholders
   SELECT_MOVIE: "Chọn phim chiếu",
-  SELECT_STATUS: "Chọn trạng thái",
   SEARCH_PLACEHOLDER: "Tìm kiếm theo tên phim hoặc thời gian...",
   
   // Filter labels

@@ -8,6 +8,8 @@ import schedule from "./schedule";
 import coupon from "./coupon";
 import movie from "./movie";
 import cinema from "./cinema";
+import ticketPrice from "./ticketPrice";
+import additionalService from "./additionalService";
 
 const vn = {
   ...common,
@@ -20,6 +22,8 @@ const vn = {
   ...coupon,
   ...movie,
   ...cinema,
+  ...ticketPrice,
+  ...additionalService,
 };
 
 export default vn;
