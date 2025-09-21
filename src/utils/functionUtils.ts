@@ -3,7 +3,7 @@ export const formatDate = (dateString: string | Date): string => {
     const year = date.getFullYear();
     const month = `0${date.getMonth() + 1}`.slice(-2);
     const day = `0${date.getDate()}`.slice(-2);
-    return `${day}-${month}-${year}`
+    return `${day}/${month}/${year}`
 }
 
 export const formatDateTime = (dateString: string | Date): string => {
@@ -13,7 +13,7 @@ export const formatDateTime = (dateString: string | Date): string => {
     const day = `0${date.getDate()}`.slice(-2);
     const hour = `0${date.getHours()}`.slice(-2);
     const minute = `0${date.getMinutes()}`.slice(-2);
-    return `${day}-${month}-${year} ${hour}:${minute}`
+    return `${day}/${month}/${year} ${hour}:${minute}`
 }
 
 export const parseTimeToHHMM = (time: string | Date): string => {

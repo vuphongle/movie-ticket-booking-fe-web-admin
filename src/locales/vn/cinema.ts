@@ -26,9 +26,6 @@ const cinema = {
   CREATED_AT: "Ngày tạo",
   
   // Messages
-  CREATE_SUCCESS: "Tạo rạp chiếu thành công!",
-  UPDATE_SUCCESS: "Cập nhật rạp chiếu thành công!",
-  DELETE_SUCCESS: "Xóa rạp chiếu thành công!",
   DELETE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa rạp chiếu này?",
   DELETE_CONFIRM_CONTENT: "Hành động này không thể hoàn tác!",
   
@@ -94,7 +91,6 @@ const cinema = {
   UPDATE_SEAT_TITLE: "Cập nhật ghế phòng chiếu",
   UPDATE_ROW_SEAT_TITLE: "Cập nhật hàng ghế",
   UPDATE_ROW_SEAT_SUCCESS: "Cập nhật hàng ghế thành công!",
-  UPDATE_BUTTON: "Cập nhật",
   
   // Seat Types
   SEAT_TYPE: "Loại ghế",

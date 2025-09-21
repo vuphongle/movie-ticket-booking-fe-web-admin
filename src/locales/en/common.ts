@@ -108,7 +108,7 @@ const common = {
   DELETE_FAILED: "Delete failed",
   
   // Confirmations
-  DELETE_PRODUCT_CONFIRM: "Are you sure you want to delete this product?",
+  DELETE_CONFIRM: "Are you sure you want to delete?",
   ACTION_CANNOT_UNDONE: "This action cannot be undone",
   
   // Actions

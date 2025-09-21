@@ -17,6 +17,8 @@ import { reviewApi } from "@/app/services/reviews.service";
 import { seatApi } from "@/app/services/seats.service";
 import { seatTypeApi } from "@/app/services/seatType.service";
 import { baseTicketPriceApi } from "@/app/services/baseTicketPrice.service";
+import { priceListApi } from "@/app/services/priceList.service";
+import { priceItemApi } from "@/app/services/priceItem.service";
 import { additionalServiceApi } from "@/app/services/additionalServices.service";
 import { productApi } from "@/app/services/products.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
@@ -42,6 +44,8 @@ export const Store = configureStore({
     [seatApi.reducerPath]: seatApi.reducer,
     [seatTypeApi.reducerPath]: seatTypeApi.reducer,
     [baseTicketPriceApi.reducerPath]: baseTicketPriceApi.reducer,
+    [priceListApi.reducerPath]: priceListApi.reducer,
+    [priceItemApi.reducerPath]: priceItemApi.reducer,
     [additionalServiceApi.reducerPath]: additionalServiceApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
   },
@@ -64,6 +68,8 @@ export const Store = configureStore({
       seatApi.middleware,
       seatTypeApi.middleware,
       baseTicketPriceApi.middleware,
+      priceListApi.middleware,
+      priceItemApi.middleware,
       additionalServiceApi.middleware,
       productApi.middleware,
       checkStatusMiddleware,

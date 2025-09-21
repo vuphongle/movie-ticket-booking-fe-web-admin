@@ -7,8 +7,6 @@ const ticketPrice = {
   
   // Buttons
   CREATE_TICKET_PRICE_BUTTON: "Tạo giá vé",
-  UPDATE: "Cập nhật",
-  UPDATE_BUTTON: "Cập nhật",
   DELETE_BUTTON: "Xóa",
   SAVE_BUTTON: "Lưu",
   REFRESH_BUTTON: "Refresh",
@@ -65,9 +63,6 @@ const ticketPrice = {
   GOLDCLASS_SHORT: "GOLD CLASS",
   
   // Messages
-  CREATE_SUCCESS: "Tạo giá vé thành công!",
-  UPDATE_SUCCESS: "Cập nhật giá vé thành công!",
-  DELETE_SUCCESS: "Xóa giá vé thành công!",
   DELETE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa giá vé này?",
   DELETE_CONFIRM_CONTENT: "Hành động này không thể hoàn tác!",
   OK_TEXT: "Xóa",

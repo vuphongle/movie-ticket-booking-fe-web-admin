@@ -9,6 +9,7 @@ import coupon from "./coupon";
 import movie from "./movie";
 import cinema from "./cinema";
 import ticketPrice from "./ticketPrice";
+import priceManagement from "./priceManagement";
 import additionalService from "./additionalService";
 
 const en = {
@@ -23,6 +24,7 @@ const en = {
   ...movie,
   ...cinema,
   ...ticketPrice,
+  ...priceManagement,
   ...additionalService,
 };
 

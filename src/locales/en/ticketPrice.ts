@@ -7,7 +7,6 @@ const ticketPrice = {
   
   // Buttons
   CREATE_TICKET_PRICE_BUTTON: "Create Ticket Price",
-  UPDATE_BUTTON: "Update",
   DELETE_BUTTON: "Delete",
   SAVE_BUTTON: "Save",
   REFRESH_BUTTON: "Refresh",
@@ -64,9 +63,6 @@ const ticketPrice = {
   GOLDCLASS_SHORT: "GOLD CLASS",
   
   // Messages
-  CREATE_SUCCESS: "Ticket price created successfully!",
-  UPDATE_SUCCESS: "Ticket price updated successfully!",
-  DELETE_SUCCESS: "Ticket price deleted successfully!",
   DELETE_CONFIRM_TITLE: "Are you sure you want to delete this ticket price?",
   DELETE_CONFIRM_CONTENT: "This action cannot be undone!",
   OK_TEXT: "Delete",

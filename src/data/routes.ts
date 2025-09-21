@@ -107,12 +107,17 @@ export const getMenuData = (t: (key: string) => string) => [
   },
   {
     id: 200,
-    label: t("TICKET_PRICE_MANAGEMENT"),
+    label: t("PRICE_MANAGEMENT"),
     icon: CalculatorOutlined,
-    url: "/admin/ticket-prices",
+    url: "/admin/price-lists",
     subs: [
       {
         id: 2001,
+        label: t("PRICE_LIST_MANAGEMENT"),
+        url: "/admin/price-lists",
+      },
+      {
+        id: 2003,
         label: t("BASE_TICKET_PRICE"),
         url: "/admin/ticket-prices/base-price",
       },

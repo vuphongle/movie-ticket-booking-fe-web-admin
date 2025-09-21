@@ -42,19 +42,10 @@ const additionalService = {
   STATUS_REQUIRED: "Status is required!",
 
   // Success/Error messages
-  CREATE_SUCCESS: "Additional service created successfully!",
-  UPDATE_SUCCESS: "Additional service updated successfully!",
-  DELETE_SUCCESS: "Additional service deleted successfully!",
   UPLOAD_SUCCESS: "Image uploaded successfully!",
   DELETE_IMAGE_SUCCESS: "Image deleted successfully!",
-  CREATE_FAILED: "Failed to create additional service!",
-  UPDATE_FAILED: "Failed to update additional service!",
-  DELETE_FAILED: "Failed to delete additional service!",
   UPLOAD_FAILED: "Failed to upload image!",
   DELETE_IMAGE_FAILED: "Failed to delete image!",
-
-  // Confirm messages
-  DELETE_CONFIRM: "Are you sure you want to delete this additional service?",
 
   // Other messages
   SERVICE_NOT_FOUND: "Additional service not found",

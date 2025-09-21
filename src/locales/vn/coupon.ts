@@ -64,7 +64,6 @@ const coupon = {
   
   // Success messages
   COUPON_CREATE_SUCCESS: "Tạo khuyến mại thành công!",
-  COUPON_UPDATE_SUCCESS: "Cập nhật khuyến mại thành công!",
   COUPON_DELETE_SUCCESS: "Xóa khuyến mại thành công!",
   CREATE_COUPON_DETAIL_SUCCESS: "Tạo quy tắc khuyến mại thành công!",
   UPDATE_COUPON_DETAIL_SUCCESS: "Cập nhật quy tắc khuyến mại thành công!",
