@@ -64,7 +64,6 @@ const coupon = {
   
   // Success messages
   COUPON_CREATE_SUCCESS: "Coupon created successfully!",
-  COUPON_UPDATE_SUCCESS: "Coupon updated successfully!",
   COUPON_DELETE_SUCCESS: "Coupon deleted successfully!",
   CREATE_COUPON_DETAIL_SUCCESS: "Coupon detail created successfully!",
   UPDATE_COUPON_DETAIL_SUCCESS: "Coupon detail updated successfully!",

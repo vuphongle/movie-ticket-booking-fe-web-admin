@@ -82,9 +82,6 @@ const movie = {
   COUNTRY_REQUIRED: "Country is required!",
 
   // Success/Error messages
-  CREATE_SUCCESS: "Movie created successfully!",
-  UPDATE_SUCCESS: "Movie updated successfully!",
-  DELETE_SUCCESS: "Movie deleted successfully!",
   UPLOAD_SUCCESS: "Image uploaded successfully!",
   DELETE_IMAGE_SUCCESS: "Image deleted successfully!",
   DELETE_REVIEW_SUCCESS: "Review deleted successfully!",

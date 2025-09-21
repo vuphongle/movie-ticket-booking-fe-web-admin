@@ -42,21 +42,12 @@ const additionalService = {
   STATUS_REQUIRED: "Trạng thái không được để trống!",
 
   // Success/Error messages
-  CREATE_SUCCESS: "Tạo combo-nước thành công!",
-  UPDATE_SUCCESS: "Cập nhật combo-nước thành công!",
-  DELETE_SUCCESS: "Xóa combo-nước thành công!",
   UPLOAD_SUCCESS: "Tải ảnh lên thành công!",
   DELETE_IMAGE_SUCCESS: "Xóa ảnh thành công!",
-  CREATE_FAILED: "Tạo combo-nước thất bại!",
-  UPDATE_FAILED: "Cập nhật combo-nước thất bại!",
-  DELETE_FAILED: "Xóa combo-nước thất bại!",
   UPLOAD_FAILED: "Tải ảnh thất bại!",
   DELETE_IMAGE_FAILED: "Xóa ảnh thất bại!",
 
   // Confirm messages
-  DELETE_CONFIRM: "Bạn có chắc chắn muốn xóa combo-nước này?",
-  ACTION_CANNOT_UNDONE: "Hành động này không thể hoàn tác!",
-  DELETE: "Xóa",
   CANCEL: "Hủy",
 
   // Other messages

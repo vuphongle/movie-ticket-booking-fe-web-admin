@@ -97,9 +97,9 @@ const CouponDetail = () => {
     const formattedValues = {
       ...values,
       startDate: values.startDate
-        ? values.startDate.format("YYYY-MM-DD")
+        ? values.startDate.format("DD/MM/YYYY")
         : null,
-      endDate: values.endDate ? values.endDate.format("YYYY-MM-DD") : null,
+      endDate: values.endDate ? values.endDate.format("DD/MM/YYYY") : null,
     };
 
     updateCoupon({

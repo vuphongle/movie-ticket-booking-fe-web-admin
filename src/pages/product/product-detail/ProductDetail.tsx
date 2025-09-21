@@ -235,7 +235,7 @@ const ProductDetail = () => {
 
   const handleDelete = () => {
     Modal.confirm({
-      title: t("DELETE_PRODUCT_CONFIRM"),
+      title: t("DELETE_CONFIRM"),
       content: t("ACTION_CANNOT_UNDONE"),
       okText: t("DELETE"),
       okType: "danger",

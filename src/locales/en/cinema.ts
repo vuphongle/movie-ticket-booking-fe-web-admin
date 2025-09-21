@@ -26,9 +26,6 @@ const cinema = {
   CREATED_AT: "Created At",
   
   // Messages
-  CREATE_SUCCESS: "Cinema created successfully!",
-  UPDATE_SUCCESS: "Cinema updated successfully!",
-  DELETE_SUCCESS: "Cinema deleted successfully!",
   DELETE_CONFIRM_TITLE: "Are you sure you want to delete this cinema?",
   DELETE_CONFIRM_CONTENT: "This action cannot be undone!",
   
@@ -94,7 +91,6 @@ const cinema = {
   UPDATE_SEAT_TITLE: "Update Auditorium Seats",
   UPDATE_ROW_SEAT_TITLE: "Update Row Seats",
   UPDATE_ROW_SEAT_SUCCESS: "Row seats updated successfully!",
-  UPDATE_BUTTON: "Update",
   
   // Seat Types
   SEAT_TYPE: "Seat Type",

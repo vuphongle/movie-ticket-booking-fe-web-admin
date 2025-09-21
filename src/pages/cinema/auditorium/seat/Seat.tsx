@@ -146,7 +146,7 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
           <Form.Item>
             <Space>
               <Button type="primary" htmlType="submit" loading={isLoading}>
-                {t("UPDATE_BUTTON")}
+                {t("UPDATE")}
               </Button>
             </Space>
           </Form.Item>

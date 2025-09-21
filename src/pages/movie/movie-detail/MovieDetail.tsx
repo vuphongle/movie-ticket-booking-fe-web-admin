@@ -165,7 +165,6 @@ const MovieDetail = () => {
         message.success(t("UPDATE_SUCCESS"));
       })
       .catch((error) => {
-        // console.log(error);
         message.error(error.data.message);
       });
   };
@@ -259,7 +258,6 @@ const MovieDetail = () => {
         setImageSelected(null);
       })
       .catch((error) => {
-        // console.log(error);
         message.error(error.data.message);
       });
   };

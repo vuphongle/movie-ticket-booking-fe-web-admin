@@ -21,6 +21,10 @@ const menu = {
   ORDER_MANAGEMENT: "Quản lý đơn hàng",
   ORDER_LIST: "Danh sách đơn hàng",
 
+  PRICE_MANAGEMENT: "Quản lý giá",
+  PRICE_LIST_MANAGEMENT: "Quản lý bảng giá",
+  PRICE_ITEM_MANAGEMENT: "Quản lý mục giá",
+  
   TICKET_PRICE_MANAGEMENT: "Quản lý giá vé",
   BASE_TICKET_PRICE: "Giá vé cơ bản",
 

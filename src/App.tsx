@@ -26,6 +26,8 @@ import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
 import BasePriceList from "./pages/ticket-price/base-price/BasePriceList";
+import PriceListPage from "./pages/price-management/price-list/PriceListPage";
+import PriceListDetail from "./pages/price-management/price-list/PriceListDetail";
 import AdditionalServiceCreate from "./pages/additional-service/additional-service-create/AdditionalServiceCreate";
 import AdditionalServiceList from "./pages/additional-service/additional-service-list/AdditionalServiceList";
 import AdditionalServiceDetail from "./pages/additional-service/additional-service-detail/AdditionalServiceDetail";
@@ -55,6 +57,10 @@ function App() {
             </Route>
             <Route path="revenue/cinema" element={<RevenueByCinema />} />
             <Route path="revenue/movie" element={<RevenueByMovie />} />
+            <Route path="price-lists">
+              <Route index element={<PriceListPage />} />
+              <Route path=":priceListId/detail" element={<PriceListDetail />} />
+            </Route>
             <Route path="ticket-prices">
               <Route path="base-price" element={<BasePriceList />} />
             </Route>

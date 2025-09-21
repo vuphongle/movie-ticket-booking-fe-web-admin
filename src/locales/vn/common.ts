@@ -108,7 +108,7 @@ const common = {
   DELETE_FAILED: "Xóa thất bại",
   
   // Confirmations
-  DELETE_PRODUCT_CONFIRM: "Bạn có chắc chắn muốn xóa sản phẩm này?",
+  DELETE_CONFIRM: "Bạn có chắc chắn muốn xóa?",
   ACTION_CANNOT_UNDONE: "Hành động này không thể hoàn tác",
   
   // Actions

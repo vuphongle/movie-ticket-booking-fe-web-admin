@@ -8,5 +8,6 @@ export * from "./movie.types";
 export * from "./seat.types";
 export * from "./cinema.types";
 export * from "./ticketPrice.types";
+export * from "./priceList.types";
 export * from "./additionalService.types";
 export * from "./product.types";

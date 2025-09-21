@@ -104,7 +104,7 @@ function ShowtimesByAuditorium({
   const [showtimes, setShowtimes] = useState<Showtime[]>(data.showtimes);
   const [form] = Form.useForm();
   const { data: movies, isLoading: _isFetchingMovies } =
-    useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD-MM-YYYY"));
+    useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD/MM/YYYY"));
   const [createShowtimes, { isLoading: isLoadingCreateShowtimes }] =
     useCreateShowtimesMutation();
   const { t } = useTranslation();
@@ -222,11 +222,11 @@ function ShowtimesByAuditorium({
         const now = dayjs();
         const startTime = dayjs(
           `${record.date} ${record.startTime}`,
-          "YYYY-MM-DD HH:mm"
+          "DD/MM/YYYY HH:mm"
         );
         const endTime = dayjs(
           `${record.date} ${record.endTime}`,
-          "YYYY-MM-DD HH:mm"
+          "DD/MM/YYYY HH:mm"
         );
 
         if (now.isBefore(startTime)) {
@@ -277,7 +277,7 @@ function ShowtimesByAuditorium({
     const createPayload: ShowtimeApiPayload = {
       auditoriumId: auditorium.id,
       movieId: values.movieId,
-      date: dayjs(values.date).format("YYYY-MM-DD"),
+      date: dayjs(values.date).format("DD/MM/YYYY"),
       startTime: apiPayload.startTime,
       endTime: apiPayload.endTime,
       graphicsType: values.graphicsType,

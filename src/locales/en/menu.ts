@@ -21,6 +21,10 @@ const menu = {
   ORDER_MANAGEMENT: "Order Management",
   ORDER_LIST: "Order List",
 
+  PRICE_MANAGEMENT: "Price Management",
+  PRICE_LIST_MANAGEMENT: "Price List Management",
+  PRICE_ITEM_MANAGEMENT: "Price Item Management",
+  
   TICKET_PRICE_MANAGEMENT: "Ticket Price Management",
   BASE_TICKET_PRICE: "Base Ticket Price",
 

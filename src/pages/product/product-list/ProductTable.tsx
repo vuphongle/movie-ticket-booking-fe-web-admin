@@ -173,7 +173,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
 
           <Tooltip title={t("DELETE")}>
             <Popconfirm
-              title={t("DELETE_PRODUCT_CONFIRM")}
+              title={t("DELETE_CONFIRM")}
               description={t("ACTION_CANNOT_UNDONE")}
               onConfirm={() => handleDelete(record.id)}
               okText={t("DELETE")}

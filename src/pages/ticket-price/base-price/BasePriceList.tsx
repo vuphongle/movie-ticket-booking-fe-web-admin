@@ -1,4 +1,8 @@
-import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  ReloadOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Form,
@@ -9,6 +13,7 @@ import {
   Spin,
   message,
   theme,
+  Alert,
 } from "antd";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
@@ -74,6 +79,31 @@ const BasePriceList = () => {
           borderRadius: borderRadiusLG,
         }}
       >
+        <Alert
+          message="Legacy System Notice"
+          description={
+            <div>
+              <p>
+                <strong>This base ticket price system is deprecated.</strong>
+              </p>
+              <p>
+                Please use the new{" "}
+                <RouterLink
+                  to="/admin/price-management/price-lists"
+                  style={{ fontWeight: "bold", color: "#1890ff" }}
+                >
+                  Price List Management
+                </RouterLink>{" "}
+                system for more flexible pricing configurations.
+              </p>
+            </div>
+          }
+          type="warning"
+          icon={<ExclamationCircleOutlined />}
+          showIcon
+          style={{ marginBottom: 16 }}
+        />
+
         <Space style={{ marginBottom: "1rem" }}>
           <Button
             style={{ backgroundColor: "rgb(60, 141, 188)" }}
