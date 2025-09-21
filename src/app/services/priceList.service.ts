@@ -34,6 +34,9 @@ export const priceListApi = createApi({
         if (filter?.status !== undefined) params.append("status", filter.status.toString());
         if (filter?.validAt) params.append("validAt", filter.validAt);
         
+        // Include price items count
+        params.append("includePriceItemsCount", "true");
+        
         const queryString = params.toString();
         return `price-lists${queryString ? `?${queryString}` : ""}`;
       },
@@ -148,6 +151,26 @@ export const priceListApi = createApi({
         body: dates,
       }),
     }),
+
+    // Clone price list with all price items
+    clonePriceList: builder.mutation<
+      PriceList,
+      { 
+        id: number; 
+        name: string; 
+        priority?: number;
+        status?: boolean;
+        validFrom?: string;
+        validTo?: string;
+      }
+    >({
+      query: ({ id, ...cloneData }) => ({
+        url: `price-lists/${id}/clone`,
+        method: "POST",
+        body: cloneData,
+      }),
+      invalidatesTags: ["PriceList"],
+    }),
   }),
 });
 
@@ -164,4 +187,5 @@ export const {
   useCheckCanDeletePriceListQuery,
   useLazyCheckCanDeletePriceListQuery,
   useValidatePriceListDatesMutation,
+  useClonePriceListMutation,
 } = priceListApi;

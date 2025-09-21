@@ -24,7 +24,7 @@ export const parseTimeToHHMM = (time: string | Date): string => {
 }
 
 export const formatCurrency = (number: number): string => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND";
 }
 
 // Range row return [A, Z]

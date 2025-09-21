@@ -13,7 +13,6 @@ const additionalService = {
   // Form labels
   SERVICE_NAME: "Tên combo-nước",
   DESCRIPTION: "Mô tả",
-  PRICE: "Giá tiền",
   STATUS: "Trạng thái",
   THUMBNAIL: "Ảnh đại diện",
 

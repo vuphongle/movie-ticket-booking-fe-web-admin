@@ -31,6 +31,7 @@ export interface PriceList {
   createdAt: string;
   updatedAt: string;
   priceItems?: PriceItem[];
+  priceItemsCount?: number; // Count of price items
 }
 
 export interface CreatePriceListRequest {

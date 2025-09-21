@@ -30,7 +30,6 @@ const schedule = {
   
   // Placeholders
   SELECT_MOVIE: "Select a movie",
-  SEARCH_PLACEHOLDER: "Search by movie name or time...",
   
   // Filter labels
   ALL: "All",

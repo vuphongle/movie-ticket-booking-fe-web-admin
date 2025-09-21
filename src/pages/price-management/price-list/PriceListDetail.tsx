@@ -152,7 +152,7 @@ const PriceListDetail = () => {
           .then((_data) => {
             message.success(t("DELETE_SUCCESS"));
             setTimeout(() => {
-              navigate("/admin/price-management/price-lists");
+              navigate("/admin/price-lists");
             }, 1500);
           })
           .catch((error) => {
@@ -188,7 +188,7 @@ const PriceListDetail = () => {
           style={{ marginBottom: "1rem" }}
         >
           <Space>
-            <RouterLink to="/admin/price-management/price-lists">
+            <RouterLink to="/admin/price-lists">
               <Button type="default" icon={<LeftOutlined />}>
                 {t("BACK")}
               </Button>

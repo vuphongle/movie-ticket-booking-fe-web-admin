@@ -25,7 +25,6 @@ import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
 import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
-import BasePriceList from "./pages/ticket-price/base-price/BasePriceList";
 import PriceListPage from "./pages/price-management/price-list/PriceListPage";
 import PriceListDetail from "./pages/price-management/price-list/PriceListDetail";
 import AdditionalServiceCreate from "./pages/additional-service/additional-service-create/AdditionalServiceCreate";
@@ -60,9 +59,6 @@ function App() {
             <Route path="price-lists">
               <Route index element={<PriceListPage />} />
               <Route path=":priceListId/detail" element={<PriceListDetail />} />
-            </Route>
-            <Route path="ticket-prices">
-              <Route path="base-price" element={<BasePriceList />} />
             </Route>
             <Route path="showtimes" element={<ShowTimesList />} />
             <Route path="schedules" element={<ScheduleList />} />

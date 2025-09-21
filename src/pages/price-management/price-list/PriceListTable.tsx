@@ -1,10 +1,8 @@
 import {
   DeleteOutlined,
-  EditOutlined,
   EyeOutlined,
   SettingOutlined,
   CopyOutlined,
-  InboxOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -23,10 +21,11 @@ import { Link as RouterLink } from "react-router-dom";
 import {
   useDeletePriceListMutation,
   useTogglePriceListStatusMutation,
-  useCreatePriceListMutation,
+  useClonePriceListMutation,
 } from "@/app/services/priceList.service";
-import { formatDateTime } from "@/utils/functionUtils";
+import { formatDateTime, formatDate } from "@/utils/functionUtils";
 import type { PriceList } from "@/types";
+import PriceItemsCount from "./components/PriceItemsCount";
 
 interface PriceListTableProps {
   data: PriceList[];
@@ -40,17 +39,42 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
     useDeletePriceListMutation();
   const [toggleStatus, { isLoading: isToggling }] =
     useTogglePriceListStatusMutation();
-  const [createPriceList, { isLoading: isCloning }] =
-    useCreatePriceListMutation();
+  const [clonePriceList, { isLoading: isCloning }] =
+    useClonePriceListMutation();
 
   const handleClone = (priceList: PriceList) => {
     Modal.confirm({
       title: t("CLONE_CONFIRM_TITLE"),
-      content: t("CLONE_CONFIRM_CONTENT", { name: priceList.name }),
-      okText: t("OK_TEXT"),
+      content: (
+        <div>
+          <p>{t("CLONE_CONFIRM_CONTENT", { name: priceList.name })}</p>
+          <div
+            style={{
+              marginTop: 12,
+              padding: 8,
+              background: "#f0f0f0",
+              borderRadius: 4,
+            }}
+          >
+            <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>
+              <strong>
+                {t("CLONE")} {t("NAME")}:
+              </strong>{" "}
+              {priceList.name} (Copy)
+            </p>
+            <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>
+              <strong>{t("STATUS")}:</strong> {t("INACTIVE")} (
+              {t("CAN_ACTIVATE_LATER")})
+            </p>
+          </div>
+        </div>
+      ),
+      okText: t("CLONE"),
       cancelText: t("CANCEL_TEXT"),
+      okType: "primary",
       onOk: () => {
         const cloneData = {
+          id: priceList.id,
           name: `${priceList.name} (Copy)`,
           priority: priceList.priority + 1, // Slightly lower priority
           status: false, // Start as inactive
@@ -58,26 +82,16 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
           validTo: priceList.validTo,
         };
 
-        createPriceList(cloneData)
+        return clonePriceList(cloneData)
           .unwrap()
           .then(() => {
             message.success(t("CLONE_SUCCESS"));
           })
           .catch((error: any) => {
             message.error(error.data?.message || t("CLONE_ERROR"));
+            throw error; // Re-throw to keep modal open on error
           });
       },
-    });
-  };
-
-  const handleArchive = (priceList: PriceList) => {
-    const action = priceList.status ? "ARCHIVE" : "UNARCHIVE";
-    Modal.confirm({
-      title: t(`${action}_CONFIRM_TITLE`),
-      content: t(`${action}_CONFIRM_CONTENT`, { name: priceList.name }),
-      okText: t("OK_TEXT"),
-      cancelText: t("CANCEL_TEXT"),
-      onOk: () => handleToggleStatus(priceList),
     });
   };
 
@@ -116,7 +130,7 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
     {
       key: "view",
       label: (
-        <RouterLink to={`/admin/price-lists/${priceList.id}`}>
+        <RouterLink to={`/admin/price-lists/${priceList.id}/detail`}>
           <Space>
             <EyeOutlined />
             {t("VIEW_DETAILS")}
@@ -125,35 +139,14 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
       ),
     },
     {
-      key: "edit",
-      label: (
-        <Space
-          onClick={() =>
-            message.info(t("FEATURE_COMING_SOON") || "Feature coming soon")
-          }
-        >
-          <EditOutlined />
-          {t("EDIT")}
-        </Space>
-      ),
-    },
-    {
       key: "clone",
       label: (
-        <Space onClick={() => handleClone(priceList)}>
+        <Space>
           <CopyOutlined />
           {t("CLONE")}
         </Space>
       ),
-    },
-    {
-      key: "archive",
-      label: (
-        <Space onClick={() => handleArchive(priceList)}>
-          <InboxOutlined />
-          {priceList.status ? t("ARCHIVE") : t("UNARCHIVE")}
-        </Space>
-      ),
+      onClick: () => handleClone(priceList),
     },
     {
       type: "divider",
@@ -161,31 +154,17 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
     {
       key: "delete",
       label: (
-        <Space onClick={() => handleDelete(priceList)}>
+        <Space>
           <DeleteOutlined />
           {t("DELETE")}
         </Space>
       ),
       danger: true,
+      onClick: () => handleDelete(priceList),
     },
   ];
 
   const columns: ColumnsType<PriceList> = [
-    {
-      title: t("NAME"),
-      dataIndex: "name",
-      key: "name",
-      width: 250,
-      sorter: (a, b) => a.name.localeCompare(b.name, "vi"),
-      sortDirections: ["ascend", "descend"],
-      render: (text: string, record: PriceList) => (
-        <Space direction="vertical" size={0}>
-          <RouterLink to={`/admin/price-lists/${record.id}/detail`}>
-            <strong style={{ color: "#1890ff" }}>{text}</strong>
-          </RouterLink>
-        </Space>
-      ),
-    },
     {
       title: t("STATUS"),
       dataIndex: "status",
@@ -208,10 +187,25 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
       ),
     },
     {
+      title: t("NAME"),
+      dataIndex: "name",
+      key: "name",
+      width: 250,
+      sorter: (a, b) => a.name.localeCompare(b.name, "vi"),
+      sortDirections: ["ascend", "descend"],
+      render: (text: string, record: PriceList) => (
+        <Space direction="vertical" size={0}>
+          <RouterLink to={`/admin/price-lists/${record.id}/detail`}>
+            <strong style={{ color: "#1890ff" }}>{text}</strong>
+          </RouterLink>
+        </Space>
+      ),
+    },
+    {
       title: t("PRIORITY"),
       dataIndex: "priority",
       key: "priority",
-      width: 80,
+      width: 100,
       align: "center",
       sorter: (a, b) => a.priority - b.priority,
       sortDirections: ["ascend", "descend"],
@@ -231,12 +225,12 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
         <Space direction="vertical" size={0}>
           {record.validFrom && (
             <small>
-              <strong>{t("FROM")}:</strong> {formatDateTime(record.validFrom)}
+              <strong>{t("FROM")}:</strong> {formatDate(record.validFrom)}
             </small>
           )}
           {record.validTo && (
             <small>
-              <strong>{t("TO")}:</strong> {formatDateTime(record.validTo)}
+              <strong>{t("TO")}:</strong> {formatDate(record.validTo)}
             </small>
           )}
           {!record.validFrom && !record.validTo && (
@@ -250,9 +244,7 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
       key: "priceItemsCount",
       width: 100,
       align: "center",
-      render: (_, record: PriceList) => (
-        <Tag color="blue">{record.priceItems?.length || 0}</Tag>
-      ),
+      render: (_, record: PriceList) => <PriceItemsCount priceList={record} />,
     },
     {
       title: t("CREATED_AT"),
@@ -267,7 +259,7 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
     {
       title: t("ACTIONS"),
       key: "actions",
-      width: 60,
+      width: 80,
       align: "center",
       fixed: "right",
       render: (_, record: PriceList) => (

@@ -1,9 +1,4 @@
-import {
-  PlusOutlined,
-  ReloadOutlined,
-  SearchOutlined,
-  FilterOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import {
   Button,
   Form,
@@ -16,10 +11,6 @@ import {
   Switch,
   message,
   theme,
-  Card,
-  Row,
-  Col,
-  Select,
 } from "antd";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
@@ -57,63 +48,6 @@ const PriceListPage = () => {
 
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
-
-  // Filter states
-  const [filters, setFilters] = useState({
-    keyword: "",
-    status: undefined as boolean | undefined,
-    priority: undefined as number | undefined,
-    validityDateRange: undefined as any,
-  });
-  const [showFilters, setShowFilters] = useState(false);
-
-  // Filter data based on current filters
-  const filteredData =
-    data?.filter((item) => {
-      // Keyword filter
-      if (
-        filters.keyword &&
-        !item.name.toLowerCase().includes(filters.keyword.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // Status filter
-      if (filters.status !== undefined && item.status !== filters.status) {
-        return false;
-      }
-
-      // Priority filter (greater than or equal)
-      if (filters.priority !== undefined && item.priority < filters.priority) {
-        return false;
-      }
-
-      // Validity date range filter
-      if (filters.validityDateRange && filters.validityDateRange.length === 2) {
-        const [fromDate, toDate] = filters.validityDateRange;
-        const itemValidFrom = item.validFrom ? new Date(item.validFrom) : null;
-        const itemValidTo = item.validTo ? new Date(item.validTo) : null;
-
-        // Check if item's validity period overlaps with filter range
-        if (itemValidFrom && itemValidFrom > toDate) return false;
-        if (itemValidTo && itemValidTo < fromDate) return false;
-      }
-
-      return true;
-    }) || [];
-
-  const handleFilterChange = (key: string, value: any) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleClearFilters = () => {
-    setFilters({
-      keyword: "",
-      status: undefined,
-      priority: undefined,
-      validityDateRange: undefined,
-    });
-  };
 
   if (isFetchingPriceLists) {
     return (
@@ -165,7 +99,7 @@ const PriceListPage = () => {
   return (
     <>
       <Helmet>
-        <title>{t("PRICE_LIST_MANAGEMENT_TITLE")}</title>
+        <title>{t("PRICE_LIST_MANAGEMENT")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -193,78 +127,9 @@ const PriceListPage = () => {
           >
             {t("REFRESH_BUTTON")}
           </Button>
-          <Button
-            icon={<FilterOutlined />}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            {t("FILTERS")} (
-            {
-              Object.values(filters).filter((v) => v !== undefined && v !== "")
-                .length
-            }
-            )
-          </Button>
         </Space>
 
-        {/* Filters Panel */}
-        {showFilters && (
-          <Card style={{ marginBottom: "1rem" }}>
-            <Row gutter={16}>
-              <Col span={6}>
-                <Input
-                  placeholder={t("SEARCH_BY_NAME")}
-                  prefix={<SearchOutlined />}
-                  value={filters.keyword}
-                  onChange={(e) =>
-                    handleFilterChange("keyword", e.target.value)
-                  }
-                  allowClear
-                />
-              </Col>
-              <Col span={4}>
-                <Select
-                  placeholder={t("STATUS")}
-                  value={filters.status}
-                  onChange={(value) => handleFilterChange("status", value)}
-                  allowClear
-                  style={{ width: "100%" }}
-                  options={[
-                    { label: t("ACTIVE"), value: true },
-                    { label: t("INACTIVE"), value: false },
-                  ]}
-                />
-              </Col>
-              <Col span={4}>
-                <InputNumber
-                  placeholder={t("MIN_PRIORITY")}
-                  value={filters.priority}
-                  onChange={(value) => handleFilterChange("priority", value)}
-                  style={{ width: "100%" }}
-                  min={1}
-                  max={999}
-                />
-              </Col>
-              <Col span={6}>
-                <RangePicker
-                  placeholder={[t("VALID_FROM"), t("VALID_TO")]}
-                  value={filters.validityDateRange}
-                  onChange={(dates) =>
-                    handleFilterChange("validityDateRange", dates)
-                  }
-                  style={{ width: "100%" }}
-                  format="DD/MM/YYYY"
-                />
-              </Col>
-              <Col span={4}>
-                <Space>
-                  <Button onClick={handleClearFilters}>{t("CLEAR")}</Button>
-                </Space>
-              </Col>
-            </Row>
-          </Card>
-        )}
-
-        <PriceListTable data={filteredData} loading={isFetchingPriceLists} />
+        <PriceListTable data={data || []} loading={isFetchingPriceLists} />
       </div>{" "}
       <Modal
         open={open}

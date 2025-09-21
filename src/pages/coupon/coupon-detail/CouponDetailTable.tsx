@@ -1,5 +1,10 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Modal, Space, Table, Switch } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { Button, message, Modal, Space, Table, Switch, Dropdown } from "antd";
+import type { MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
   useDeleteCouponDetailMutation,
@@ -25,6 +30,33 @@ const CouponDetailTable = ({
     useDeleteCouponDetailMutation();
   const [updateDetail, { isLoading: isUpdating }] =
     useUpdateCouponDetailMutation();
+
+  const getActionMenuItems = (detail: CouponDetail): MenuProps["items"] => [
+    {
+      key: "edit",
+      label: (
+        <Space>
+          <EditOutlined />
+          Chỉnh sửa
+        </Space>
+      ),
+      onClick: () => onEdit?.(detail),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "delete",
+      label: (
+        <Space>
+          <DeleteOutlined />
+          Xóa
+        </Space>
+      ),
+      danger: true,
+      onClick: () => handleDelete(detail),
+    },
+  ];
 
   // Check if any data has certain fields to decide whether to show columns
   const hasConditions = data.some(
@@ -288,25 +320,20 @@ const CouponDetailTable = ({
     {
       title: "Thao tác",
       key: "actions",
-      width: 120,
+      width: 80,
       fixed: "right" as const,
       render: (_: any, record: CouponDetail) => (
-        <Space size="small">
+        <Dropdown
+          menu={{ items: getActionMenuItems(record) }}
+          trigger={["click"]}
+          placement="bottomRight"
+        >
           <Button
-            type="primary"
-            size="small"
-            icon={<EditOutlined />}
-            onClick={() => onEdit?.(record)}
-            title="Chỉnh sửa"
+            type="text"
+            icon={<SettingOutlined />}
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
           />
-          <Button
-            danger
-            size="small"
-            icon={<DeleteOutlined />}
-            onClick={() => handleDelete(record)}
-            title="Xóa"
-          />
-        </Space>
+        </Dropdown>
       ),
     },
   ];

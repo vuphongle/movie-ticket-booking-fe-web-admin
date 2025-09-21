@@ -140,7 +140,7 @@ const PriceItemModal = ({
               tooltip={t("SEAT_TYPE_TOOLTIP")}
             >
               <Select placeholder={t("SELECT_SEAT_TYPE")} allowClear>
-                <Option value="STANDARD">{t("SEAT_TYPE_STANDARD")}</Option>
+                <Option value="NORMAL">{t("SEAT_TYPE_NORMAL")}</Option>
                 <Option value="VIP">{t("SEAT_TYPE_VIP")}</Option>
                 <Option value="COUPLE">{t("SEAT_TYPE_COUPLE")}</Option>
               </Select>
@@ -153,9 +153,8 @@ const PriceItemModal = ({
               tooltip={t("GRAPHICS_TYPE_TOOLTIP")}
             >
               <Select placeholder={t("SELECT_GRAPHICS_TYPE")} allowClear>
-                <Option value="2D">{t("GRAPHICS_TYPE_2D")}</Option>
-                <Option value="3D">{t("GRAPHICS_TYPE_3D")}</Option>
-                <Option value="IMAX">{t("GRAPHICS_TYPE_IMAX")}</Option>
+                <Option value="_2D">{t("GRAPHICS_TYPE_2D")}</Option>
+                <Option value="_3D">{t("GRAPHICS_TYPE_3D")}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -169,12 +168,12 @@ const PriceItemModal = ({
               tooltip={t("SCREENING_TIME_TYPE_TOOLTIP")}
             >
               <Select placeholder={t("SELECT_SCREENING_TIME_TYPE")} allowClear>
-                <Option value="MORNING">{t("SCREENING_TIME_MORNING")}</Option>
-                <Option value="AFTERNOON">
-                  {t("SCREENING_TIME_AFTERNOON")}
+                <Option value="SUAT_CHIEU_SOM">
+                  {t("SCREENING_TIME_EARLY")}
                 </Option>
-                <Option value="EVENING">{t("SCREENING_TIME_EVENING")}</Option>
-                <Option value="NIGHT">{t("SCREENING_TIME_NIGHT")}</Option>
+                <Option value="SUAT_CHIEU_THEO_LICH">
+                  {t("SCREENING_TIME_REGULAR")}
+                </Option>
               </Select>
             </Form.Item>
           </Col>
@@ -204,9 +203,10 @@ const PriceItemModal = ({
                 <Option value="STANDARD">
                   {t("AUDITORIUM_TYPE_STANDARD")}
                 </Option>
-                <Option value="VIP">{t("AUDITORIUM_TYPE_VIP")}</Option>
                 <Option value="IMAX">{t("AUDITORIUM_TYPE_IMAX")}</Option>
-                <Option value="4DX">{t("AUDITORIUM_TYPE_4DX")}</Option>
+                <Option value="GOLDCLASS">
+                  {t("AUDITORIUM_TYPE_GOLDCLASS")}
+                </Option>
               </Select>
             </Form.Item>
           </Col>

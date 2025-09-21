@@ -13,7 +13,6 @@ const additionalService = {
   // Form labels
   SERVICE_NAME: "Service Name",
   DESCRIPTION: "Description",
-  PRICE: "Price",
   STATUS: "Status",
   THUMBNAIL: "Thumbnail",
 

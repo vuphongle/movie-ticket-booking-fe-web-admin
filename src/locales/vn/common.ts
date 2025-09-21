@@ -6,6 +6,8 @@ const common = {
   CANCEL: "Hủy",
   CONFIRM: "Xác nhận",
   DELETE: "Xóa",
+  CONFIRM_DELETE: "Xác nhận xóa",
+  DELETE_WARNING_MESSAGE: "Hành động này không thể hoàn tác.",
   EDIT: "Chỉnh sửa",
   REFRESH: "Làm mới",
   CLOSE: "Đóng",
@@ -16,7 +18,7 @@ const common = {
   LOGOUT: "Đăng xuất",
   LOGOUT_SUCCESS: "Đăng xuất thành công",
   BACK_TO_HOME: "Quay lại trang chủ",
-  LANGUAGE_CHANGED: "Đổi ngôn ngữ thành công",
+  SEARCH_PLACEHOLDER: "Tìm kiếm...",
 
   PROFILE: "Hồ sơ",
   CHANGE_PASSWORD: "Đổi mật khẩu",
@@ -118,6 +120,8 @@ const common = {
   // Status Values
   DRAFT: "Bản nháp",
   PUBLIC: "Công khai",
+
+  CLONE: "Nhân bản",
 };
 
 export default common;

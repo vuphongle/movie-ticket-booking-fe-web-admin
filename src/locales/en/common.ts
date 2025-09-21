@@ -6,6 +6,8 @@ const common = {
   CANCEL: "Cancel",
   CONFIRM: "Confirm",
   DELETE: "Delete",
+  CONFIRM_DELETE: "Confirm Deletion",
+  DELETE_WARNING_MESSAGE: "This action cannot be undone.",
   EDIT: "Edit",
   REFRESH: "Refresh",
   CLOSE: "Close",
@@ -16,7 +18,7 @@ const common = {
   LOGOUT: "Logout",
   LOGOUT_SUCCESS: "Logged out successfully",
   BACK_TO_HOME: "Back to Home",
-  LANGUAGE_CHANGED: "Language changed successfully",
+  SEARCH_PLACEHOLDER: "Search...",
 
   PROFILE: "Profile",
   CHANGE_PASSWORD: "Change Password",
@@ -49,7 +51,6 @@ const common = {
 
   // Product management
   PRODUCT_LIST: "Product List",
-  CREATE_PRODUCT: "Create Product",
   UPDATE_PRODUCT: "Update Product",
   DELETE_PRODUCT: "Delete Product",
   PRODUCT_DETAIL: "Product Detail",
@@ -118,6 +119,8 @@ const common = {
   // Status Values
   DRAFT: "Draft",
   PUBLIC: "Public",
+
+  CLONE: "Clone",
 };
 
 export default common;

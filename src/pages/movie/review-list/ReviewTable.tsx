@@ -3,7 +3,7 @@ import { Button, message, Modal, Space, Table, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDeleteReviewMutation } from "@/app/services/reviews.service";
-import { formatDateTime } from "../../../utils/functionUtils";
+import { formatDateTime } from "@/utils/functionUtils";
 import ModalUpdate from "./ModalUpdate";
 import type { Review, ReviewTableProps } from "@/types/movie.types";
 

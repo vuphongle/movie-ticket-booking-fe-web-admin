@@ -1,6 +1,11 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, message, Modal, Space, Table, Tag } from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
+import { Button, message, Modal, Space, Table, Tag, Dropdown } from "antd";
 import type { SortOrder } from "antd/es/table/interface";
+import type { MenuProps } from "antd/es/menu";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
@@ -17,6 +22,36 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
   const [open, setOpen] = useState(false);
   const [scheduleUpdate, setScheduleUpdate] = useState<Schedule | null>(null);
   const [deleteSchedule, { isLoading }] = useDeleteScheduleMutation();
+
+  const getActionMenuItems = (schedule: Schedule): MenuProps["items"] => [
+    {
+      key: "edit",
+      label: (
+        <Space>
+          <EditOutlined />
+          {t("EDIT")}
+        </Space>
+      ),
+      onClick: () => {
+        setScheduleUpdate(schedule);
+        setOpen(true);
+      },
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "delete",
+      label: (
+        <Space>
+          <DeleteOutlined />
+          {t("DELETE")}
+        </Space>
+      ),
+      danger: true,
+      onClick: () => handleConfirm(schedule.id),
+    },
+  ];
 
   const getClassification = (record: Schedule): number => {
     const now = new Date();
@@ -89,30 +124,23 @@ const ScheduleTable = ({ data, movies }: ScheduleTableProps) => {
       },
     },
     {
-      title: "",
+      title: "Action",
       dataIndex: "",
       key: "action",
-      render: (_text: any, record: Schedule, _index: number) => {
-        return (
-          <Space>
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setScheduleUpdate(record);
-                setOpen(true);
-              }}
-            ></Button>
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                handleConfirm(record.id);
-              }}
-            ></Button>
-          </Space>
-        );
-      },
+      width: 80,
+      render: (_text: any, record: Schedule, _index: number) => (
+        <Dropdown
+          menu={{ items: getActionMenuItems(record) }}
+          trigger={["click"]}
+          placement="bottomRight"
+        >
+          <Button
+            type="text"
+            icon={<SettingOutlined />}
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          />
+        </Dropdown>
+      ),
     },
   ];
 
