@@ -98,7 +98,6 @@ const PriceItemSection = ({ priceList }: PriceItemSectionProps) => {
             data={productItems}
             loading={isLoading}
             hideTargetType={true}
-            hideSpecificity={true}
             hideTicketConditions={true}
           />
         </PriceItemActionsContext.Provider>
@@ -117,7 +116,6 @@ const PriceItemSection = ({ priceList }: PriceItemSectionProps) => {
             data={serviceItems}
             loading={isLoading}
             hideTargetType={true}
-            hideSpecificity={true}
             hideTicketConditions={true}
           />
         </PriceItemActionsContext.Provider>

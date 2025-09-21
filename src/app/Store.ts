@@ -16,7 +16,6 @@ import { imageApi } from "@/app/services/images.service";
 import { reviewApi } from "@/app/services/reviews.service";
 import { seatApi } from "@/app/services/seats.service";
 import { seatTypeApi } from "@/app/services/seatType.service";
-import { baseTicketPriceApi } from "@/app/services/baseTicketPrice.service";
 import { priceListApi } from "@/app/services/priceList.service";
 import { priceItemApi } from "@/app/services/priceItem.service";
 import { additionalServiceApi } from "@/app/services/additionalServices.service";
@@ -43,7 +42,6 @@ export const Store = configureStore({
     [reviewApi.reducerPath]: reviewApi.reducer,
     [seatApi.reducerPath]: seatApi.reducer,
     [seatTypeApi.reducerPath]: seatTypeApi.reducer,
-    [baseTicketPriceApi.reducerPath]: baseTicketPriceApi.reducer,
     [priceListApi.reducerPath]: priceListApi.reducer,
     [priceItemApi.reducerPath]: priceItemApi.reducer,
     [additionalServiceApi.reducerPath]: additionalServiceApi.reducer,
@@ -67,7 +65,6 @@ export const Store = configureStore({
       reviewApi.middleware,
       seatApi.middleware,
       seatTypeApi.middleware,
-      baseTicketPriceApi.middleware,
       priceListApi.middleware,
       priceItemApi.middleware,
       additionalServiceApi.middleware,

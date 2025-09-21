@@ -1,5 +1,10 @@
-import { Table, Tag, Button, Popconfirm, Space, Tooltip, Modal } from "antd";
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { Table, Tag, Button, Space, Tooltip, Modal, Dropdown } from "antd";
+import type { MenuProps } from "antd";
+import {
+  DeleteOutlined,
+  EyeOutlined,
+  SettingOutlined,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { Link as RouterLink } from "react-router-dom";
 import useSearchTable from "@/hooks/useSearchTable";
@@ -21,6 +26,31 @@ const ProductTable = ({ data }: ProductTableProps) => {
   const { t } = useTranslation();
   const { getColumnSearchProps } = useSearchTable();
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+
+  const getActionMenuItems = (_product: Product): MenuProps["items"] => [
+    {
+      key: "view",
+      label: (
+        <Space>
+          <EyeOutlined />
+          {t("VIEW_DETAIL")}
+        </Space>
+      ),
+    },
+    {
+      type: "divider",
+    },
+    {
+      key: "delete",
+      label: (
+        <Space>
+          <DeleteOutlined />
+          {t("DELETE")}
+        </Space>
+      ),
+      danger: true,
+    },
+  ];
   const [toggleStatus, { isLoading: isToggling }] =
     useToggleProductStatusMutation();
   const [checkCanDeactivate] = useLazyCheckCanDeactivateProductQuery();
@@ -157,39 +187,36 @@ const ProductTable = ({ data }: ProductTableProps) => {
     {
       title: t("ACTIONS"),
       key: "actions",
-      width: "12%",
+      width: 80,
       render: (_: any, record: Product) => (
-        <Space size="small">
-          <Tooltip title={t("VIEW_DETAIL")}>
-            <RouterLink to={`/admin/products/${record.id}/detail`}>
-              <Button
-                type="text"
-                icon={<EyeOutlined />}
-                size="small"
-                style={{ color: "#1890ff" }}
-              />
-            </RouterLink>
-          </Tooltip>
-
-          <Tooltip title={t("DELETE")}>
-            <Popconfirm
-              title={t("DELETE_CONFIRM")}
-              description={t("ACTION_CANNOT_UNDONE")}
-              onConfirm={() => handleDelete(record.id)}
-              okText={t("DELETE")}
-              cancelText={t("CANCEL")}
-              okType="danger"
-            >
-              <Button
-                type="text"
-                icon={<DeleteOutlined />}
-                size="small"
-                danger
-                loading={isDeleting}
-              />
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+        <Dropdown
+          menu={{
+            items: getActionMenuItems(record),
+            onClick: ({ key }) => {
+              if (key === "view") {
+                window.open(`/admin/products/${record.id}/detail`, "_blank");
+              } else if (key === "delete") {
+                Modal.confirm({
+                  title: t("DELETE_CONFIRM"),
+                  content: t("ACTION_CANNOT_UNDONE"),
+                  okText: t("DELETE"),
+                  cancelText: t("CANCEL"),
+                  okType: "danger",
+                  okButtonProps: { loading: isDeleting },
+                  onOk: () => handleDelete(record.id),
+                });
+              }
+            },
+          }}
+          trigger={["click"]}
+          placement="bottomRight"
+        >
+          <Button
+            type="text"
+            icon={<SettingOutlined />}
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          />
+        </Dropdown>
       ),
     },
   ];

@@ -33,7 +33,6 @@ interface PriceItemTableProps {
   loading?: boolean;
   hideTargetType?: boolean;
   hideTargetName?: boolean;
-  hideSpecificity?: boolean;
   hideTicketConditions?: boolean;
 }
 
@@ -42,7 +41,6 @@ const PriceItemTable = ({
   loading,
   hideTargetType = false,
   hideTargetName = false,
-  hideSpecificity = false,
   hideTicketConditions = false,
 }: PriceItemTableProps) => {
   const { t } = useTranslation();
@@ -94,14 +92,6 @@ const PriceItemTable = ({
       content: (
         <div>
           <p>{t("DELETE_WARNING_MESSAGE")}</p>
-          <div style={{ marginTop: 8 }}>
-            <strong>
-              {priceItem.targetType === "TICKET" ? t("TICKET") : t("PRODUCT")}:
-            </strong>{" "}
-            {priceItem.targetType === "TICKET"
-              ? t("TICKET_PRICE")
-              : priceItem.product?.name}
-          </div>
         </div>
       ),
       okText: t("DELETE"),
@@ -174,27 +164,126 @@ const PriceItemTable = ({
     );
   };
 
-  // Calculate specificity for TICKET type (count non-null dimensions)
-  const getSpecificity = (priceItem: PriceItem): number => {
-    if (priceItem.targetType !== "TICKET") return 0;
+  // Render dimension value with "Any" for null and proper translations
+  const renderDimension = (
+    value: string | null | undefined,
+    type: "seat" | "graphics" | "time" | "day" | "room"
+  ) => {
+    const getLabel = (type: string) => {
+      switch (type) {
+        case "seat":
+          return t("SEAT_TYPE");
+        case "graphics":
+          return t("GRAPHICS_TYPE");
+        case "time":
+          return t("SCREENING_TIME_TYPE");
+        case "day":
+          return t("DAY_TYPE");
+        case "room":
+          return t("AUDITORIUM_TYPE");
+        default:
+          return type;
+      }
+    };
 
-    let count = 0;
-    if (priceItem.seatType) count++;
-    if (priceItem.graphicsType) count++;
-    if (priceItem.screeningTimeType) count++;
-    if (priceItem.dayType) count++;
-    if (priceItem.auditoriumType) count++;
-    return count;
-  };
+    const getTranslatedValue = (value: string, type: string) => {
+      if (type === "seat") {
+        switch (value) {
+          case "NORMAL":
+            return t("SEAT_TYPE_NORMAL");
+          case "VIP":
+            return t("SEAT_TYPE_VIP");
+          case "COUPLE":
+            return t("SEAT_TYPE_COUPLE");
+          default:
+            return value;
+        }
+      }
+      if (type === "graphics") {
+        switch (value) {
+          case "_2D":
+            return t("GRAPHICS_TYPE_2D");
+          case "_3D":
+            return t("GRAPHICS_TYPE_3D");
+          default:
+            return value;
+        }
+      }
+      if (type === "time") {
+        switch (value) {
+          case "SUAT_CHIEU_SOM":
+            return t("SCREENING_TIME_EARLY");
+          case "SUAT_CHIEU_THEO_LICH":
+            return t("SCREENING_TIME_REGULAR");
+          default:
+            return value;
+        }
+      }
+      if (type === "day") {
+        switch (value) {
+          case "WEEKDAY":
+            return t("DAY_TYPE_WEEKDAY");
+          case "WEEKEND":
+            return t("DAY_TYPE_WEEKEND");
+          case "HOLIDAY":
+            return t("DAY_TYPE_HOLIDAY");
+          default:
+            return value;
+        }
+      }
+      if (type === "room") {
+        switch (value) {
+          case "STANDARD":
+            return t("AUDITORIUM_TYPE_STANDARD");
+          case "IMAX":
+            return t("AUDITORIUM_TYPE_IMAX");
+          case "GOLDCLASS":
+            return t("AUDITORIUM_TYPE_GOLDCLASS");
+          default:
+            return value;
+        }
+      }
+      return value;
+    };
 
-  // Render dimension value with "Any" for null
-  const renderDimension = (value: string | null | undefined, label: string) => {
+    const getColor = (type: string, hasValue: boolean) => {
+      if (!hasValue) return "default";
+
+      switch (type) {
+        case "seat":
+          return "blue";
+        case "graphics":
+          return "purple";
+        case "time":
+          return "green";
+        case "day":
+          return "orange";
+        case "room":
+          return "red";
+        default:
+          return "default";
+      }
+    };
+
+    const label = getLabel(type);
+
     if (!value) {
-      return <Tag color="default">{label}: Any</Tag>;
+      return (
+        <Tag
+          color="default"
+          style={{ fontSize: "11px", padding: "1px 4px", opacity: 0.6 }}
+        >
+          {label}: {t("ANY")}
+        </Tag>
+      );
     }
+
     return (
-      <Tag>
-        {label}: {value}
+      <Tag
+        color={getColor(type, true)}
+        style={{ fontSize: "11px", padding: "1px 4px" }}
+      >
+        {label}: {getTranslatedValue(value, type)}
       </Tag>
     );
   };
@@ -205,7 +294,7 @@ const PriceItemTable = ({
       title: t("STATUS"),
       dataIndex: "status",
       key: "status",
-      width: 80,
+      width: 70,
       align: "center" as const,
       filters: [
         { text: t("ACTIVE"), value: true },
@@ -228,7 +317,7 @@ const PriceItemTable = ({
             title: t("TARGET_TYPE"),
             dataIndex: "targetType",
             key: "targetType",
-            width: 120,
+            width: 110,
             filters: [
               { text: t("TARGET_TYPE_TICKET"), value: "TICKET" },
               { text: t("TARGET_TYPE_PRODUCT"), value: "PRODUCT" },
@@ -250,7 +339,10 @@ const PriceItemTable = ({
             title: t("TARGET_NAME"),
             dataIndex: "targetId",
             key: "targetName",
-            width: 200,
+            width: 150,
+            ellipsis: {
+              showTitle: false,
+            },
             ...getColumnSearchProps("targetName"),
             onFilter: (value: any, record: any) => {
               const targetName = getTargetName(record);
@@ -269,26 +361,29 @@ const PriceItemTable = ({
               if (targetName === "N/A") {
                 return <span style={{ color: "#999" }}>N/A</span>;
               }
-              return <span title={targetName}>{targetName}</span>;
+              return (
+                <span
+                  title={targetName}
+                  style={{
+                    display: "block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {targetName}
+                </span>
+              );
             },
           },
         ]
       : []),
-    {
-      title: t("PRICE"),
-      dataIndex: "price",
-      key: "price",
-      width: 100,
-      align: "right" as const,
-      sorter: (a: any, b: any) => a.price - b.price,
-      ...getColumnSearchProps("price"),
-      render: (price: number) => formatCurrency(price),
-    },
+
     {
       title: t("PRIORITY"),
       dataIndex: "priority",
       key: "priority",
-      width: 80,
+      width: 75,
       align: "center" as const,
       sorter: (a: any, b: any) => a.priority - b.priority,
       ...getColumnSearchProps("priority"),
@@ -300,49 +395,18 @@ const PriceItemTable = ({
         </Tag>
       ),
     },
-    // Specificity column - conditionally rendered
-    ...(!hideSpecificity
-      ? [
-          {
-            title: t("SPECIFICITY"),
-            key: "specificity",
-            width: 90,
-            align: "center" as const,
-            sorter: (a: any, b: any) => getSpecificity(a) - getSpecificity(b),
-            render: (_: any, record: PriceItem) => {
-              const specificity = getSpecificity(record);
-              if (record.targetType !== "TICKET") {
-                return <span style={{ color: "#999" }}>-</span>;
-              }
-              return (
-                <Tag
-                  color={
-                    specificity >= 4
-                      ? "red"
-                      : specificity >= 2
-                        ? "orange"
-                        : "blue"
-                  }
-                >
-                  {specificity}/5
-                </Tag>
-              );
-            },
-          },
-        ]
-      : []),
     // Ticket Conditions column - conditionally rendered
     ...(!hideTicketConditions
       ? [
           {
             title: t("TICKET_CONDITIONS"),
             key: "ticketConditions",
-            width: 300,
+            width: 280,
             ...getColumnSearchProps("ticketConditions"),
             onFilter: (value: any, record: any) => {
               if (record.targetType !== "TICKET") return false;
               const conditions = [
-                record.seatType,
+                // record.seatType,
                 record.graphicsType,
                 record.screeningTimeType,
                 record.dayType,
@@ -358,15 +422,15 @@ const PriceItemTable = ({
               }
 
               return (
-                <Space direction="vertical" size={2} style={{ width: "100%" }}>
-                  <Space wrap size={[4, 2]}>
-                    {renderDimension(record.seatType, "Seat")}
-                    {renderDimension(record.graphicsType, "Graphics")}
+                <Space direction="vertical" size={1} style={{ width: "100%" }}>
+                  <Space wrap size={[2, 1]}>
+                    {renderDimension(record.seatType, "seat")}
+                    {renderDimension(record.graphicsType, "graphics")}
                   </Space>
-                  <Space wrap size={[4, 2]}>
-                    {renderDimension(record.screeningTimeType, "Time")}
-                    {renderDimension(record.dayType, "Day")}
-                    {renderDimension(record.auditoriumType, "Room")}
+                  <Space wrap size={[2, 1]}>
+                    {renderDimension(record.screeningTimeType, "time")}
+                    {renderDimension(record.dayType, "day")}
+                    {renderDimension(record.auditoriumType, "room")}
                   </Space>
                 </Space>
               );
@@ -375,9 +439,19 @@ const PriceItemTable = ({
         ]
       : []),
     {
+      title: t("PRICE"),
+      dataIndex: "price",
+      key: "price",
+      width: 80,
+      align: "right" as const,
+      sorter: (a: any, b: any) => a.price - b.price,
+      ...getColumnSearchProps("price"),
+      render: (price: number) => formatCurrency(price),
+    },
+    {
       title: t("ACTIONS"),
       key: "actions",
-      width: 60,
+      width: 80,
       align: "center" as const,
       fixed: "right" as const,
       render: (_: any, record: PriceItem) => (
@@ -401,7 +475,7 @@ const PriceItemTable = ({
       dataSource={data}
       rowKey="id"
       loading={loading || isDeleting}
-      scroll={{ x: 1100 }}
+      scroll={{ x: 1000, y: 600 }}
       size="small"
       pagination={{
         total: data.length,

@@ -30,7 +30,6 @@ const schedule = {
   
   // Placeholders
   SELECT_MOVIE: "Chọn phim chiếu",
-  SEARCH_PLACEHOLDER: "Tìm kiếm theo tên phim hoặc thời gian...",
   
   // Filter labels
   ALL: "Tất cả",

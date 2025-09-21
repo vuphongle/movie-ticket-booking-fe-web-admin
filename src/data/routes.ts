@@ -116,11 +116,6 @@ export const getMenuData = (t: (key: string) => string) => [
         label: t("PRICE_LIST_MANAGEMENT"),
         url: "/admin/price-lists",
       },
-      {
-        id: 2003,
-        label: t("BASE_TICKET_PRICE"),
-        url: "/admin/ticket-prices/base-price",
-      },
     ],
   },
   {
