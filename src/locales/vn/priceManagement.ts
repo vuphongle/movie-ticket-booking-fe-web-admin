@@ -81,7 +81,6 @@ const priceManagement = {
   // Seat Types  
   SEAT_TYPE_NORMAL: "Thường",
   SEAT_TYPE_STANDARD: "Tiêu chuẩn", 
-  SEAT_TYPE_VIP: "VIP",
   SEAT_TYPE_COUPLE: "Đôi",
   
   // Graphics Types

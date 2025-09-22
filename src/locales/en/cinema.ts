@@ -109,7 +109,7 @@ const cinema = {
   SEAT_STATUS: "Status",
   ACTIVE_STATUS: "Active",
   LOCKED_STATUS: "Locked",
-  SEAT_TYPE_REQUIRED: "Seat type is required!",
+  c: "Seat type is required!",
   SEAT_STATUS_REQUIRED: "Status is required!",
 };
 

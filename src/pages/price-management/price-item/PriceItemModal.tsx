@@ -183,7 +183,7 @@ const PriceItemModal = ({
               name="dayType"
               tooltip={t("DAY_TYPE_TOOLTIP")}
             >
-              <Select placeholder={t("SELECT_DAY_TYPE")} allowClear>
+              <Select placeholder={t("SELECT_DATE")} allowClear>
                 <Option value="WEEKDAY">{t("DAY_TYPE_WEEKDAY")}</Option>
                 <Option value="WEEKEND">{t("DAY_TYPE_WEEKEND")}</Option>
                 <Option value="HOLIDAY">{t("DAY_TYPE_HOLIDAY")}</Option>
@@ -223,7 +223,6 @@ const PriceItemModal = ({
       onCancel={handleCancel}
       confirmLoading={isLoading}
       width={800}
-      destroyOnClose
     >
       <Form
         form={form}

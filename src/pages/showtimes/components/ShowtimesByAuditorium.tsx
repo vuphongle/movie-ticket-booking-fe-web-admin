@@ -18,15 +18,23 @@ import {
   Tag,
   Typography,
   Alert,
+  Checkbox,
+  Radio,
+  Row as AntRow,
+  Col,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetAllMoviesInScheduleQuery } from "@services/movies.service";
-import { useCreateShowtimesMutation } from "@services/showtimes.service";
+import {
+  useCreateShowtimesMutation,
+  useCreateBulkShowtimesMutation,
+} from "@services/showtimes.service";
 import { isSameDay } from "@utils/functionUtils";
 import Row from "./Row";
 import { useTranslation } from "react-i18next";
+import ConflictResolutionModal from "@/components/conflicts/ConflictResolutionModal";
 import {
   calculateSlotSpans,
   getSlotSelectOptions,
@@ -38,6 +46,9 @@ import {
 import type {
   ShowtimeFormData,
   ShowtimeApiPayload,
+  BulkShowtimeFormData,
+  BulkShowtimeApiPayload,
+  ConflictDetail,
 } from "@/types/showtime.types";
 import {
   handleShowtimeError,
@@ -103,11 +114,34 @@ function ShowtimesByAuditorium({
   } | null>(null);
   const [showtimes, setShowtimes] = useState<Showtime[]>(data.showtimes);
   const [form] = Form.useForm();
+
+  // Bulk creation states
+  const [isBulkMode, setIsBulkMode] = useState(false);
+  const [conflictModalVisible, setConflictModalVisible] = useState(false);
+  const [conflictDetails, setConflictDetails] = useState<ConflictDetail[]>([]);
+  const [pendingBulkRequest, setPendingBulkRequest] =
+    useState<BulkShowtimeApiPayload | null>(null);
+  const [validCount, setValidCount] = useState(0);
+  const [selectedDaysOfWeek, setSelectedDaysOfWeek] = useState<number[]>([]);
+
   const { data: movies, isLoading: _isFetchingMovies } =
-    useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD/MM/YYYY"));
+    useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD-MM-YYYY"));
   const [createShowtimes, { isLoading: isLoadingCreateShowtimes }] =
     useCreateShowtimesMutation();
+  const [createBulkShowtimes, { isLoading: isLoadingCreateBulkShowtimes }] =
+    useCreateBulkShowtimesMutation();
   const { t } = useTranslation();
+
+  // Days of week options
+  const daysOfWeekOptions = [
+    { label: t("MONDAY"), value: 2 },
+    { label: t("TUESDAY"), value: 3 },
+    { label: t("WEDNESDAY"), value: 4 },
+    { label: t("THURSDAY"), value: 5 },
+    { label: t("FRIDAY"), value: 6 },
+    { label: t("SATURDAY"), value: 7 },
+    { label: t("SUNDAY"), value: 1 },
+  ];
 
   const parseGraphicsTypeTranslated = (type: string) => {
     switch (type) {
@@ -132,11 +166,17 @@ function ShowtimesByAuditorium({
   };
 
   useEffect(() => {
-    form.setFieldsValue({
-      date: dateSelected,
-      slotId: selectedSlot,
-    });
-  }, [dateSelected, selectedSlot, form]);
+    if (!isBulkMode) {
+      form.setFieldsValue({
+        date: dateSelected,
+        slotId: selectedSlot,
+      });
+    } else {
+      form.setFieldsValue({
+        slotId: selectedSlot,
+      });
+    }
+  }, [dateSelected, selectedSlot, form, isBulkMode]);
 
   useEffect(() => {
     setShowtimes(data.showtimes);
@@ -245,6 +285,7 @@ function ShowtimesByAuditorium({
     setSelectedMovie(null);
     setSelectedSlot(null);
     setPreviewTime(null);
+    setIsBulkMode(false);
     form.resetFields();
   };
 
@@ -255,7 +296,17 @@ function ShowtimesByAuditorium({
     return 2;
   };
 
-  const onFinish = (values: ShowtimeFormData) => {
+  const onFinish = (values: ShowtimeFormData | BulkShowtimeFormData) => {
+    if (!selectedMovie) return;
+
+    if (isBulkMode) {
+      handleBulkSubmit(values as BulkShowtimeFormData);
+    } else {
+      handleSingleSubmit(values as ShowtimeFormData);
+    }
+  };
+
+  const handleSingleSubmit = (values: ShowtimeFormData) => {
     if (!selectedMovie) return;
 
     // Validate slot selection before API call
@@ -277,7 +328,7 @@ function ShowtimesByAuditorium({
     const createPayload: ShowtimeApiPayload = {
       auditoriumId: auditorium.id,
       movieId: values.movieId,
-      date: dayjs(values.date).format("DD/MM/YYYY"),
+      date: dayjs(values.date).format("YYYY-MM-DD"),
       startTime: apiPayload.startTime,
       endTime: apiPayload.endTime,
       graphicsType: values.graphicsType,
@@ -298,6 +349,179 @@ function ShowtimesByAuditorium({
         const parsedError = parseShowtimeError(error);
         handleShowtimeError(parsedError);
       });
+  };
+
+  const handleBulkSubmit = (values: BulkShowtimeFormData) => {
+    if (!selectedMovie) return;
+
+    // Validate slot selection
+    const validation = validateSlotSelection(
+      selectedMovie.duration,
+      values.slotId
+    );
+    if (!validation.isValid) {
+      message.error(validation.errorMessage);
+      return;
+    }
+
+    // Validate date range
+    const dateFrom = dayjs(values.dateFrom);
+    const dateTo = dayjs(values.dateTo);
+
+    if (dateFrom.isAfter(dateTo)) {
+      message.error(t("DATE_FROM_AFTER_DATE_TO"));
+      return;
+    }
+
+    if (dateFrom.add(90, "days").isBefore(dateTo)) {
+      message.error(t("DATE_RANGE_TOO_LARGE"));
+      return;
+    }
+
+    if (!values.daysOfWeek || values.daysOfWeek.length === 0) {
+      message.error(t("NO_DAYS_SELECTED"));
+      return;
+    }
+
+    const apiPayload = slotToApiTimes(values.slotId, selectedMovie.duration);
+    if (!apiPayload) {
+      message.error(t("BAD_INPUT_ERROR"));
+      return;
+    }
+
+    const bulkPayload: BulkShowtimeApiPayload = {
+      auditoriumId: parseInt(auditorium.id),
+      movieId: values.movieId,
+      dateFrom: dateFrom.format("YYYY-MM-DD"),
+      dateTo: dateTo.format("YYYY-MM-DD"),
+      startTime: apiPayload.startTime,
+      endTime: apiPayload.endTime,
+      graphicsType: values.graphicsType,
+      translationType: values.translationType,
+      daysOfWeek: values.daysOfWeek,
+      conflictPolicy: "FAIL", // Start with FAIL to detect conflicts
+    };
+
+    createBulkShowtimes(bulkPayload)
+      .unwrap()
+      .then((response: any) => {
+        form.resetFields();
+        setSelectedMovie(null);
+        setSelectedSlot(null);
+        setPreviewTime(null);
+        setIsModalOpen(false);
+
+        // Check if all requested showtimes were created successfully
+        if (response.successfullyCreated === response.totalRequested) {
+          message.success(
+            t("BULK_CREATION_SUCCESS", {
+              created: response.successfullyCreated,
+              total: response.totalRequested,
+            })
+          );
+        } else if (response.successfullyCreated > 0) {
+          // Partial success - some were created, some failed/skipped
+          message.warning(
+            t("BULK_CREATION_PARTIAL", {
+              created: response.successfullyCreated,
+              total: response.totalRequested,
+              skipped: response.totalRequested - response.successfullyCreated,
+            })
+          );
+        } else {
+          // None were created
+          message.error(t("BULK_CREATION_FAILED"));
+        }
+      })
+      .catch((error: any) => {
+        if (error?.data?.code === "409_BULK_SHOWTIME_CONFLICT") {
+          // Handle conflicts
+          const conflicts = error.data.conflicts?.conflicts || [];
+          const totalRequested = error.data.conflicts?.totalRequested || 0;
+          const conflictsCount = conflicts.length;
+
+          setConflictDetails(conflicts);
+          setValidCount(totalRequested - conflictsCount);
+          setPendingBulkRequest({ ...bulkPayload, conflictPolicy: "SKIP" });
+          setConflictModalVisible(true);
+        } else {
+          const parsedError = parseShowtimeError(error);
+          handleShowtimeError(parsedError);
+        }
+      });
+  };
+
+  const handleSkipConflicts = () => {
+    if (!pendingBulkRequest) return;
+
+    createBulkShowtimes(pendingBulkRequest)
+      .unwrap()
+      .then((response: any) => {
+        form.resetFields();
+        setSelectedMovie(null);
+        setSelectedSlot(null);
+        setPreviewTime(null);
+        setIsModalOpen(false);
+        setConflictModalVisible(false);
+        setPendingBulkRequest(null);
+        setConflictDetails([]);
+        setValidCount(0);
+
+        // Show appropriate message based on results
+        if (response.successfullyCreated === 0) {
+          message.error(t("BULK_CREATION_FAILED"));
+        } else if (response.successfullyCreated === response.totalRequested) {
+          message.success(
+            t("BULK_CREATION_SUCCESS", {
+              created: response.successfullyCreated,
+              total: response.totalRequested,
+            })
+          );
+        } else {
+          message.warning(
+            t("BULK_CREATION_PARTIAL", {
+              created: response.successfullyCreated,
+              total: response.totalRequested,
+              skipped: response.totalRequested - response.successfullyCreated,
+            })
+          );
+        }
+      })
+      .catch((error: any) => {
+        const parsedError = parseShowtimeError(error);
+        handleShowtimeError(parsedError);
+      });
+  };
+
+  const handleCancelConflictResolution = () => {
+    setConflictModalVisible(false);
+    setPendingBulkRequest(null);
+    setConflictDetails([]);
+    setValidCount(0);
+  };
+
+  // Quick selection handlers for days of week
+  const handleQuickSelectDays = (type: "all" | "weekdays" | "weekends") => {
+    let selectedDays: number[] = [];
+
+    switch (type) {
+      case "all":
+        selectedDays = [1, 2, 3, 4, 5, 6, 7]; // Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
+        break;
+      case "weekdays":
+        selectedDays = [2, 3, 4, 5, 6]; // Monday to Friday
+        break;
+      case "weekends":
+        selectedDays = [1, 7]; // Sunday and Saturday
+        break;
+    }
+
+    // Update both form and local state
+    form.setFieldValue("daysOfWeek", selectedDays);
+    setSelectedDaysOfWeek(selectedDays);
+
+    // Force component re-render by triggering form validation
+    form.validateFields(["daysOfWeek"]);
   };
 
   const handleSlotChange = (slotId: number) => {
@@ -416,6 +640,7 @@ function ShowtimesByAuditorium({
           open={isModalOpen}
           footer={null}
           onCancel={handleModalClose}
+          width={isBulkMode ? 800 : 600}
         >
           <Form
             form={form}
@@ -423,6 +648,25 @@ function ShowtimesByAuditorium({
             onFinish={onFinish}
             autoComplete="off"
           >
+            {/* Creation Mode Toggle */}
+            <Form.Item label={t("CREATION_MODE")}>
+              <Radio.Group
+                value={isBulkMode ? "bulk" : "single"}
+                onChange={(e) => {
+                  setIsBulkMode(e.target.value === "bulk");
+                  form.resetFields([
+                    "date",
+                    "dateFrom",
+                    "dateTo",
+                    "daysOfWeek",
+                  ]);
+                }}
+              >
+                <Radio value="single">{t("SINGLE_DATE_MODE")}</Radio>
+                <Radio value="bulk">{t("BULK_CREATION_MODE")}</Radio>
+              </Radio.Group>
+            </Form.Item>
+
             <Form.Item
               label={t("MOVIE_SCREENING")}
               name="movieId"
@@ -445,7 +689,7 @@ function ShowtimesByAuditorium({
                     .includes(input.toLowerCase())
                 }
                 options={movies?.map((movie: Movie) => {
-                  const classification = getClassification(movie.showDate); // Sử dụng hàm từ sorter
+                  const classification = getClassification(movie.showDate);
                   const color = classification === 1 ? "processing" : "success";
                   const statusText =
                     classification === 1 ? t("UPCOMING") : t("NOW_SHOWING");
@@ -456,29 +700,128 @@ function ShowtimesByAuditorium({
                         {movie.name} <Tag color={color}>{statusText}</Tag>
                       </>
                     ),
-                    searchValue: movie.name, // Property mới chỉ chứa text để search
+                    searchValue: movie.name,
                   };
                 })}
                 onChange={handleMovieChange}
               />
             </Form.Item>
 
-            <Form.Item
-              label={t("SHOW_DATE")}
-              name="date"
-              rules={[
-                {
-                  required: true,
-                  message: t("SHOW_DATE_REQUIRED"),
-                },
-              ]}
-            >
-              <DatePicker
-                disabled
-                style={{ width: "100%" }}
-                format={"DD/MM/YYYY"}
-              />
-            </Form.Item>
+            {/* Date Selection - Single vs Bulk */}
+            {!isBulkMode ? (
+              <Form.Item
+                label={t("SHOW_DATE")}
+                name="date"
+                rules={[
+                  {
+                    required: true,
+                    message: t("SHOW_DATE_REQUIRED"),
+                  },
+                ]}
+              >
+                <DatePicker
+                  disabled
+                  style={{ width: "100%" }}
+                  format={"DD/MM/YYYY"}
+                />
+              </Form.Item>
+            ) : (
+              <>
+                <AntRow gutter={16}>
+                  <Col span={12}>
+                    <Form.Item
+                      label={t("DATE_FROM")}
+                      name="dateFrom"
+                      rules={[
+                        {
+                          required: true,
+                          message: t("DATE_FROM_REQUIRED"),
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        format={"DD/MM/YYYY"}
+                        disabledDate={(current) =>
+                          current && current < dayjs().startOf("day")
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label={t("DATE_TO")}
+                      name="dateTo"
+                      rules={[
+                        {
+                          required: true,
+                          message: t("DATE_TO_REQUIRED"),
+                        },
+                      ]}
+                    >
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        format={"DD/MM/YYYY"}
+                        disabledDate={(current) =>
+                          current && current < dayjs().startOf("day")
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
+                </AntRow>
+
+                <Form.Item
+                  label={t("DAYS_OF_WEEK")}
+                  name="daysOfWeek"
+                  rules={[
+                    {
+                      required: true,
+                      message: t("NO_DAYS_SELECTED"),
+                    },
+                  ]}
+                >
+                  <div>
+                    {/* Quick selection buttons */}
+                    <div style={{ marginBottom: 8 }}>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ marginRight: 8 }}
+                      >
+                        {t("QUICK_SELECT")}
+                      </Typography.Text>
+                      <Space>
+                        <Button
+                          size="small"
+                          onClick={() => handleQuickSelectDays("all")}
+                        >
+                          {t("SELECT_ALL_DAYS")}
+                        </Button>
+                        <Button
+                          size="small"
+                          onClick={() => handleQuickSelectDays("weekdays")}
+                        >
+                          {t("SELECT_WEEKDAYS")}
+                        </Button>
+                        <Button
+                          size="small"
+                          onClick={() => handleQuickSelectDays("weekends")}
+                        >
+                          {t("SELECT_WEEKENDS")}
+                        </Button>
+                      </Space>
+                    </div>
+                    <Checkbox.Group
+                      options={daysOfWeekOptions}
+                      value={selectedDaysOfWeek}
+                      onChange={(checkedValues) => {
+                        setSelectedDaysOfWeek(checkedValues);
+                        form.setFieldValue("daysOfWeek", checkedValues);
+                      }}
+                    />
+                  </div>
+                </Form.Item>
+              </>
+            )}
 
             <Form.Item
               label={t("GRAPHICS_TYPE")}
@@ -504,6 +847,7 @@ function ShowtimesByAuditorium({
                 options={getGraphicsTypeOptions(selectedMovie)}
               />
             </Form.Item>
+
             <Form.Item
               label={t("TRANSLATION_TYPE")}
               name="translationType"
@@ -574,18 +918,36 @@ function ShowtimesByAuditorium({
                 <Button
                   type="primary"
                   htmlType="submit"
-                  loading={isLoadingCreateShowtimes}
+                  loading={
+                    isLoadingCreateShowtimes || isLoadingCreateBulkShowtimes
+                  }
                   disabled={
-                    !selectedMovie || !selectedSlot || isLoadingCreateShowtimes
+                    !selectedMovie ||
+                    !selectedSlot ||
+                    isLoadingCreateShowtimes ||
+                    isLoadingCreateBulkShowtimes
                   }
                 >
-                  {t("CREATE_SHOWTIME")}
+                  {isBulkMode
+                    ? t("CREATE_BULK_SHOWTIMES")
+                    : t("CREATE_SHOWTIME")}
                 </Button>
               </Space>
             </Form.Item>
           </Form>
         </Modal>
       )}
+
+      {/* Conflict Resolution Modal */}
+      <ConflictResolutionModal
+        visible={conflictModalVisible}
+        conflicts={conflictDetails}
+        totalRequested={conflictDetails.length + validCount}
+        validCount={validCount}
+        onSkipConflicts={handleSkipConflicts}
+        onCancel={handleCancelConflictResolution}
+        loading={isLoadingCreateBulkShowtimes}
+      />
     </>
   );
 }

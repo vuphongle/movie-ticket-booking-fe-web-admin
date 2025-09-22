@@ -24,6 +24,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   useCreateCouponMutation,
   useUpdateCouponMutation,
@@ -43,6 +44,7 @@ const CouponForm = () => {
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
   const isEdit = !!id;
+  const { t } = useTranslation();
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -69,9 +71,11 @@ const CouponForm = () => {
   const couponData = stateData || apiData;
 
   const breadcrumb = [
-    { label: "Quản lý khuyến mãi", href: "/admin/coupons" },
+    { label: t("COUPON_LIST_TITLE"), href: "/admin/coupons" },
     {
-      label: isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới",
+      label: isEdit
+        ? t("COUPON_UPDATE_MODAL_TITLE")
+        : t("COUPON_CREATE_MODAL_TITLE"),
       href: "#",
     },
   ];
@@ -112,7 +116,7 @@ const CouponForm = () => {
 
       if (isEdit && couponData) {
         result = await updateCoupon({ id: couponData.id, ...payload }).unwrap();
-        message.success("Cập nhật coupon thành công!");
+        message.success(t("COUPON_UPDATE_SUCCESS"));
 
         // Tạo updated coupon object với dữ liệu mới
         updatedCoupon = {
@@ -121,9 +125,7 @@ const CouponForm = () => {
         };
       } else {
         result = await createCoupon(payload).unwrap();
-        message.success(
-          "Tạo coupon thành công! Coupon được tạo ở trạng thái ẩn."
-        );
+        message.success(t("COUPON_CREATE_SUCCESS"));
 
         // Tạo coupon object từ result (API trả về Coupon, cần add derived fields)
         updatedCoupon = {
@@ -146,7 +148,7 @@ const CouponForm = () => {
         state: { coupon: updatedCoupon },
       });
     } catch (error: any) {
-      message.error(error.data?.message || "Có lỗi xảy ra!");
+      message.error(error.data?.message || t("COUPON_CREATE_ERROR"));
     } finally {
       setLoading(false);
     }
@@ -179,8 +181,8 @@ const CouponForm = () => {
     return (
       <div style={{ padding: 24 }}>
         <Alert
-          message="Lỗi"
-          description="Không thể tải thông tin coupon. Vui lòng thử lại sau."
+          message={t("COUPON_FETCH_ERROR")}
+          description={t("COUPON_FETCH_ERROR")}
           type="error"
           showIcon
         />
@@ -191,7 +193,11 @@ const CouponForm = () => {
   return (
     <>
       <Helmet>
-        <title>{isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới"}</title>
+        <title>
+          {isEdit
+            ? t("COUPON_UPDATE_MODAL_TITLE")
+            : t("COUPON_CREATE_MODAL_TITLE")}
+        </title>
       </Helmet>
 
       <AppBreadCrumb items={breadcrumb} />
@@ -207,11 +213,13 @@ const CouponForm = () => {
                   onClick={handleCancel}
                   type="text"
                 >
-                  Quay lại
+                  {t("BACK_TO_LIST")}
                 </Button>
                 <Divider type="vertical" />
                 <Title level={4} style={{ margin: 0 }}>
-                  {isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới"}
+                  {isEdit
+                    ? t("COUPON_UPDATE_MODAL_TITLE")
+                    : t("COUPON_CREATE_MODAL_TITLE")}
                 </Title>
               </Space>
             </Col>
@@ -223,7 +231,7 @@ const CouponForm = () => {
                     onClick={handleManageDetails}
                     type="default"
                   >
-                    Quản lý điều kiện
+                    {t("ADD_COUPON_DETAIL")}
                   </Button>
                 )}
                 <Button
@@ -232,7 +240,7 @@ const CouponForm = () => {
                   onClick={() => form.submit()}
                   loading={loading}
                 >
-                  {isEdit ? "Cập nhật" : "Tạo coupon"}
+                  {isEdit ? t("COUPON_UPDATE_BTN") : t("COUPON_CREATE_BTN")}
                 </Button>
               </Space>
             </Col>
@@ -256,31 +264,28 @@ const CouponForm = () => {
             <Row gutter={24}>
               {/* Left Column */}
               <Col xs={24} lg={12}>
-                <Title level={5}>Thông tin cơ bản</Title>
-
                 <Form.Item
-                  label="Mã khuyến mại"
+                  label={t("COUPON_CODE_LABEL")}
                   name="code"
                   rules={[
-                    { required: true, message: "Vui lòng nhập mã khuyến mại!" },
+                    { required: true, message: t("COUPON_CODE_REQUIRED") },
                     {
                       min: 3,
-                      message: "Mã khuyến mại phải có ít nhất 3 ký tự!",
+                      message: t("COUPON_CODE_MIN_LENGTH"),
                     },
                     {
                       max: 50,
-                      message: "Mã khuyến mại không được quá 50 ký tự!",
+                      message: t("COUPON_CODE_MAX_LENGTH"),
                     },
                     {
                       pattern: /^[a-zA-Z0-9_-]+$/,
-                      message:
-                        "Mã chỉ chứa chữ hoa, số, dấu gạch dưới và gạch ngang!",
+                      message: t("COUPON_CODE_PATTERN"),
                     },
                   ]}
-                  extra="Mã duy nhất để xác định khuyến mại"
+                  extra={t("COUPON_CODE_EXTRA")}
                 >
                   <Input
-                    placeholder="VD: SUMMER2024"
+                    placeholder={t("COUPON_CODE_PLACEHOLDER")}
                     style={{ textTransform: "uppercase" }}
                     onChange={(e) => {
                       const value = e.target.value.toUpperCase();
@@ -291,31 +296,31 @@ const CouponForm = () => {
                 </Form.Item>
 
                 <Form.Item
-                  label="Tên coupon"
+                  label={t("COUPON_NAME_LABEL")}
                   name="name"
                   rules={[
-                    { required: true, message: "Vui lòng nhập tên coupon!" },
-                    { min: 3, message: "Tên coupon phải có ít nhất 3 ký tự!" },
+                    { required: true, message: t("COUPON_NAME_REQUIRED") },
+                    { min: 3, message: t("COUPON_NAME_MIN_LENGTH") },
                     {
                       max: 200,
-                      message: "Tên coupon không được quá 200 ký tự!",
+                      message: t("COUPON_NAME_MAX_LENGTH"),
                     },
                   ]}
-                  extra="Tên hiển thị cho khách hàng"
+                  extra={t("COUPON_NAME_EXTRA")}
                 >
-                  <Input placeholder="VD: Giảm giá mùa hè 2024" />
+                  <Input placeholder={t("COUPON_NAME_PLACEHOLDER")} />
                 </Form.Item>
 
                 <Form.Item
-                  label="Mô tả"
+                  label={t("COUPON_DESCRIPTION_LABEL")}
                   name="description"
                   rules={[
-                    { max: 1000, message: "Mô tả không được quá 1000 ký tự!" },
+                    { max: 1000, message: t("COUPON_DESCRIPTION_MAX_LENGTH") },
                   ]}
-                  extra="Mô tả chi tiết về ưu đãi (tùy chọn)"
+                  extra={t("COUPON_DESCRIPTION_EXTRA")}
                 >
                   <Input.TextArea
-                    placeholder="Mô tả chi tiết về coupon..."
+                    placeholder={t("COUPON_DESCRIPTION_PLACEHOLDER")}
                     rows={4}
                     showCount
                     maxLength={1000}
@@ -325,34 +330,32 @@ const CouponForm = () => {
 
               {/* Right Column */}
               <Col xs={24} lg={12}>
-                <Title level={5}>Cài đặt thời gian & trạng thái</Title>
-
                 <Form.Item
-                  label="Trạng thái"
+                  label={t("COUPON_STATUS_LABEL")}
                   name="status"
                   rules={[
-                    { required: true, message: "Vui lòng chọn trạng thái!" },
+                    { required: true, message: t("COUPON_STATUS_REQUIRED") },
                   ]}
                   extra={
                     isEdit
-                      ? "Chế độ hiển thị của coupon"
-                      : "Coupon mới tạo sẽ ở trạng thái ẩn"
+                      ? t("COUPON_STATUS_EXTRA_EDIT")
+                      : t("COUPON_STATUS_EXTRA_CREATE")
                   }
-                  style={{ display: isEdit ? "block" : "none" }} // Ẩn khi tạo mới
+                  style={{ display: isEdit ? "block" : "none" }}
                 >
                   <Select
-                    placeholder="Chọn trạng thái"
-                    disabled={!isEdit} // Disable khi tạo mới
+                    placeholder={t("COUPON_STATUS_PLACEHOLDER")}
+                    disabled={!isEdit}
                     options={[
                       {
-                        label: "Kích hoạt",
+                        label: t("COUPON_STATUS_ACTIVE"),
                         value: true,
-                        extra: "Hiển thị và có thể sử dụng",
+                        extra: t("COUPON_STATUS_ACTIVE_EXTRA"),
                       },
                       {
-                        label: "Ẩn",
+                        label: t("COUPON_STATUS_INACTIVE"),
                         value: false,
-                        extra: "Không hiển thị cho khách hàng",
+                        extra: t("COUPON_STATUS_INACTIVE_EXTRA"),
                       },
                     ]}
                   />
@@ -361,32 +364,32 @@ const CouponForm = () => {
                 <Row gutter={16}>
                   <Col span={12}>
                     <Form.Item
-                      label="Ngày bắt đầu"
+                      label={t("COUPON_START_DATE_LABEL")}
                       name="startDate"
                       rules={[
                         {
                           required: true,
-                          message: "Vui lòng chọn ngày bắt đầu!",
+                          message: t("COUPON_START_DATE_REQUIRED"),
                         },
                       ]}
                     >
                       <DatePicker
                         style={{ width: "100%" }}
                         format="DD/MM/YYYY"
-                        placeholder="Chọn ngày bắt đầu"
+                        placeholder={t("SELECT_START_DATE")}
                       />
                     </Form.Item>
                   </Col>
 
                   <Col span={12}>
                     <Form.Item
-                      label="Ngày kết thúc"
+                      label={t("COUPON_END_DATE_LABEL")}
                       name="endDate"
                       dependencies={["startDate"]}
                       rules={[
                         {
                           required: true,
-                          message: "Vui lòng chọn ngày kết thúc!",
+                          message: t("COUPON_END_DATE_REQUIRED"),
                         },
                         ({ getFieldValue }) => ({
                           validator(_, value) {
@@ -396,9 +399,7 @@ const CouponForm = () => {
                             }
                             if (value.isBefore(startDate)) {
                               return Promise.reject(
-                                new Error(
-                                  "Ngày kết thúc phải sau ngày bắt đầu!"
-                                )
+                                new Error(t("COUPON_END_DATE_AFTER_START"))
                               );
                             }
                             return Promise.resolve();
@@ -409,7 +410,7 @@ const CouponForm = () => {
                       <DatePicker
                         style={{ width: "100%" }}
                         format="DD/MM/YYYY"
-                        placeholder="Chọn ngày kết thúc"
+                        placeholder={t("SELECT_END_DATE")}
                       />
                     </Form.Item>
                   </Col>
@@ -417,11 +418,11 @@ const CouponForm = () => {
 
                 {/* Info Alert */}
                 <Alert
-                  message="Bước tiếp theo"
+                  message={t("NEXT_STEP")}
                   description={
                     isEdit
-                      ? "Sau khi cập nhật, bạn có thể quản lý thông tin chi tiết khuyến mại."
-                      : "Coupon mới tạo sẽ ở trạng thái ẩn. Sau khi tạo, bạn cần thêm điều kiện chi tiết trước khi có thể kích hoạt khuyến mại."
+                      ? t("NEXT_STEP_EDIT_DESC")
+                      : t("NEXT_STEP_CREATE_DESC")
                   }
                   type="info"
                   showIcon
@@ -430,8 +431,8 @@ const CouponForm = () => {
 
                 {!isEdit && (
                   <Alert
-                    message="Lưu ý"
-                    description="Coupon mới tạo luôn có trạng thái ẩn để đảm bảo an toàn. Bạn cần thêm ít nhất một điều kiện chi tiết trước khi có thể kích hoạt."
+                    message={t("NOTE")}
+                    description={t("NOTE_CREATE_DESC")}
                     type="warning"
                     showIcon
                     style={{ marginTop: 8 }}

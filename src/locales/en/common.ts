@@ -119,7 +119,7 @@ const common = {
   // Status Values
   DRAFT: "Draft",
   PUBLIC: "Public",
-
+  PRICE: "Price",
   CLONE: "Clone",
 };
 

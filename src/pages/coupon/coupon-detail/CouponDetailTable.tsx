@@ -4,6 +4,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { Button, message, Modal, Space, Table, Switch, Dropdown } from "antd";
+import { useTranslation } from "react-i18next";
 import type { MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
@@ -26,6 +27,7 @@ const CouponDetailTable = ({
   loading = false,
   onEdit,
 }: CouponDetailTableProps) => {
+  const { t } = useTranslation();
   const [deleteDetail, { isLoading: isDeleting }] =
     useDeleteCouponDetailMutation();
   const [updateDetail, { isLoading: isUpdating }] =
@@ -37,7 +39,7 @@ const CouponDetailTable = ({
       label: (
         <Space>
           <EditOutlined />
-          Chỉnh sửa
+          {t("COUPON_DETAIL_EDIT_MENU")}
         </Space>
       ),
       onClick: () => onEdit?.(detail),
@@ -50,7 +52,7 @@ const CouponDetailTable = ({
       label: (
         <Space>
           <DeleteOutlined />
-          Xóa
+          {t("COUPON_DETAIL_DELETE_MENU")}
         </Space>
       ),
       danger: true,
@@ -73,11 +75,11 @@ const CouponDetailTable = ({
   const getBenefitText = (detail: CouponDetail) => {
     switch (detail.benefitType) {
       case "DISCOUNT_PERCENT":
-        return `Giảm ${detail.percent}%${detail.lineMaxDiscount ? ` (tối đa ${detail.lineMaxDiscount?.toLocaleString()} VND)` : ""}`;
+        return `${t("BENEFIT_DISCOUNT_TEXT")} ${detail.percent}%${detail.lineMaxDiscount ? ` (${t("BENEFIT_MAX_TEXT")} ${detail.lineMaxDiscount?.toLocaleString()} VND)` : ""}`;
       case "DISCOUNT_AMOUNT":
-        return `Giảm ${detail.amount?.toLocaleString()} VND`;
+        return `${t("BENEFIT_DISCOUNT_TEXT")} ${detail.amount?.toLocaleString()} VND`;
       case "FREE_PRODUCT":
-        return `Tặng ${detail.giftQuantity} sản phẩm`;
+        return `${t("BENEFIT_GIFT_TEXT")} ${detail.giftQuantity} ${t("BENEFIT_PRODUCT_TEXT")}`;
       default:
         return "N/A";
     }
@@ -85,28 +87,28 @@ const CouponDetailTable = ({
 
   const getSeatTypeName = (seatTypeId: number) => {
     const seatTypeMap = {
-      1: "Ghế thường",
-      2: "Ghế VIP",
-      3: "Ghế đôi",
+      1: t("SEAT_TYPE_REGULAR"),
+      2: t("SEAT_TYPE_VIP"),
+      3: t("SEAT_TYPE_COUPLE"),
     };
     return (
       seatTypeMap[seatTypeId as keyof typeof seatTypeMap] ||
-      `Ghế loại ${seatTypeId}`
+      `${t("SEAT_TYPE_DEFAULT")} ${seatTypeId}`
     );
   };
 
   const getTargetText = (detail: CouponDetail) => {
     switch (detail.targetType) {
       case "ORDER":
-        return "Toàn đơn hàng";
+        return t("TARGET_FULL_ORDER");
       case "SEAT_TYPE":
         return detail.targetRefId
           ? getSeatTypeName(detail.targetRefId)
-          : "Tất cả loại ghế";
+          : t("TARGET_ALL_SEAT_TYPES");
       case "SERVICE":
         return detail.targetRefId
-          ? `Dịch vụ ${detail.targetRefId}`
-          : "Tất cả dịch vụ";
+          ? `${t("TARGET_SERVICE_PREFIX")} ${detail.targetRefId}`
+          : t("TARGET_ALL_SERVICES");
       default:
         return "N/A";
     }
@@ -116,14 +118,16 @@ const CouponDetailTable = ({
     const conditions = [];
     if (detail.minOrderTotal) {
       conditions.push(
-        `Đơn tối thiểu: ${detail.minOrderTotal.toLocaleString()} VND`
+        `${t("MIN_ORDER_CONDITION")}: ${detail.minOrderTotal.toLocaleString()} VND`
       );
     }
     if (detail.minQuantity) {
-      conditions.push(`SL tối thiểu: ${detail.minQuantity}`);
+      conditions.push(`${t("MIN_QUANTITY_CONDITION")}: ${detail.minQuantity}`);
     }
     if (detail.limitQuantityApplied) {
-      conditions.push(`Giới hạn áp dụng: ${detail.limitQuantityApplied}`);
+      conditions.push(
+        `${t("LIMIT_APPLIED_CONDITION")}: ${detail.limitQuantityApplied}`
+      );
     }
     return conditions.length > 0 ? conditions.join("\n") : "-";
   };
@@ -164,34 +168,32 @@ const CouponDetailTable = ({
 
       message.success(
         detail.enabled
-          ? "Đã tắt khuyến mại detail thành công"
-          : "Đã bật khuyến mại detail thành công"
+          ? t("COUPON_DETAIL_DISABLE_SUCCESS")
+          : t("COUPON_DETAIL_ENABLE_SUCCESS")
       );
     } catch (error: any) {
-      message.error(error.data?.message || "Lỗi khi cập nhật trạng thái");
+      message.error(error.data?.message || t("STATUS_UPDATE_ERROR"));
     }
   };
 
   const handleDelete = (detail: CouponDetail) => {
     Modal.confirm({
-      title: "Xác nhận xóa",
-      content: `Bạn có chắc chắn muốn xóa chi tiết khuyến mại này?`,
-      okText: "Xóa",
+      title: t("COUPON_DETAIL_DELETE_CONFIRM_TITLE"),
+      content: t("COUPON_DETAIL_DELETE_CONFIRM_CONTENT"),
+      okText: t("COUPON_DETAIL_DELETE_OK"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("COUPON_DETAIL_DELETE_CANCEL"),
       okButtonProps: { loading: isDeleting },
       onOk: () => {
         return new Promise<void>((resolve, reject) => {
           deleteDetail(detail.id)
             .unwrap()
             .then(() => {
-              message.success("Xóa chi tiết khuyến mại thành công");
+              message.success(t("COUPON_DETAIL_DELETE_SUCCESS"));
               resolve();
             })
             .catch((error: any) => {
-              message.error(
-                error.data?.message || "Lỗi khi xóa chi tiết khuyến mại"
-              );
+              message.error(error.data?.message || t("DELETE_DETAIL_ERROR"));
               reject();
             });
         });
@@ -201,7 +203,7 @@ const CouponDetailTable = ({
 
   const columns: ColumnsType<CouponDetail> = [
     {
-      title: "Trạng thái",
+      title: t("COUPON_DETAIL_STATUS_COLUMN"),
       dataIndex: "enabled",
       key: "enabled",
       width: 100,
@@ -215,7 +217,7 @@ const CouponDetailTable = ({
       ),
     },
     {
-      title: "Ưu tiên",
+      title: t("COUPON_DETAIL_PRIORITY_COLUMN"),
       dataIndex: "linePriority",
       key: "linePriority",
       width: 80,
@@ -225,14 +227,14 @@ const CouponDetailTable = ({
       ),
     },
     {
-      title: "Đối tượng áp dụng",
+      title: t("COUPON_DETAIL_TARGET_COLUMN"),
       dataIndex: "targetType",
       key: "targetType",
       width: 150,
       render: (_, record: CouponDetail) => getTargetText(record),
     },
     {
-      title: "Lợi ích",
+      title: t("COUPON_DETAIL_BENEFIT_COLUMN"),
       dataIndex: "benefitType",
       key: "benefitType",
       width: 200,
@@ -242,7 +244,7 @@ const CouponDetailTable = ({
     ...(hasConditions
       ? [
           {
-            title: "Điều kiện",
+            title: t("COUPON_DETAIL_CONDITIONS_COLUMN"),
             key: "conditions",
             width: 180,
             render: (_value: any, record: CouponDetail) => (
@@ -257,7 +259,7 @@ const CouponDetailTable = ({
     ...(hasUsageLimit || data.some((item) => item.detailUsedCount > 0)
       ? [
           {
-            title: "Sử dụng",
+            title: t("COUPON_DETAIL_USAGE_COLUMN"),
             dataIndex: "detailUsedCount",
             key: "detailUsedCount",
             width: 100,
@@ -276,15 +278,15 @@ const CouponDetailTable = ({
     ...(hasMultipleStrategies
       ? [
           {
-            title: "Chiến lược",
+            title: t("COUPON_DETAIL_STRATEGY_COLUMN"),
             dataIndex: "selectionStrategy",
             key: "selectionStrategy",
             width: 120,
             render: (strategy: string) => {
               const strategyMap = {
-                HIGHEST_PRICE_FIRST: "Giá cao trước",
-                LOWEST_PRICE_FIRST: "Giá thấp trước",
-                FIFO: "Theo thứ tự",
+                HIGHEST_PRICE_FIRST: t("STRATEGY_HIGHEST_PRICE_FIRST"),
+                LOWEST_PRICE_FIRST: t("STRATEGY_LOWEST_PRICE_FIRST"),
+                FIFO: t("STRATEGY_FIFO"),
               };
               return (
                 strategyMap[strategy as keyof typeof strategyMap] || strategy
@@ -295,7 +297,7 @@ const CouponDetailTable = ({
       : []),
     // Always show date range column (now required)
     {
-      title: "Thời gian hiệu lực",
+      title: t("COUPON_DETAIL_DATE_RANGE_COLUMN"),
       key: "dateRange",
       width: 150,
       render: (_value: any, record: CouponDetail) => (
@@ -308,7 +310,7 @@ const CouponDetailTable = ({
     ...(hasNotes
       ? [
           {
-            title: "Ghi chú",
+            title: t("COUPON_DETAIL_NOTES_COLUMN"),
             dataIndex: "notes",
             key: "notes",
             width: 150,
@@ -318,7 +320,7 @@ const CouponDetailTable = ({
         ]
       : []),
     {
-      title: "Thao tác",
+      title: t("COUPON_DETAIL_ACTIONS_COLUMN"),
       key: "actions",
       width: 80,
       fixed: "right" as const,
@@ -349,7 +351,8 @@ const CouponDetailTable = ({
       pagination={{
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} mục`,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} ${t("PAGINATION_TOTAL")} ${total} ${t("PAGINATION_ITEMS")}`,
         pageSizeOptions: ["10", "20", "50", "100"],
         defaultPageSize: 20,
       }}

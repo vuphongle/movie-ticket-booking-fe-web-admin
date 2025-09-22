@@ -120,7 +120,7 @@ const common = {
   // Status Values
   DRAFT: "Bản nháp",
   PUBLIC: "Công khai",
-
+  PRICE: "Giá",
   CLONE: "Nhân bản",
 };
 

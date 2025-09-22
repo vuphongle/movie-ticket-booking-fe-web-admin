@@ -1,6 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Button, Card, Space, theme } from "antd";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useGetCouponDetailsQuery } from "@/app/services/coupons.service";
 import CouponDetailTable from "./CouponDetailTable";
 import CouponDetailModal from "./CouponDetailModal";
@@ -15,6 +16,7 @@ const CouponDetailList = ({ couponId, coupon }: CouponDetailListProps) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const { t } = useTranslation();
 
   const [openModal, setOpenModal] = useState(false);
   const [editingDetail, setEditingDetail] = useState<
@@ -42,7 +44,7 @@ const CouponDetailList = ({ couponId, coupon }: CouponDetailListProps) => {
   return (
     <>
       <Card
-        title="Danh sách chi tiết coupon"
+        title={t("COUPON_DETAIL_LIST_TITLE")}
         style={{
           marginTop: 16,
           background: colorBgContainer,
@@ -55,7 +57,7 @@ const CouponDetailList = ({ couponId, coupon }: CouponDetailListProps) => {
               icon={<PlusOutlined />}
               onClick={handleAddNew}
             >
-              Thêm chi tiết
+              {t("ADD_COUPON_DETAIL_BTN")}
             </Button>
           </Space>
         }
