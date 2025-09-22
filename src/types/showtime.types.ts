@@ -32,6 +32,50 @@ export interface ShowtimeApiPayload {
   translationType: string;
 }
 
+// Bulk showtime creation types
+export interface BulkShowtimeFormData {
+  movieId: number;
+  auditoriumId: string;
+  dateFrom: string;
+  dateTo: string;
+  slotId: number;
+  graphicsType: string;
+  translationType: string;
+  daysOfWeek: number[];
+  conflictPolicy: 'FAIL' | 'SKIP';
+}
+
+export interface BulkShowtimeApiPayload {
+  movieId: number;
+  auditoriumId: number;
+  dateFrom: string;
+  dateTo: string;
+  startTime: string;
+  endTime: string;
+  graphicsType: string;
+  translationType: string;
+  daysOfWeek: number[];
+  conflictPolicy: 'FAIL' | 'SKIP';
+}
+
+export interface ConflictDetail {
+  date: string;
+  conflictMovie?: string;
+  conflictTimeRange?: string;
+  reason: string;
+}
+
+export interface BulkShowtimeResponse {
+  totalRequested: number;
+  successfullyCreated: number;
+  conflictsDetected: number;
+  skipped: number;
+  createdShowtimes: Showtime[];
+  conflicts: ConflictDetail[];
+  skippedDates: string[];
+  message: string;
+}
+
 export interface ShowtimeResponse {
   cinema: {
     id: string;

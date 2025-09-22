@@ -72,6 +72,56 @@ const showtimes = {
   SLOT_OCCUPANCY_WARNING: "This movie will occupy {count} consecutive slots (to prevent scheduling conflicts)",
   SLOT_OCCUPANCY_WARNING_PREFIX: "This movie will occupy",
   SLOT_OCCUPANCY_WARNING_SUFFIX: "consecutive slots (to prevent scheduling conflicts)",
+
+  // Bulk creation
+  BULK_CREATE_SHOWTIME: "Create Multiple Showtimes",
+  DATE_FROM: "From Date",
+  DATE_TO: "To Date", 
+  DATE_FROM_REQUIRED: "From date is required!",
+  DATE_TO_REQUIRED: "To date is required!",
+  DAYS_OF_WEEK: "Days of Week",
+  SELECT_DAYS_OF_WEEK: "Select days of week",
+  SELECT_ALL_DAYS: "All Days",
+  SELECT_WEEKDAYS: "Weekdays (Mon-Fri)",
+  SELECT_WEEKENDS: "Weekends (Sat-Sun)",
+  QUICK_SELECT: "Quick Select:",
+  MONDAY: "Monday",
+  TUESDAY: "Tuesday", 
+  WEDNESDAY: "Wednesday",
+  THURSDAY: "Thursday",
+  FRIDAY: "Friday",
+  SATURDAY: "Saturday",
+  SUNDAY: "Sunday",
+  CONFLICT_POLICY: "Conflict Policy",
+  CONFLICT_POLICY_FAIL: "Stop on conflict",
+  CONFLICT_POLICY_SKIP: "Skip conflicted dates",
+  CREATE_BULK_SHOWTIMES: "Create Multiple Showtimes",
+  BULK_CREATION_MODE: "Bulk Creation Mode",
+  SINGLE_DATE_MODE: "Single Date Mode",
+  CREATION_MODE: "Creation Mode",
+  
+  // Conflict handling
+  CONFLICT_DETECTED_TITLE: "Schedule Conflicts Detected",
+  CONFLICT_DETECTED_MESSAGE: "The following dates have scheduling conflicts:",
+  SKIP_CONFLICTS_BUTTON: "Skip conflicts and create remaining",
+  CANCEL_CREATION_BUTTON: "Cancel",
+  BULK_CREATION_SUCCESS: "Successfully created {{created}} out of {{total}} showtimes",
+  BULK_CREATION_PARTIAL: "Created {{created}} showtimes, skipped {{skipped}} due to conflicts",
+  BULK_CREATION_FAILED: "Failed to create any showtimes. Please check your schedule settings.",
+  
+  // Validation messages
+  DATE_RANGE_TOO_LARGE: "Date range cannot exceed 90 days",
+  DATE_FROM_AFTER_DATE_TO: "From date cannot be after to date",
+  NO_DAYS_SELECTED: "Please select at least one day of the week",
+  
+  // Additional conflict modal translations
+  TOTAL_REQUESTED: "Total Requested",
+  CONFLICTS: "Conflicts",
+  CAN_CREATE: "Can Create",
+  CONFLICT: "Conflict",
+  CONFLICTED_WITH: "Conflicts with",
+  WILL_CREATE_SHOWTIMES: "Will create {{count}} valid showtimes",
+  NO_VALID_DATES_REMAINING: "No valid dates remaining for showtime creation",
 };
 
 export default showtimes;
