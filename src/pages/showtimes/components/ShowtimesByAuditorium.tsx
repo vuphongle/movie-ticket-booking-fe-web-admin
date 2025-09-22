@@ -104,7 +104,7 @@ function ShowtimesByAuditorium({
   const [showtimes, setShowtimes] = useState<Showtime[]>(data.showtimes);
   const [form] = Form.useForm();
   const { data: movies, isLoading: _isFetchingMovies } =
-    useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD/MM/YYYY"));
+    useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD-MM-YYYY"));
   const [createShowtimes, { isLoading: isLoadingCreateShowtimes }] =
     useCreateShowtimesMutation();
   const { t } = useTranslation();
@@ -277,7 +277,7 @@ function ShowtimesByAuditorium({
     const createPayload: ShowtimeApiPayload = {
       auditoriumId: auditorium.id,
       movieId: values.movieId,
-      date: dayjs(values.date).format("DD/MM/YYYY"),
+      date: dayjs(values.date).format("YYYY-MM-DD"),
       startTime: apiPayload.startTime,
       endTime: apiPayload.endTime,
       graphicsType: values.graphicsType,
