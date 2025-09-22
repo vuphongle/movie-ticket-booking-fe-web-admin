@@ -37,7 +37,7 @@ const AdditionalServiceTable = ({ data }: AdditionalServiceTableProps) => {
       },
     },
     {
-      title: t("SERVICE_TYPE_COL"),
+      title: t("SERVICE_TYPE"),
       dataIndex: "type",
       key: "type",
       filters: [

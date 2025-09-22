@@ -718,9 +718,10 @@ const AdditionalServiceDetail = () => {
             {(comboItems || []).some((item) => item.isEditing) && (
               <div style={{ marginBottom: 16 }}>
                 <span style={WARNING_BANNER_STYLE}>
-                  ⚠️ Có{" "}
-                  {(comboItems || []).filter((item) => item.isEditing).length}{" "}
-                  item(s) chưa lưu. Vui lòng lưu tất cả trước khi cập nhật.
+                  {t("UNSAVED_COMBO_ITEMS_WARNING", {
+                    count: (comboItems || []).filter((item) => item.isEditing)
+                      .length,
+                  })}
                 </span>
               </div>
             )}
@@ -794,10 +795,14 @@ const AdditionalServiceDetail = () => {
                         <Space>
                           <span>{t("UNIT")}:</span>
                           <Tag color="orange">
-                            {item.product?.unit ||
-                              (item.productId
-                                ? t("NOT_SET")
-                                : t("SELECT_PRODUCT_FIRST"))}
+                            {t(
+                              (
+                                item.product?.unit ||
+                                (item.productId
+                                  ? t("NOT_SET")
+                                  : t("SELECT_PRODUCT_FIRST"))
+                              ).toUpperCase()
+                            )}
                           </Tag>
                         </Space>
                       </Col>
@@ -843,7 +848,7 @@ const AdditionalServiceDetail = () => {
                                 onClick={() => handleRemoveComboItem(index)}
                                 loading={isLoadingUpdateAdditionalService}
                               >
-                                {t("REMOVE")}
+                                {t("DELETE")}
                               </Button>
                             </>
                           )}

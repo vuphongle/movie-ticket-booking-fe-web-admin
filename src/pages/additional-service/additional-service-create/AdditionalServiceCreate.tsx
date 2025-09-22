@@ -189,12 +189,12 @@ const AdditionalServiceCreate = () => {
             </Col>
             <Col span={8}>
               <Form.Item
-                label="Loại dịch vụ"
+                label={t("SERVICE_TYPE")}
                 name="type"
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng chọn loại dịch vụ",
+                    message: t("SERVICE_TYPE_REQUIRED"),
                   },
                 ]}
               >
@@ -211,12 +211,12 @@ const AdditionalServiceCreate = () => {
               {serviceType === "SINGLE" && (
                 <>
                   <Form.Item
-                    label="Sản phẩm"
+                    label={t("PRODUCT")}
                     name="productId"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng chọn sản phẩm",
+                        message: t("PRODUCT_NOT_SELECTED"),
                       },
                     ]}
                   >
@@ -224,18 +224,18 @@ const AdditionalServiceCreate = () => {
                   </Form.Item>
 
                   <Form.Item
-                    label="Số lượng mặc định"
+                    label={t("DEFAULT_QUANTITY")}
                     name="defaultQuantity"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập số lượng",
+                        message: t("DEFAULT_QUANTITY_REQUIRED"),
                       },
                     ]}
                   >
                     <InputNumber
                       min={1}
-                      placeholder="Nhập số lượng"
+                      placeholder={t("ENTER_DEFAULT_QUANTITY")}
                       style={{ width: "100%" }}
                     />
                   </Form.Item>
@@ -262,7 +262,7 @@ const AdditionalServiceCreate = () => {
                           icon={<PlusOutlined />}
                           size="small"
                         >
-                          Thêm sản phẩm
+                          {t("ADD_PRODUCT")}
                         </Button>
                       </div>
                       {fields.map(({ key, name, ...restField }) => {
@@ -306,8 +306,9 @@ const AdditionalServiceCreate = () => {
                                       fontSize: "12px",
                                     }}
                                   >
-                                    ⚠️ Sản phẩm trùng lặp sẽ được gộp số lượng
-                                    khi lưu
+                                    {/* ⚠️ Sản phẩm trùng lặp sẽ được gộp số lượng
+                                    khi lưu */}
+                                    {t("WARNING_DUPLICATE_PRODUCT")}
                                   </div>
                                 ) : null
                               }
@@ -323,13 +324,13 @@ const AdditionalServiceCreate = () => {
                               rules={[
                                 {
                                   required: true,
-                                  message: "Vui lòng nhập số lượng",
+                                  message: t("DEFAULT_QUANTITY_REQUIRED"),
                                 },
                               ]}
                             >
                               <InputNumber
                                 min={1}
-                                placeholder="Số lượng"
+                                placeholder={t("ENTER_DEFAULT_QUANTITY")}
                                 style={{ width: "100%" }}
                               />
                             </Form.Item>
