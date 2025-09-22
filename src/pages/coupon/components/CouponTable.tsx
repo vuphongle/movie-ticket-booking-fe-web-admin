@@ -1,12 +1,14 @@
 import { Table, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Link as RouterLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import useSearchTable from "@/hooks/useSearchTable";
 import type { CouponTableProps, Coupon } from "@/types";
 import { formatTimeWindow } from "@/utils/couponUtils";
 
 const CouponTable = ({ data, loading = false }: CouponTableProps) => {
   const { getColumnSearchProps } = useSearchTable();
+  const { t } = useTranslation();
 
   // Computed classification logic (học từ ScheduleTable)
   const getCouponClassification = (record: Coupon): number => {
@@ -22,7 +24,7 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
 
   const columns: ColumnsType<Coupon> = [
     {
-      title: "Mã",
+      title: t("COUPON_TABLE_CODE"),
       dataIndex: "code",
       key: "code",
       width: 120,
@@ -34,7 +36,7 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
       ),
     },
     {
-      title: "Tên",
+      title: t("COUPON_NAME_LABEL"),
       dataIndex: "name",
       key: "name",
       width: 200,
@@ -47,7 +49,7 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
       ),
     },
     {
-      title: "Thời gian",
+      title: t("COUPON_TABLE_VALIDITY_PERIOD"),
       dataIndex: "timeWindow",
       key: "timeWindow",
       width: 180,
@@ -59,15 +61,15 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
       ),
     },
     {
-      title: "Trạng thái",
+      title: t("COUPON_TABLE_STATUS"),
       dataIndex: "activeStatus",
       key: "activeStatus",
       width: 100,
       filters: [
-        { text: "Kích hoạt", value: 2 },
-        { text: "Sắp có hiệu lực", value: 1 },
-        { text: "Ẩn", value: 0 },
-        { text: "Hết hạn", value: 3 },
+        { text: t("COUPON_STATUS_ACTIVE"), value: 2 },
+        { text: t("COUPON_STATUS_UPCOMING"), value: 1 },
+        { text: t("COUPON_STATUS_INACTIVE"), value: 0 },
+        { text: t("COUPON_STATUS_EXPIRED"), value: 3 },
       ],
       onFilter: (value, record) => getCouponClassification(record) === value,
       sorter: (a: Coupon, b: Coupon) => {
@@ -86,12 +88,12 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
                 : "warning";
         const statusText =
           classification === 0
-            ? "Ẩn"
+            ? t("COUPON_STATUS_INACTIVE")
             : classification === 1
-              ? "Sắp có hiệu lực"
+              ? t("COUPON_STATUS_UPCOMING")
               : classification === 2
-                ? "Kích hoạt"
-                : "Hết hạn";
+                ? t("COUPON_STATUS_ACTIVE")
+                : t("COUPON_STATUS_EXPIRED");
 
         return <Tag color={color}>{statusText}</Tag>;
       },

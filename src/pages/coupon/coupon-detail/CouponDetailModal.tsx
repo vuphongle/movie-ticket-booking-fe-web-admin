@@ -11,6 +11,7 @@ import {
   DatePicker,
 } from "antd";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   useCreateCouponDetailMutation,
   useUpdateCouponDetailMutation,
@@ -46,6 +47,7 @@ const CouponDetailModal = ({
   onCancel,
   onSuccess,
 }: CouponDetailModalProps) => {
+  const { t } = useTranslation();
   const [form] = Form.useForm();
   const isEditing = !!detail;
 
@@ -105,23 +107,36 @@ const CouponDetailModal = ({
           detailId: detail!.id,
           ...submitValues,
         }).unwrap();
-        message.success("Cập nhật chi tiết coupon thành công!");
+        message.success(t("COUPON_DETAIL_UPDATE_SUCCESS"));
       } else {
         await createDetail({
           couponId,
           ...submitValues,
         }).unwrap();
-        message.success("Tạo chi tiết coupon thành công!");
+        message.success(t("COUPON_DETAIL_CREATE_SUCCESS"));
       }
 
       onSuccess?.();
     } catch (error: any) {
-      message.error(error.data?.message || "Có lỗi xảy ra");
+      message.error(error.data?.message || t("COUPON_DETAIL_ERROR"));
     }
   };
 
   const benefitType = Form.useWatch("benefitType", form);
   const targetType = Form.useWatch("targetType", form);
+
+  // Function to get translated seat type name
+  const getSeatTypeName = (seatTypeId: number) => {
+    const seatTypeMap = {
+      1: t("SEAT_TYPE_REGULAR"),
+      2: t("SEAT_TYPE_VIP"),
+      3: t("SEAT_TYPE_COUPLE"),
+    };
+    return (
+      seatTypeMap[seatTypeId as keyof typeof seatTypeMap] ||
+      `${t("SEAT_TYPE_DEFAULT")} ${seatTypeId}`
+    );
+  };
 
   // Reset targetRefId when targetType changes and re-validate
   useEffect(() => {
@@ -155,12 +170,18 @@ const CouponDetailModal = ({
 
   return (
     <Modal
-      title={isEditing ? "Chỉnh sửa chi tiết coupon" : "Thêm chi tiết coupon"}
+      title={
+        isEditing ? t("COUPON_DETAIL_EDIT_TITLE") : t("COUPON_DETAIL_ADD_TITLE")
+      }
       open={open}
       onCancel={onCancel}
       onOk={handleSubmit}
-      okText={isEditing ? "Cập nhật" : "Tạo"}
-      cancelText="Hủy"
+      okText={
+        isEditing
+          ? t("COUPON_DETAIL_UPDATE_BTN")
+          : t("COUPON_DETAIL_CREATE_BTN")
+      }
+      cancelText={t("COUPON_DETAIL_CANCEL_BTN")}
       confirmLoading={isCreating || isUpdating}
       width={800}
     >
@@ -175,15 +196,19 @@ const CouponDetailModal = ({
       >
         <Row gutter={16}>
           <Col span={12}>
-            <Form.Item label="Kích hoạt" name="enabled" valuePropName="checked">
+            <Form.Item
+              label={t("COUPON_DETAIL_ENABLED_LABEL")}
+              name="enabled"
+              valuePropName="checked"
+            >
               <Switch />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Ưu tiên"
+              label={t("COUPON_DETAIL_PRIORITY_LABEL")}
               name="linePriority"
-              rules={[{ required: true, message: "Vui lòng nhập độ ưu tiên!" }]}
+              rules={[{ required: true, message: t("PRIORITY_REQUIRED") }]}
             >
               <InputNumber min={1} style={{ width: "100%" }} />
             </Form.Item>
@@ -193,27 +218,27 @@ const CouponDetailModal = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Đối tượng áp dụng"
+              label={t("COUPON_DETAIL_TARGET_TYPE_LABEL")}
               name="targetType"
-              rules={[{ required: true, message: "Vui lòng chọn đối tượng!" }]}
+              rules={[{ required: true, message: t("TARGET_TYPE_REQUIRED") }]}
             >
-              <Select placeholder="Chọn đối tượng">
-                <Option value="ORDER">Tổng đơn hàng</Option>
-                <Option value="SEAT_TYPE">Loại ghế cụ thể</Option>
-                <Option value="SERVICE">Dịch vụ bổ sung</Option>
+              <Select placeholder={t("SELECT_TARGET_PLACEHOLDER")}>
+                <Option value="ORDER">{t("TARGET_ORDER")}</Option>
+                <Option value="SEAT_TYPE">{t("TARGET_SEAT_TYPE")}</Option>
+                <Option value="SERVICE">{t("TARGET_SERVICE")}</Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="ID tham chiếu"
+              label={t("COUPON_DETAIL_REF_ID_LABEL")}
               name="targetRefId"
               tooltip={
                 targetType === "ORDER"
-                  ? "Không cần thiết cho đơn hàng"
+                  ? t("REF_ID_TOOLTIP_ORDER")
                   : targetType === "SEAT_TYPE"
-                    ? "Chọn loại ghế cụ thể"
-                    : "Chọn dịch vụ bổ sung cụ thể"
+                    ? t("REF_ID_TOOLTIP_SEAT_TYPE")
+                    : t("REF_ID_TOOLTIP_SERVICE")
               }
               rules={[
                 ({ getFieldValue }) => ({
@@ -229,8 +254,8 @@ const CouponDetailModal = ({
                       return Promise.reject(
                         new Error(
                           currentTargetType === "SEAT_TYPE"
-                            ? "Vui lòng chọn loại ghế cụ thể!"
-                            : "Vui lòng chọn dịch vụ bổ sung cụ thể!"
+                            ? t("SEAT_TYPE_REQUIRED")
+                            : t("SERVICE_REQUIRED")
                         )
                       );
                     }
@@ -243,25 +268,25 @@ const CouponDetailModal = ({
               {targetType === "ORDER" ? (
                 <Input
                   disabled
-                  placeholder="Không cần thiết cho đơn hàng"
+                  placeholder={t("NOT_REQUIRED_FOR_ORDER")}
                   style={{ width: "100%" }}
                 />
               ) : targetType === "SEAT_TYPE" ? (
                 <Select
-                  placeholder="Chọn loại ghế"
+                  placeholder={t("SELECT_SEAT_TYPE_PLACEHOLDER")}
                   style={{ width: "100%" }}
                   allowClear
                   loading={isLoadingSeatTypes}
                 >
                   {seatTypeOptions.map((option) => (
                     <Option key={option.key} value={option.id}>
-                      {option.label}
+                      {getSeatTypeName(option.id)}
                     </Option>
                   ))}
                 </Select>
               ) : (
                 <Select
-                  placeholder="Chọn dịch vụ bổ sung"
+                  placeholder={t("SELECT_SERVICE_PLACEHOLDER")}
                   style={{ width: "100%" }}
                   allowClear
                   loading={isLoadingServices}
@@ -295,31 +320,35 @@ const CouponDetailModal = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Loại lợi ích"
+              label={t("COUPON_DETAIL_BENEFIT_TYPE_LABEL")}
               name="benefitType"
-              rules={[
-                { required: true, message: "Vui lòng chọn loại lợi ích!" },
-              ]}
+              rules={[{ required: true, message: t("BENEFIT_TYPE_REQUIRED") }]}
             >
-              <Select placeholder="Chọn loại lợi ích">
-                <Option value="DISCOUNT_PERCENT">Giảm theo %</Option>
-                <Option value="DISCOUNT_AMOUNT">Giảm số tiền</Option>
-                <Option value="FREE_PRODUCT">Tặng sản phẩm</Option>
+              <Select placeholder={t("SELECT_BENEFIT_TYPE_PLACEHOLDER")}>
+                <Option value="DISCOUNT_PERCENT">
+                  {t("BENEFIT_DISCOUNT_PERCENT")}
+                </Option>
+                <Option value="DISCOUNT_AMOUNT">
+                  {t("BENEFIT_DISCOUNT_AMOUNT")}
+                </Option>
+                <Option value="FREE_PRODUCT">
+                  {t("BENEFIT_FREE_PRODUCT")}
+                </Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
             {benefitType === "DISCOUNT_PERCENT" && (
               <Form.Item
-                label="Phần trăm giảm"
+                label={t("COUPON_DETAIL_PERCENT_LABEL")}
                 name="percent"
                 rules={[
-                  { required: true, message: "Vui lòng nhập phần trăm!" },
+                  { required: true, message: t("PERCENT_REQUIRED") },
                   {
                     type: "number",
                     min: 0.01,
                     max: 100,
-                    message: "Phần trăm phải từ 0.01 đến 100!",
+                    message: t("PERCENT_RANGE_MESSAGE"),
                   },
                 ]}
               >
@@ -333,14 +362,14 @@ const CouponDetailModal = ({
             )}
             {benefitType === "DISCOUNT_AMOUNT" && (
               <Form.Item
-                label="Số tiền giảm"
+                label={t("COUPON_DETAIL_AMOUNT_LABEL")}
                 name="amount"
                 rules={[
-                  { required: true, message: "Vui lòng nhập số tiền!" },
+                  { required: true, message: t("AMOUNT_REQUIRED") },
                   {
                     type: "number",
                     min: 1,
-                    message: "Số tiền phải lớn hơn 0!",
+                    message: t("AMOUNT_MIN_MESSAGE"),
                   },
                 ]}
               >
@@ -350,14 +379,14 @@ const CouponDetailModal = ({
             {benefitType === "FREE_PRODUCT" && (
               <>
                 <Form.Item
-                  label="Sản phẩm tặng"
+                  label={t("COUPON_DETAIL_GIFT_PRODUCT_LABEL")}
                   name="giftServiceId"
                   rules={[
-                    { required: true, message: "Vui lòng chọn sản phẩm tặng!" },
+                    { required: true, message: t("GIFT_PRODUCT_REQUIRED") },
                   ]}
                 >
                   <ProductSelect
-                    placeholder="Chọn sản phẩm tặng"
+                    placeholder={t("SELECT_GIFT_PRODUCT_PLACEHOLDER")}
                     style={{ width: "100%" }}
                     allowClear
                   />
@@ -371,14 +400,14 @@ const CouponDetailModal = ({
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Số lượng tặng"
+                label={t("COUPON_DETAIL_GIFT_QUANTITY_LABEL")}
                 name="giftQuantity"
                 rules={[
-                  { required: true, message: "Vui lòng nhập số lượng!" },
+                  { required: true, message: t("GIFT_QUANTITY_REQUIRED") },
                   {
                     type: "number",
                     min: 1,
-                    message: "Số lượng phải lớn hơn 0!",
+                    message: t("GIFT_QUANTITY_MIN_MESSAGE"),
                   },
                 ]}
               >
@@ -391,18 +420,18 @@ const CouponDetailModal = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Giảm tối đa mỗi dòng"
+              label={t("COUPON_DETAIL_LINE_MAX_DISCOUNT_LABEL")}
               name="lineMaxDiscount"
-              tooltip="Số tiền giảm tối đa cho mỗi dòng sản phẩm"
+              tooltip={t("LINE_MAX_DISCOUNT_TOOLTIP")}
             >
               <InputNumber min={0} suffix="VND" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Số lượng tối thiểu"
+              label={t("COUPON_DETAIL_MIN_QUANTITY_LABEL")}
               name="minQuantity"
-              tooltip="Số lượng sản phẩm tối thiểu để áp dụng"
+              tooltip={t("MIN_QUANTITY_TOOLTIP")}
             >
               <InputNumber min={1} style={{ width: "100%" }} />
             </Form.Item>
@@ -412,18 +441,18 @@ const CouponDetailModal = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Giới hạn số lượng áp dụng"
+              label={t("COUPON_DETAIL_LIMIT_QUANTITY_LABEL")}
               name="limitQuantityApplied"
-              tooltip="Số lượng sản phẩm tối đa được áp dụng giảm giá"
+              tooltip={t("LIMIT_QUANTITY_TOOLTIP")}
             >
               <InputNumber min={1} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Giá trị đơn hàng tối thiểu"
+              label={t("COUPON_DETAIL_MIN_ORDER_TOTAL_LABEL")}
               name="minOrderTotal"
-              tooltip="Tổng giá trị đơn hàng tối thiểu để áp dụng"
+              tooltip={t("MIN_ORDER_TOTAL_TOOLTIP")}
             >
               <InputNumber min={0} suffix="VND" style={{ width: "100%" }} />
             </Form.Item>
@@ -433,40 +462,47 @@ const CouponDetailModal = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Giới hạn sử dụng"
+              label={t("COUPON_DETAIL_USAGE_LIMIT_LABEL")}
               name="detailUsageLimit"
-              tooltip="Số lần tối đa chi tiết này có thể được sử dụng"
+              tooltip={t("USAGE_LIMIT_TOOLTIP")}
             >
               <InputNumber min={1} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Chiến lược chọn"
+              label={t("COUPON_DETAIL_SELECTION_STRATEGY_LABEL")}
               name="selectionStrategy"
-              tooltip="Cách chọn sản phẩm khi áp dụng giảm giá"
+              tooltip={t("SELECTION_STRATEGY_TOOLTIP")}
             >
               <Select>
-                <Option value="HIGHEST_PRICE_FIRST">Giá cao nhất trước</Option>
-                <Option value="LOWEST_PRICE_FIRST">Giá thấp nhất trước</Option>
-                <Option value="FIFO">Theo thứ tự</Option>
+                <Option value="HIGHEST_PRICE_FIRST">
+                  {t("STRATEGY_HIGHEST_PRICE_FIRST")}
+                </Option>
+                <Option value="LOWEST_PRICE_FIRST">
+                  {t("STRATEGY_LOWEST_PRICE_FIRST")}
+                </Option>
+                <Option value="FIFO">{t("STRATEGY_FIFO")}</Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
 
-        <Form.Item label="Ghi chú" name="notes">
-          <TextArea rows={3} placeholder="Nhập ghi chú..." />
+        <Form.Item label={t("COUPON_DETAIL_NOTES_LABEL")} name="notes">
+          <TextArea rows={3} placeholder={t("NOTES_PLACEHOLDER")} />
         </Form.Item>
 
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Ngày bắt đầu"
+              label={t("COUPON_DETAIL_START_DATE_LABEL")}
               name="startDate"
-              tooltip="Ngày bắt đầu hiệu lực của chi tiết coupon này"
+              tooltip={t("START_DATE_TOOLTIP")}
               rules={[
-                { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
+                {
+                  required: true,
+                  message: t("COUPON_DETAIL_START_DATE_REQUIRED"),
+                },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || !dayjs.isDayjs(value)) {
@@ -479,7 +515,7 @@ const CouponDetailModal = ({
                       if (value.isBefore(parentStartDate, "day")) {
                         return Promise.reject(
                           new Error(
-                            `Ngày bắt đầu không thể trước ngày bắt đầu của coupon cha (${parentStartDate.format("DD/MM/YYYY")})`
+                            `${t("COUPON_DETAIL_START_DATE_AFTER_PARENT_START")} (${parentStartDate.format("DD/MM/YYYY")})`
                           )
                         );
                       }
@@ -491,7 +527,7 @@ const CouponDetailModal = ({
                       if (value.isAfter(parentEndDate, "day")) {
                         return Promise.reject(
                           new Error(
-                            `Ngày bắt đầu không thể sau ngày kết thúc của coupon cha (${parentEndDate.format("DD/MM/YYYY")})`
+                            `${t("COUPON_DETAIL_START_DATE_BEFORE_PARENT_END")} (${parentEndDate.format("DD/MM/YYYY")})`
                           )
                         );
                       }
@@ -505,9 +541,7 @@ const CouponDetailModal = ({
                       value.isAfter(endDate, "day")
                     ) {
                       return Promise.reject(
-                        new Error(
-                          "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc!"
-                        )
+                        new Error(t("START_DATE_BEFORE_END_DATE"))
                       );
                     }
 
@@ -518,7 +552,7 @@ const CouponDetailModal = ({
             >
               <DatePicker
                 style={{ width: "100%" }}
-                placeholder="Chọn ngày bắt đầu"
+                placeholder={t("SELECT_DETAIL_START_DATE")}
                 format="DD/MM/YYYY"
                 disabledDate={(current) => {
                   if (!current) return false;
@@ -546,11 +580,14 @@ const CouponDetailModal = ({
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Ngày kết thúc"
+              label={t("COUPON_DETAIL_END_DATE_LABEL")}
               name="endDate"
-              tooltip="Ngày kết thúc hiệu lực của chi tiết coupon này"
+              tooltip={t("END_DATE_TOOLTIP")}
               rules={[
-                { required: true, message: "Vui lòng chọn ngày kết thúc!" },
+                {
+                  required: true,
+                  message: t("COUPON_DETAIL_END_DATE_REQUIRED"),
+                },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     if (!value || !dayjs.isDayjs(value)) {
@@ -563,7 +600,7 @@ const CouponDetailModal = ({
                       if (value.isBefore(parentStartDate, "day")) {
                         return Promise.reject(
                           new Error(
-                            `Ngày kết thúc không thể trước ngày bắt đầu của coupon cha (${parentStartDate.format("DD/MM/YYYY")})`
+                            `${t("COUPON_DETAIL_END_DATE_AFTER_PARENT_START")} (${parentStartDate.format("DD/MM/YYYY")})`
                           )
                         );
                       }
@@ -575,7 +612,7 @@ const CouponDetailModal = ({
                       if (value.isAfter(parentEndDate, "day")) {
                         return Promise.reject(
                           new Error(
-                            `Ngày kết thúc không thể sau ngày kết thúc của coupon cha (${parentEndDate.format("DD/MM/YYYY")})`
+                            `${t("COUPON_DETAIL_END_DATE_BEFORE_PARENT_END")} (${parentEndDate.format("DD/MM/YYYY")})`
                           )
                         );
                       }
@@ -589,9 +626,7 @@ const CouponDetailModal = ({
                       value.isBefore(startDate, "day")
                     ) {
                       return Promise.reject(
-                        new Error(
-                          "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu!"
-                        )
+                        new Error(t("END_DATE_AFTER_START_DATE"))
                       );
                     }
 
@@ -602,7 +637,7 @@ const CouponDetailModal = ({
             >
               <DatePicker
                 style={{ width: "100%" }}
-                placeholder="Chọn ngày kết thúc"
+                placeholder={t("SELECT_DETAIL_END_DATE")}
                 format="DD/MM/YYYY"
                 disabledDate={(current) => {
                   if (!current) return false;

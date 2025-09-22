@@ -28,7 +28,7 @@ import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 import CouponDetailList from "./CouponDetailList";
 
 const CouponDetail = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -72,9 +72,9 @@ const CouponDetail = () => {
   }, [coupon, isFetchingCoupon, form]);
 
   const breadcrumb = [
-    { label: "Danh sách coupon", href: "/admin/coupons" },
+    { label: t("COUPON_LIST_TITLE"), href: "/admin/coupons" },
     {
-      label: coupon?.name || "Chi tiết coupon",
+      label: coupon?.name || t("COUPON_DETAIL_TITLE"),
       href: `/admin/coupons/${coupon?.id}/detail`,
     },
   ];
@@ -108,36 +108,31 @@ const CouponDetail = () => {
     })
       .unwrap()
       .then(() => {
-        message.success("Cập nhật coupon thành công!");
+        message.success(t("COUPON_UPDATE_SUCCESS"));
       })
       .catch((error) => {
-        message.error(
-          error.data?.message || "Có lỗi xảy ra khi cập nhật coupon"
-        );
+        message.error(error.data?.message || t("COUPON_UPDATE_ERROR"));
       });
   };
 
   const handleDelete = () => {
     Modal.confirm({
-      title: "Xác nhận xóa",
-      content:
-        "Bạn có chắc chắn muốn xóa khuyến mại này? Hành động này không thể hoàn tác.",
-      okText: "Xóa",
+      title: t("COUPON_DELETE_CONFIRM_TITLE"),
+      content: t("COUPON_DELETE_CONFIRM_CONTENT"),
+      okText: t("COUPON_DELETE_BTN"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("COUPON_CANCEL_BTN"),
       onOk: () => {
         deleteCoupon(parseInt(couponId!))
           .unwrap()
           .then((_data) => {
-            message.success("Xóa khuyến mại thành công!");
+            message.success(t("COUPON_DELETE_SUCCESS"));
             setTimeout(() => {
               navigate("/admin/coupons");
             }, 1500);
           })
           .catch((error) => {
-            message.error(
-              error.data?.message || "Có lỗi xảy ra khi xóa khuyến mại"
-            );
+            message.error(error.data?.message || t("COUPON_DELETE_ERROR"));
           });
       },
       footer: (_, { OkBtn, CancelBtn }) => (
@@ -152,7 +147,7 @@ const CouponDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{coupon?.name || "Chi tiết khuyến mại"}</title>
+        <title>{coupon?.name || t("COUPON_DETAIL_TITLE")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -181,7 +176,7 @@ const CouponDetail = () => {
               onClick={() => form.submit()}
               loading={isLoadingUpdateCoupon}
             >
-              Cập nhật coupon
+              {t("COUPON_UPDATE_BTN")}
             </Button>
           </Space>
           <Button
@@ -191,7 +186,7 @@ const CouponDetail = () => {
             onClick={handleDelete}
             loading={isLoadingDeleteCoupon}
           >
-            Xóa khuyến mại
+            {t("COUPON_DELETE_BTN")}
           </Button>
         </Flex>
 
@@ -205,73 +200,82 @@ const CouponDetail = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Mã coupon"
+                label={t("COUPON_CODE_LABEL")}
                 name="code"
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập mã coupon!",
+                    message: t("COUPON_CODE_REQUIRED"),
                   },
                 ]}
               >
-                <Input placeholder="Nhập mã coupon" />
+                <Input placeholder={t("COUPON_CODE_PLACEHOLDER")} />
               </Form.Item>
 
               <Form.Item
-                label="Tên coupon"
+                label={t("COUPON_NAME_LABEL")}
                 name="name"
                 rules={[
                   {
                     required: true,
-                    message: "Vui lòng nhập tên coupon!",
+                    message: t("COUPON_NAME_REQUIRED"),
                   },
                 ]}
               >
-                <Input placeholder="Nhập tên coupon" />
+                <Input placeholder={t("COUPON_NAME_PLACEHOLDER")} />
               </Form.Item>
 
-              <Form.Item label="Mô tả" name="description">
-                <Input.TextArea rows={4} placeholder="Nhập mô tả coupon" />
+              <Form.Item
+                label={t("COUPON_DESCRIPTION_LABEL")}
+                name="description"
+              >
+                <Input.TextArea
+                  rows={4}
+                  placeholder={t("COUPON_DESCRIPTION_PLACEHOLDER")}
+                />
               </Form.Item>
             </Col>
 
             <Col span={12}>
               <Form.Item
-                label="Trạng thái"
+                label={t("COUPON_STATUS_LABEL")}
                 name="status"
                 valuePropName="checked"
               >
-                <Switch checkedChildren="Kích hoạt" unCheckedChildren="Tắt" />
+                <Switch
+                  checkedChildren={t("COUPON_STATUS_ACTIVE")}
+                  unCheckedChildren={t("COUPON_STATUS_INACTIVE")}
+                />
               </Form.Item>
 
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item
-                    label="Ngày bắt đầu"
+                    label={t("COUPON_START_DATE_LABEL")}
                     name="startDate"
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng chọn ngày bắt đầu!",
+                        message: t("COUPON_START_DATE_REQUIRED"),
                       },
                     ]}
                   >
                     <DatePicker
                       style={{ width: "100%" }}
                       format="DD/MM/YYYY"
-                      placeholder="Chọn ngày bắt đầu"
+                      placeholder={t("SELECT_DATE")}
                     />
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Form.Item
-                    label="Ngày kết thúc"
+                    label={t("COUPON_END_DATE_LABEL")}
                     name="endDate"
                     dependencies={["startDate"]}
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng chọn ngày kết thúc!",
+                        message: t("COUPON_END_DATE_REQUIRED"),
                       },
                       ({ getFieldValue }) => ({
                         validator: async (_rule, value) => {
@@ -283,7 +287,7 @@ const CouponDetail = () => {
                             )
                           ) {
                             return Promise.reject(
-                              new Error("Ngày kết thúc phải sau ngày bắt đầu!")
+                              new Error(t("COUPON_END_DATE_AFTER_START"))
                             );
                           }
                           return Promise.resolve();
@@ -294,7 +298,7 @@ const CouponDetail = () => {
                     <DatePicker
                       style={{ width: "100%" }}
                       format="DD/MM/YYYY"
-                      placeholder="Chọn ngày kết thúc"
+                      placeholder={t("SELECT_DATE")}
                     />
                   </Form.Item>
                 </Col>

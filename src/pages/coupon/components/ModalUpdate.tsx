@@ -10,6 +10,7 @@ import {
 } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   useCreateCouponMutation,
   useUpdateCouponMutation,
@@ -31,6 +32,7 @@ const ModalUpdate = ({
 }: ModalUpdateProps) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   const [createCoupon] = useCreateCouponMutation();
   const [updateCoupon] = useUpdateCouponMutation();
@@ -70,16 +72,16 @@ const ModalUpdate = ({
 
       if (isEdit && coupon) {
         await updateCoupon({ id: coupon.id, ...payload }).unwrap();
-        message.success("Cập nhật coupon thành công!");
+        message.success(t("COUPON_UPDATE_SUCCESS"));
       } else {
         await createCoupon(payload).unwrap();
-        message.success("Tạo coupon thành công!");
+        message.success(t("COUPON_CREATE_SUCCESS"));
       }
 
       form.resetFields();
       onSuccess();
     } catch (error: any) {
-      message.error(error.data?.message || "Có lỗi xảy ra!");
+      message.error(error.data?.message || t("COUPON_UPDATE_ERROR"));
     } finally {
       setLoading(false);
     }
@@ -92,7 +94,9 @@ const ModalUpdate = ({
 
   return (
     <Modal
-      title={isEdit ? "Chỉnh sửa khuyến mại" : "Tạo khuyến mại mới"}
+      title={
+        isEdit ? t("COUPON_UPDATE_MODAL_TITLE") : t("COUPON_CREATE_MODAL_TITLE")
+      }
       open={open}
       onCancel={handleCancel}
       onOk={() => form.submit()}
@@ -109,21 +113,20 @@ const ModalUpdate = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Mã coupon"
+              label={t("COUPON_CODE_LABEL")}
               name="code"
               rules={[
-                { required: true, message: "Vui lòng nhập mã coupon!" },
-                { min: 3, message: "Mã coupon phải có ít nhất 3 ký tự!" },
-                { max: 50, message: "Mã coupon không được quá 50 ký tự!" },
+                { required: true, message: t("COUPON_CODE_REQUIRED") },
+                { min: 3, message: t("COUPON_CODE_MIN_LENGTH") },
+                { max: 50, message: t("COUPON_CODE_MAX_LENGTH") },
                 {
                   pattern: /^[A-Z0-9_-]+$/,
-                  message:
-                    "Mã chỉ chứa chữ hoa, số, dấu gạch dưới và gạch ngang!",
+                  message: t("COUPON_CODE_PATTERN"),
                 },
               ]}
             >
               <Input
-                placeholder="VD: SUMMER2024"
+                placeholder={t("COUPON_CODE_PLACEHOLDER")}
                 style={{ textTransform: "uppercase" }}
                 onChange={(e) => {
                   const value = e.target.value.toUpperCase();
@@ -137,15 +140,15 @@ const ModalUpdate = ({
 
           <Col span={12}>
             <Form.Item
-              label="Trạng thái"
+              label={t("COUPON_STATUS_LABEL")}
               name="status"
-              rules={[{ required: true, message: "Vui lòng chọn trạng thái!" }]}
+              rules={[{ required: true, message: t("COUPON_STATUS_REQUIRED") }]}
             >
               <Select
-                placeholder="Chọn trạng thái"
+                placeholder={t("COUPON_STATUS_PLACEHOLDER")}
                 options={[
-                  { label: "Kích hoạt", value: true },
-                  { label: "Ẩn", value: false },
+                  { label: t("COUPON_STATUS_ACTIVE"), value: true },
+                  { label: t("COUPON_STATUS_INACTIVE"), value: false },
                 ]}
               />
             </Form.Item>
@@ -153,24 +156,24 @@ const ModalUpdate = ({
         </Row>
 
         <Form.Item
-          label="Tên coupon"
+          label={t("COUPON_NAME_LABEL")}
           name="name"
           rules={[
-            { required: true, message: "Vui lòng nhập tên coupon!" },
-            { min: 3, message: "Tên coupon phải có ít nhất 3 ký tự!" },
-            { max: 200, message: "Tên coupon không được quá 200 ký tự!" },
+            { required: true, message: t("COUPON_NAME_REQUIRED") },
+            { min: 3, message: t("COUPON_NAME_MIN_LENGTH") },
+            { max: 200, message: t("COUPON_NAME_MAX_LENGTH") },
           ]}
         >
-          <Input placeholder="VD: Giảm giá mùa hè 2024" />
+          <Input placeholder={t("COUPON_NAME_PLACEHOLDER")} />
         </Form.Item>
 
         <Form.Item
-          label="Mô tả"
+          label={t("COUPON_DESCRIPTION_LABEL")}
           name="description"
-          rules={[{ max: 1000, message: "Mô tả không được quá 1000 ký tự!" }]}
+          rules={[{ max: 1000, message: t("COUPON_DESCRIPTION_MAX_LENGTH") }]}
         >
           <Input.TextArea
-            placeholder="Mô tả chi tiết về coupon..."
+            placeholder={t("COUPON_DESCRIPTION_PLACEHOLDER")}
             rows={3}
             showCount
             maxLength={1000}
@@ -180,27 +183,27 @@ const ModalUpdate = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              label="Ngày bắt đầu"
+              label={t("COUPON_START_DATE_LABEL")}
               name="startDate"
               rules={[
-                { required: true, message: "Vui lòng chọn ngày bắt đầu!" },
+                { required: true, message: t("COUPON_START_DATE_REQUIRED") },
               ]}
             >
               <DatePicker
                 style={{ width: "100%" }}
                 format="DD/MM/YYYY"
-                placeholder="Chọn ngày bắt đầu"
+                placeholder={t("SELECT_START_DATE")}
               />
             </Form.Item>
           </Col>
 
           <Col span={12}>
             <Form.Item
-              label="Ngày kết thúc"
+              label={t("COUPON_END_DATE_LABEL")}
               name="endDate"
               dependencies={["startDate"]}
               rules={[
-                { required: true, message: "Vui lòng chọn ngày kết thúc!" },
+                { required: true, message: t("COUPON_END_DATE_REQUIRED") },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
                     const startDate = getFieldValue("startDate");
@@ -209,7 +212,7 @@ const ModalUpdate = ({
                     }
                     if (value.isBefore(startDate)) {
                       return Promise.reject(
-                        new Error("Ngày kết thúc phải sau ngày bắt đầu!")
+                        new Error(t("COUPON_END_DATE_AFTER_START"))
                       );
                     }
                     return Promise.resolve();
@@ -220,7 +223,7 @@ const ModalUpdate = ({
               <DatePicker
                 style={{ width: "100%" }}
                 format="DD/MM/YYYY"
-                placeholder="Chọn ngày kết thúc"
+                placeholder={t("SELECT_END_DATE")}
               />
             </Form.Item>
           </Col>

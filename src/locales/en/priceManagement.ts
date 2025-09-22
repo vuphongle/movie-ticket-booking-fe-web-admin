@@ -82,7 +82,6 @@ const priceManagement = {
   // Seat Types
   SEAT_TYPE_NORMAL: "Normal",
   SEAT_TYPE_STANDARD: "Standard",
-  SEAT_TYPE_VIP: "VIP",
   SEAT_TYPE_COUPLE: "Couple",
   
   // Graphics Types

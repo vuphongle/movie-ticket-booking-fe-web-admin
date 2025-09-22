@@ -29,7 +29,9 @@ const CouponList = () => {
   // State for modals - only keep create for quick access
   const [createModalOpen, setCreateModalOpen] = useState(false);
 
-  const breadcrumb = [{ label: "Quản lý khuyến mãi", href: "/admin/coupons" }];
+  const breadcrumb = [
+    { label: t("COUPON_LIST_TITLE"), href: "/admin/coupons" },
+  ];
 
   // Filter data based on current filter state
   const filteredData = useMemo(() => {
@@ -63,7 +65,7 @@ const CouponList = () => {
   return (
     <>
       <Helmet>
-        <title>Quản lý khuyến mãi</title>
+        <title>{t("COUPON_LIST_TITLE")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
 
@@ -84,7 +86,7 @@ const CouponList = () => {
                 icon={<PlusOutlined />}
                 onClick={() => navigate("/admin/coupons/create")}
               >
-                Tạo khuyến mãi
+                {t("COUPON_CREATE_BTN")}
               </Button>
               <Button
                 style={{ backgroundColor: "rgb(0, 192, 239)" }}
@@ -93,7 +95,7 @@ const CouponList = () => {
                 onClick={handleRefresh}
                 loading={isFetchingCoupons}
               >
-                {t("REFRESH")}
+                {t("COUPON_REFRESH_BTN")}
               </Button>
             </Space>
           </Col>
