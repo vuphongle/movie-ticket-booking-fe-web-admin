@@ -32,6 +32,9 @@ import AdditionalServiceList from "@/pages/additional-service/additional-service
 import AdditionalServiceDetail from "@/pages/additional-service/additional-service-detail/AdditionalServiceDetail";
 import GenreList from "@/pages/genre-list/GenreList";
 import CountryList from "./pages/country-list/CountryList";
+import ActorList from "@/pages/actor/actor-list/ActorList";
+import ActorDetail from "@/pages/actor/actor-detail/ActorDetail";
+import ActorCreate from "@/pages/actor/actor-create/ActorCreate";
 
 function App() {
   return (
@@ -84,6 +87,11 @@ function App() {
             </Route>
             <Route path="countries">
               <Route index element={<CountryList />} />
+            </Route>
+            <Route path="actors">
+              <Route index element={<ActorList />} />
+              <Route path=":actorId/detail" element={<ActorDetail />} />
+              <Route path="create" element={<ActorCreate />} />
             </Route>
             <Route path="products">
               <Route index element={<ProductList />} />
