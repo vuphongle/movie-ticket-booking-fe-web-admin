@@ -2,7 +2,6 @@ import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Space, Spin, message, theme } from "antd";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
 import {
   useCreateCountryMutation,
   useGetCountriesQuery,
@@ -18,7 +17,11 @@ const CountryList = () => {
   const { t } = useTranslation();
   const breadcrumb = [{ label: t("COUNTRY_LIST"), href: "/admin/countries" }];
 
-  const { data, isLoading: isFetchingCountries } = useGetCountriesQuery();
+  const {
+    data,
+    isLoading: isFetchingCountries,
+    refetch,
+  } = useGetCountriesQuery();
   const [createCountry, { isLoading: isLoadingCreate }] =
     useCreateCountryMutation();
 
@@ -65,15 +68,14 @@ const CountryList = () => {
           >
             {t("CREATE_COUNTRY")}
           </Button>
-          <RouterLink to="/admin/countries">
-            <Button
-              style={{ backgroundColor: "rgb(0, 192, 239)" }}
-              type="primary"
-              icon={<ReloadOutlined />}
-            >
-              {t("REFRESH")}
-            </Button>
-          </RouterLink>
+          <Button
+            style={{ backgroundColor: "rgb(0, 192, 239)" }}
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={() => refetch()}
+          >
+            {t("REFRESH")}
+          </Button>
         </Space>
 
         <CountryTable data={data || []} />

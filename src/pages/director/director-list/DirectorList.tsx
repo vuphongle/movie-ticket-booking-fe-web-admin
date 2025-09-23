@@ -3,20 +3,24 @@ import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { useGetActorsQuery } from "@/app/services/actors.service";
+import { useGetDirectorsQuery } from "@/app/services/directors.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
-import ActorTable from "./ActorTable";
+import DirectorTable from "./DirectorTable";
 
-const ActorList = () => {
+const DirectorList = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const { t } = useTranslation();
-  const breadcrumb = [{ label: t("ACTOR_LIST"), href: "/admin/actors" }];
+  const breadcrumb = [{ label: t("DIRECTOR_LIST"), href: "/admin/directors" }];
 
-  const { data, isLoading: isFetchingActors, refetch } = useGetActorsQuery();
+  const {
+    data,
+    isLoading: isFetchingDirectors,
+    refetch,
+  } = useGetDirectorsQuery();
 
-  if (isFetchingActors) {
+  if (isFetchingDirectors) {
     return <Spin size="large" fullscreen />;
   }
 
@@ -24,7 +28,7 @@ const ActorList = () => {
     <>
       <Helmet>
         <title>
-          {t("ACTOR_LIST")} | {t("ADMIN")}
+          {t("DIRECTOR_LIST")} | {t("ADMIN")}
         </title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
@@ -37,13 +41,13 @@ const ActorList = () => {
         }}
       >
         <Space style={{ marginBottom: "1rem" }}>
-          <RouterLink to="/admin/actors/create">
+          <RouterLink to="/admin/directors/create">
             <Button
               style={{ backgroundColor: "rgb(60, 141, 188)" }}
               type="primary"
               icon={<PlusOutlined />}
             >
-              {t("CREATE_ACTOR")}
+              {t("CREATE_DIRECTOR")}
             </Button>
           </RouterLink>
           <Button
@@ -56,10 +60,10 @@ const ActorList = () => {
           </Button>
         </Space>
 
-        <ActorTable data={data || []} />
+        <DirectorTable data={data || []} />
       </div>
     </>
   );
 };
 
-export default ActorList;
+export default DirectorList;

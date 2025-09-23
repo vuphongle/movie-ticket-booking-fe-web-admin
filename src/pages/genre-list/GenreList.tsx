@@ -2,7 +2,6 @@ import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, Modal, Space, Spin, message, theme } from "antd";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
 import {
   useCreateGenreMutation,
   useGetGenresQuery,
@@ -17,7 +16,7 @@ const GenreList = () => {
   } = theme.useToken();
   const { t } = useTranslation();
   const breadcrumb = [{ label: t("GENRE_LIST"), href: "/admin/genres" }];
-  const { data, isLoading: isFetchingGenres } = useGetGenresQuery();
+  const { data, isLoading: isFetchingGenres, refetch } = useGetGenresQuery();
   const [createGenre, { isLoading: isLoadingCreate }] =
     useCreateGenreMutation();
 
@@ -64,15 +63,14 @@ const GenreList = () => {
           >
             {t("CREATE_GENRE")}
           </Button>
-          <RouterLink to="/admin/genres">
-            <Button
-              style={{ backgroundColor: "rgb(0, 192, 239)" }}
-              type="primary"
-              icon={<ReloadOutlined />}
-            >
-              {t("REFRESH")}
-            </Button>
-          </RouterLink>
+          <Button
+            style={{ backgroundColor: "rgb(0, 192, 239)" }}
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={() => refetch()}
+          >
+            {t("REFRESH")}
+          </Button>
         </Space>
 
         <GenreTable data={data || []} />

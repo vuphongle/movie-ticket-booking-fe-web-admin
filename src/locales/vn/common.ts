@@ -175,6 +175,19 @@ const common = {
   SELECT_YOUR_IMAGE: "Chọn ảnh của bạn",
   IMAGE_UPLOAD_SUCCESS: "Tải ảnh lên thành công!",
   ACTION_CANNOT_BE_UNDONE: "Hành động này không thể hoàn tác!",
+
+  // Director management  
+  DIRECTOR_NAME: "Đạo diễn",
+  DIRECTOR_LIST: "Danh sách đạo diễn",
+  CREATE_DIRECTOR: "Tạo đạo diễn", 
+  UPDATE_DIRECTOR: "Cập nhật đạo diễn",
+  DELETE_DIRECTOR: "Xóa đạo diễn",
+  DIRECTOR_DETAIL: "Chi tiết đạo diễn",
+  DIRECTOR_CREATED_SUCCESS: "Tạo đạo diễn thành công!",
+  DIRECTOR_UPDATED_SUCCESS: "Cập nhật đạo diễn thành công!",
+  DIRECTOR_DELETED_SUCCESS: "Xóa đạo diễn thành công!",
+  CONFIRM_DELETE_DIRECTOR: "Bạn có chắc chắn muốn xóa đạo diễn này?",
+  CHANGE_DIRECTOR_IMAGE: "Thay đổi ảnh đạo diễn",
   ERROR_OCCURRED: "Đã xảy ra lỗi",
 
   // Status Values

@@ -35,6 +35,9 @@ import CountryList from "./pages/country-list/CountryList";
 import ActorList from "@/pages/actor/actor-list/ActorList";
 import ActorDetail from "@/pages/actor/actor-detail/ActorDetail";
 import ActorCreate from "@/pages/actor/actor-create/ActorCreate";
+import DirectorList from "@/pages/director/director-list/DirectorList";
+import DirectorDetail from "@/pages/director/director-detail/DirectorDetail";
+import DirectorCreate from "@/pages/director/director-create/DirectorCreate";
 
 function App() {
   return (
@@ -87,6 +90,11 @@ function App() {
             </Route>
             <Route path="countries">
               <Route index element={<CountryList />} />
+            </Route>
+            <Route path="directors">
+              <Route index element={<DirectorList />} />
+              <Route path=":directorId/detail" element={<DirectorDetail />} />
+              <Route path="create" element={<DirectorCreate />} />
             </Route>
             <Route path="actors">
               <Route index element={<ActorList />} />

@@ -174,6 +174,19 @@ const common = {
   SELECT_YOUR_IMAGE: "Select your image",
   IMAGE_UPLOAD_SUCCESS: "Image uploaded successfully!",
   ACTION_CANNOT_BE_UNDONE: "This action cannot be undone!",
+
+  // Director management
+  DIRECTOR_NAME: "Director",
+  DIRECTOR_LIST: "Director List", 
+  CREATE_DIRECTOR: "Create Director",
+  UPDATE_DIRECTOR: "Update Director",
+  DELETE_DIRECTOR: "Delete Director", 
+  DIRECTOR_DETAIL: "Director Detail",
+  DIRECTOR_CREATED_SUCCESS: "Director created successfully!",
+  DIRECTOR_UPDATED_SUCCESS: "Director updated successfully!",
+  DIRECTOR_DELETED_SUCCESS: "Director deleted successfully!",
+  CONFIRM_DELETE_DIRECTOR: "Are you sure you want to delete this director?",
+  CHANGE_DIRECTOR_IMAGE: "Change director image",
   ERROR_OCCURRED: "An error occurred",
 
   // Status Values
