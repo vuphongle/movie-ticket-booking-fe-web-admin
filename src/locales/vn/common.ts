@@ -130,6 +130,20 @@ const common = {
   CREATE_GENRE: "Tạo thể loại",
   CREATE_GENRE_SUCCESS: "Tạo thể loại thành công!",
   GENRE_LIST: "Danh sách thể loại",
+  GENRE_NAME_MAX_LENGTH: "Tên thể loại không được vượt quá 50 ký tự!",
+
+  // Country management
+  COUNTRY_NAME: "Tên quốc gia",
+  DELETE_COUNTRY_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa quốc gia này?",
+  DELETE_COUNTRY_SUCCESS: "Xóa quốc gia thành công!",
+  UPDATE_COUNTRY: "Cập nhật quốc gia",
+  UPDATE_COUNTRY_SUCCESS: "Cập nhật quốc gia thành công!",
+  COUNTRY_NAME_REQUIRED: "Tên quốc gia không được để trống!",
+  ENTER_COUNTRY_NAME: "Nhập tên quốc gia",
+  CREATE_COUNTRY: "Tạo quốc gia",
+  CREATE_COUNTRY_SUCCESS: "Tạo quốc gia thành công!",
+  COUNTRY_LIST: "Danh sách quốc gia",
+  COUNTRY_NAME_MAX_LENGTH: "Tên quốc gia không được vượt quá 50 ký tự!",
 
   // Status Values
   DRAFT: "Bản nháp",

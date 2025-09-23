@@ -129,6 +129,20 @@ const common = {
   CREATE_GENRE: "Create Genre",
   CREATE_GENRE_SUCCESS: "Genre created successfully!",
   GENRE_LIST: "Genre List",
+  GENRE_NAME_MAX_LENGTH: "Genre name cannot exceed 50 characters!",
+
+  // Country management  
+  COUNTRY_NAME: "Country Name",
+  DELETE_COUNTRY_CONFIRM_TITLE: "Are you sure you want to delete this country?",
+  DELETE_COUNTRY_SUCCESS: "Country deleted successfully!",
+  UPDATE_COUNTRY: "Update Country",
+  UPDATE_COUNTRY_SUCCESS: "Country updated successfully!",
+  COUNTRY_NAME_REQUIRED: "Country name is required!",
+  ENTER_COUNTRY_NAME: "Enter country name",
+  CREATE_COUNTRY: "Create Country",
+  CREATE_COUNTRY_SUCCESS: "Country created successfully!",
+  COUNTRY_LIST: "Country List",
+  COUNTRY_NAME_MAX_LENGTH: "Country name cannot exceed 50 characters!",
 
   // Status Values
   DRAFT: "Draft",

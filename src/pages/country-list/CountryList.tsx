@@ -4,37 +4,38 @@ import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink } from "react-router-dom";
 import {
-  useCreateGenreMutation,
-  useGetGenresQuery,
-} from "@/app/services/genres.service";
+  useCreateCountryMutation,
+  useGetCountriesQuery,
+} from "@/app/services/countries.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
-import GenreTable from "./GenreTable";
+import CountryTable from "./CountryTable";
 import { useTranslation } from "react-i18next";
 
-const GenreList = () => {
+const CountryList = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const { t } = useTranslation();
-  const breadcrumb = [{ label: t("GENRE_LIST"), href: "/admin/genres" }];
-  const { data, isLoading: isFetchingGenres } = useGetGenresQuery();
-  const [createGenre, { isLoading: isLoadingCreate }] =
-    useCreateGenreMutation();
+  const breadcrumb = [{ label: t("COUNTRY_LIST"), href: "/admin/countries" }];
+
+  const { data, isLoading: isFetchingCountries } = useGetCountriesQuery();
+  const [createCountry, { isLoading: isLoadingCreate }] =
+    useCreateCountryMutation();
 
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
-  if (isFetchingGenres) {
+  if (isFetchingCountries) {
     return <Spin size="large" fullscreen />;
   }
 
   const handleCreate = (values: { name: string }) => {
-    createGenre(values)
+    createCountry(values)
       .unwrap()
       .then((_data) => {
         form.resetFields();
         setOpen(false);
-        message.success(t("CREATE_GENRE_SUCCESS"));
+        message.success(t("CREATE_COUNTRY_SUCCESS"));
       })
       .catch((error) => {
         message.error(error.data.message);
@@ -44,7 +45,7 @@ const GenreList = () => {
   return (
     <>
       <Helmet>
-        <title>{t("GENRE_LIST")}</title>
+        <title>{t("COUNTRY_LIST")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -62,9 +63,9 @@ const GenreList = () => {
             icon={<PlusOutlined />}
             onClick={() => setOpen(true)}
           >
-            {t("CREATE_GENRE")}
+            {t("CREATE_COUNTRY")}
           </Button>
-          <RouterLink to="/admin/genres">
+          <RouterLink to="/admin/countries">
             <Button
               style={{ backgroundColor: "rgb(0, 192, 239)" }}
               type="primary"
@@ -75,11 +76,11 @@ const GenreList = () => {
           </RouterLink>
         </Space>
 
-        <GenreTable data={data || []} />
+        <CountryTable data={data || []} />
       </div>
       <Modal
         open={open}
-        title={t("CREATE_GENRE")}
+        title={t("CREATE_COUNTRY")}
         footer={null}
         onCancel={() => setOpen(false)}
         confirmLoading={isLoadingCreate}
@@ -95,15 +96,15 @@ const GenreList = () => {
             rules={[
               {
                 required: true,
-                message: t("GENRE_NAME_REQUIRED"),
+                message: t("COUNTRY_NAME_REQUIRED"),
               },
               {
                 max: 50,
-                message: t("GENRE_NAME_MAX_LENGTH"),
+                message: t("COUNTRY_NAME_MAX_LENGTH"),
               },
             ]}
           >
-            <Input placeholder={t("ENTER_GENRE_NAME")} />
+            <Input placeholder={t("ENTER_COUNTRY_NAME")} />
           </Form.Item>
           <Form.Item>
             <Space>
@@ -122,4 +123,4 @@ const GenreList = () => {
   );
 };
 
-export default GenreList;
+export default CountryList;

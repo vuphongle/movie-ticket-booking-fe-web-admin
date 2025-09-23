@@ -31,6 +31,7 @@ import AdditionalServiceCreate from "@/pages/additional-service/additional-servi
 import AdditionalServiceList from "@/pages/additional-service/additional-service-list/AdditionalServiceList";
 import AdditionalServiceDetail from "@/pages/additional-service/additional-service-detail/AdditionalServiceDetail";
 import GenreList from "@/pages/genre-list/GenreList";
+import CountryList from "./pages/country-list/CountryList";
 
 function App() {
   return (
@@ -80,6 +81,9 @@ function App() {
             </Route>
             <Route path="genres">
               <Route index element={<GenreList />} />
+            </Route>
+            <Route path="countries">
+              <Route index element={<CountryList />} />
             </Route>
             <Route path="products">
               <Route index element={<ProductList />} />
