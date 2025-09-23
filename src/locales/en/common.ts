@@ -115,6 +115,20 @@ const common = {
   // Actions
   VIEW_DETAIL: "View Detail",
   UPDATE: "Update",
+  ACTION: "Action",
+
+  // Genre management
+  GENRE_NAME: "Genre Name",
+  DELETE_GENRE_CONFIRM_TITLE: "Are you sure you want to delete this genre?",
+  DELETE_CONFIRM_CONTENT: "This action cannot be undone!",
+  DELETE_GENRE_SUCCESS: "Genre deleted successfully!",
+  UPDATE_GENRE: "Update Genre",
+  UPDATE_GENRE_SUCCESS: "Genre updated successfully!",
+  GENRE_NAME_REQUIRED: "Genre name is required!",
+  ENTER_GENRE_NAME: "Enter genre name",
+  CREATE_GENRE: "Create Genre",
+  CREATE_GENRE_SUCCESS: "Genre created successfully!",
+  GENRE_LIST: "Genre List",
 
   // Status Values
   DRAFT: "Draft",

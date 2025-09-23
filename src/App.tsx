@@ -25,11 +25,12 @@ import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
 import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
-import PriceListPage from "./pages/price-management/price-list/PriceListPage";
-import PriceListDetail from "./pages/price-management/price-list/PriceListDetail";
-import AdditionalServiceCreate from "./pages/additional-service/additional-service-create/AdditionalServiceCreate";
-import AdditionalServiceList from "./pages/additional-service/additional-service-list/AdditionalServiceList";
-import AdditionalServiceDetail from "./pages/additional-service/additional-service-detail/AdditionalServiceDetail";
+import PriceListPage from "@/pages/price-management/price-list/PriceListPage";
+import PriceListDetail from "@/pages/price-management/price-list/PriceListDetail";
+import AdditionalServiceCreate from "@/pages/additional-service/additional-service-create/AdditionalServiceCreate";
+import AdditionalServiceList from "@/pages/additional-service/additional-service-list/AdditionalServiceList";
+import AdditionalServiceDetail from "@/pages/additional-service/additional-service-detail/AdditionalServiceDetail";
+import GenreList from "@/pages/genre-list/GenreList";
 
 function App() {
   return (
@@ -76,6 +77,9 @@ function App() {
                 element={<AdditionalServiceDetail />}
               />
               <Route path="create" element={<AdditionalServiceCreate />} />
+            </Route>
+            <Route path="genres">
+              <Route index element={<GenreList />} />
             </Route>
             <Route path="products">
               <Route index element={<ProductList />} />

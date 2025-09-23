@@ -116,6 +116,20 @@ const common = {
   // Actions
   VIEW_DETAIL: "Xem chi tiết",
   UPDATE: "Cập nhật",
+  ACTION: "Thao tác",
+
+  // Genre management
+  GENRE_NAME: "Tên thể loại",
+  DELETE_GENRE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa thể loại này?",
+  DELETE_CONFIRM_CONTENT: "Hành động này không thể hoàn tác!",
+  DELETE_GENRE_SUCCESS: "Xóa thể loại thành công!",
+  UPDATE_GENRE: "Cập nhật thể loại",
+  UPDATE_GENRE_SUCCESS: "Cập nhật thể loại thành công!",
+  GENRE_NAME_REQUIRED: "Tên thể loại không được để trống!",
+  ENTER_GENRE_NAME: "Nhập tên thể loại",
+  CREATE_GENRE: "Tạo thể loại",
+  CREATE_GENRE_SUCCESS: "Tạo thể loại thành công!",
+  GENRE_LIST: "Danh sách thể loại",
 
   // Status Values
   DRAFT: "Bản nháp",
