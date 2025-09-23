@@ -25,11 +25,19 @@ import MovieCreate from "@/pages/movie/movie-create/MovieCreate";
 import CinemaList from "@/pages/cinema/cinema-list/CinemaList";
 import CinemaDetail from "@/pages/cinema/cinema-detail/CinemaDetail";
 import CinemaCreate from "@/pages/cinema/cinema-create/CinemaCreate";
-import PriceListPage from "./pages/price-management/price-list/PriceListPage";
-import PriceListDetail from "./pages/price-management/price-list/PriceListDetail";
-import AdditionalServiceCreate from "./pages/additional-service/additional-service-create/AdditionalServiceCreate";
-import AdditionalServiceList from "./pages/additional-service/additional-service-list/AdditionalServiceList";
-import AdditionalServiceDetail from "./pages/additional-service/additional-service-detail/AdditionalServiceDetail";
+import PriceListPage from "@/pages/price-management/price-list/PriceListPage";
+import PriceListDetail from "@/pages/price-management/price-list/PriceListDetail";
+import AdditionalServiceCreate from "@/pages/additional-service/additional-service-create/AdditionalServiceCreate";
+import AdditionalServiceList from "@/pages/additional-service/additional-service-list/AdditionalServiceList";
+import AdditionalServiceDetail from "@/pages/additional-service/additional-service-detail/AdditionalServiceDetail";
+import GenreList from "@/pages/genre-list/GenreList";
+import CountryList from "./pages/country-list/CountryList";
+import ActorList from "@/pages/actor/actor-list/ActorList";
+import ActorDetail from "@/pages/actor/actor-detail/ActorDetail";
+import ActorCreate from "@/pages/actor/actor-create/ActorCreate";
+import DirectorList from "@/pages/director/director-list/DirectorList";
+import DirectorDetail from "@/pages/director/director-detail/DirectorDetail";
+import DirectorCreate from "@/pages/director/director-create/DirectorCreate";
 
 function App() {
   return (
@@ -76,6 +84,22 @@ function App() {
                 element={<AdditionalServiceDetail />}
               />
               <Route path="create" element={<AdditionalServiceCreate />} />
+            </Route>
+            <Route path="genres">
+              <Route index element={<GenreList />} />
+            </Route>
+            <Route path="countries">
+              <Route index element={<CountryList />} />
+            </Route>
+            <Route path="directors">
+              <Route index element={<DirectorList />} />
+              <Route path=":directorId/detail" element={<DirectorDetail />} />
+              <Route path="create" element={<DirectorCreate />} />
+            </Route>
+            <Route path="actors">
+              <Route index element={<ActorList />} />
+              <Route path=":actorId/detail" element={<ActorDetail />} />
+              <Route path="create" element={<ActorCreate />} />
             </Route>
             <Route path="products">
               <Route index element={<ProductList />} />
