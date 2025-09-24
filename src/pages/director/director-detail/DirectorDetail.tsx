@@ -123,7 +123,19 @@ const DirectorDetail = () => {
     form
       .validateFields()
       .then((values) => {
-        return updateDirector({ directorId: directorId!, ...values }).unwrap();
+        // Transform data to match backend expectations
+        const requestData = {
+          name: values.name,
+          description: values.description,
+          birthday: values.birthday
+            ? dayjs(values.birthday).format("YYYY-MM-DD")
+            : "",
+          avatar: values.avatar || "",
+        };
+        return updateDirector({
+          directorId: directorId!,
+          ...requestData,
+        }).unwrap();
       })
       .then(() => {
         message.success(t("DIRECTOR_UPDATED_SUCCESS"));
@@ -136,7 +148,7 @@ const DirectorDetail = () => {
   const handleDelete = (): void => {
     Modal.confirm({
       title: t("CONFIRM_DELETE_DIRECTOR"),
-      content: t("DELETE_WARNING"),
+      content: t("DELETE_WARNING_MESSAGE"),
       okText: t("DELETE"),
       okType: "danger",
       cancelText: t("CANCEL"),
@@ -275,10 +287,12 @@ const DirectorDetail = () => {
           layout="vertical"
           autoComplete="off"
           initialValues={{
-            ...director,
-            birthDate: director.birthDate
-              ? dayjs(formatDate(director.birthDate), "DD/MM/YYYY")
+            name: director.name,
+            description: director.description,
+            birthday: director.birthday
+              ? dayjs(formatDate(director.birthday), "DD/MM/YYYY")
               : null,
+            avatar: director.avatar,
           }}
         >
           <Row>
@@ -298,7 +312,7 @@ const DirectorDetail = () => {
 
               <Form.Item
                 label={t("BIRTH_DATE")}
-                name="birthDate"
+                name="birthday"
                 rules={[
                   {
                     required: true,
@@ -331,26 +345,26 @@ const DirectorDetail = () => {
               </Form.Item>
 
               <Form.Item
-                label={t("BIO")}
-                name="bio"
+                label={t("DESCRIPTION")}
+                name="description"
                 rules={[
                   {
                     required: true,
-                    message: t("BIO_REQUIRED"),
+                    message: t("DESCRIPTION_REQUIRED"),
                   },
                   {
                     min: 10,
-                    message: t("BIO_MIN_LENGTH"),
+                    message: t("DESCRIPTION_MIN_LENGTH"),
                   },
                   {
                     max: 500,
-                    message: t("BIO_MAX_LENGTH"),
+                    message: t("DESCRIPTION_MAX_LENGTH"),
                   },
                 ]}
               >
                 <Input.TextArea
                   rows={6}
-                  placeholder={t("ENTER_BIO")}
+                  placeholder={t("ENTER_DESCRIPTION")}
                   maxLength={500}
                   showCount
                 />

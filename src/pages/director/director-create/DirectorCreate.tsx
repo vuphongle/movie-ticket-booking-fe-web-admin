@@ -80,7 +80,16 @@ const DirectorCreate = () => {
     form
       .validateFields()
       .then((values) => {
-        return createDirector(values).unwrap();
+        // Transform data to match backend expectations
+        const requestData = {
+          name: values.name,
+          description: values.description,
+          birthday: values.birthday
+            ? dayjs(values.birthday).format("YYYY-MM-DD")
+            : "",
+          avatar: values.avatar || "",
+        };
+        return createDirector(requestData).unwrap();
       })
       .then((data) => {
         message.success(t("DIRECTOR_CREATED_SUCCESS"));
@@ -215,7 +224,7 @@ const DirectorCreate = () => {
 
               <Form.Item
                 label={t("BIRTH_DATE")}
-                name="birthDate"
+                name="birthday"
                 rules={[
                   {
                     required: true,
@@ -248,12 +257,12 @@ const DirectorCreate = () => {
               </Form.Item>
 
               <Form.Item
-                label={t("BIO")}
-                name="bio"
+                label={t("DESCRIPTION")}
+                name="description"
                 rules={[
                   {
                     required: true,
-                    message: t("BIO_REQUIRED"),
+                    message: t("DESCRIPTION_REQUIRED"),
                   },
                   {
                     min: 10,
@@ -267,7 +276,7 @@ const DirectorCreate = () => {
               >
                 <Input.TextArea
                   rows={6}
-                  placeholder={t("ENTER_BIO")}
+                  placeholder={t("ENTER_DESCRIPTION")}
                   maxLength={500}
                   showCount
                 />

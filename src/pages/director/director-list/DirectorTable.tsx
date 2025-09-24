@@ -43,8 +43,8 @@ const DirectorTable = ({ data }: DirectorTableProps) => {
     },
     {
       title: t("BIRTH_DATE"),
-      dataIndex: "birthDate",
-      key: "birthDate",
+      dataIndex: "birthday",
+      key: "birthday",
       render: (text: string | undefined) => {
         return text ? formatDate(text) : "-";
       },

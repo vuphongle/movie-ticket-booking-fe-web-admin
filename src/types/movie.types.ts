@@ -10,12 +10,17 @@ export interface Genre {
 export interface Director {
   id: string | number;
   name: string;
-  bio?: string;
-  nationality?: string;
-  birthDate?: string;
+  description?: string;
+  birthday?: string;
   avatar?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+export interface DirectorRequest {
+  name: string;
+  description: string;
+  birthday: string;
+  avatar?: string;
 }
 
 export interface Actor {

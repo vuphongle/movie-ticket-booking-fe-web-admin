@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_ADMIN } from "@/data/constants";
 import type { RootState } from "../Store";
-import type { Director } from "@/types";
+import type { Director, DirectorRequest } from "@/types";
 
 // Define a service using a base URL and expected endpoints
 const ENDPOINT = API_BASE_ADMIN;
@@ -31,7 +31,7 @@ export const directorApi = createApi({
                 { type: "Director", id: directorId },
             ],
         }),
-        createDirector: builder.mutation<Director, Partial<Director>>({
+        createDirector: builder.mutation<Director, DirectorRequest>({
             query: (newDirector) => ({
                 url: "directors",
                 method: "POST",
@@ -39,7 +39,7 @@ export const directorApi = createApi({
             }),
             invalidatesTags: ["Director"],
         }),
-        updateDirector: builder.mutation<Director, { directorId: string | number } & Partial<Director>>({
+        updateDirector: builder.mutation<Director, { directorId: string | number } & DirectorRequest>({
             query: ({ directorId, ...updatedDirector }) => ({
                 url: `directors/${directorId}`,
                 method: "PUT",
