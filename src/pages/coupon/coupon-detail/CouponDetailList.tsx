@@ -3,8 +3,8 @@ import { Button, Card, Space, theme } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useGetCouponDetailsQuery } from "@/app/services/coupons.service";
-import CouponDetailTable from "./CouponDetailTable";
-import CouponDetailModal from "./CouponDetailModal";
+import CouponDetailTable from "./CouponDetailTableSimple";
+import CouponDetailModal from "./CouponDetailModalSimple";
 import type { CouponDetail, Coupon } from "@/types";
 
 interface CouponDetailListProps {
@@ -23,8 +23,11 @@ const CouponDetailList = ({ couponId, coupon }: CouponDetailListProps) => {
     CouponDetail | undefined
   >();
 
-  const { data: couponDetails = [], isLoading } =
-    useGetCouponDetailsQuery(couponId);
+  const {
+    data: couponDetails = [],
+    isLoading,
+    refetch,
+  } = useGetCouponDetailsQuery(couponId);
 
   const handleAddNew = () => {
     setEditingDetail(undefined);
@@ -63,10 +66,10 @@ const CouponDetailList = ({ couponId, coupon }: CouponDetailListProps) => {
         }
       >
         <CouponDetailTable
-          couponId={couponId}
           data={couponDetails}
           loading={isLoading}
           onEdit={handleEdit}
+          onRefresh={refetch}
         />
       </Card>
 

@@ -28,7 +28,7 @@ const Row = ({ children, ...props }: RowProps) => {
       transform && {
         ...transform,
         scaleY: 1,
-      }
+      },
     ),
     transition,
     ...(isDragging

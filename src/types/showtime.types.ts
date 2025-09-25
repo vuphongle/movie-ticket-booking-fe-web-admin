@@ -42,7 +42,7 @@ export interface BulkShowtimeFormData {
   graphicsType: string;
   translationType: string;
   daysOfWeek: number[];
-  conflictPolicy: 'FAIL' | 'SKIP';
+  conflictPolicy: "FAIL" | "SKIP";
 }
 
 export interface BulkShowtimeApiPayload {
@@ -55,7 +55,7 @@ export interface BulkShowtimeApiPayload {
   graphicsType: string;
   translationType: string;
   daysOfWeek: number[];
-  conflictPolicy: 'FAIL' | 'SKIP';
+  conflictPolicy: "FAIL" | "SKIP";
 }
 
 export interface ConflictDetail {
@@ -119,7 +119,7 @@ export interface ShowtimeError {
 // Error codes from BE
 export enum ShowtimeErrorCode {
   SLOT_CONFLICT = "409_SLOT_CONFLICT",
-  INVALID_SLOT = "422_INVALID_SLOT", 
+  INVALID_SLOT = "422_INVALID_SLOT",
   SPAN_OVERFLOW = "422_SPAN_OVERFLOW",
   MOVIE_TOO_LONG = "422_MOVIE_TOO_LONG",
   BAD_INPUT = "400_BAD_INPUT",

@@ -43,10 +43,10 @@ const PriceItemSection = ({ priceList }: PriceItemSectionProps) => {
   // Count items by type
   const ticketItems = priceItems.filter((item) => item.targetType === "TICKET");
   const productItems = priceItems.filter(
-    (item) => item.targetType === "PRODUCT"
+    (item) => item.targetType === "PRODUCT",
   );
   const serviceItems = priceItems.filter(
-    (item) => item.targetType === "ADDITIONAL_SERVICE"
+    (item) => item.targetType === "ADDITIONAL_SERVICE",
   );
 
   const tabItems = [

@@ -36,13 +36,13 @@ const common = {
   ERROR_LOADING_PRODUCTS: "Error loading products",
   NO_PRODUCTS_AVAILABLE: "No products available",
   NO_MATCHING_PRODUCTS: "No matching products found",
-  
+
   // Image upload messages
   IMAGE_COMPRESSED: "Image compressed from {{originalSize}} to {{newSize}}",
   UPLOAD_FAILED: "Upload failed",
   UPLOAD_SUCCESS: "Upload successful",
   CHOOSE_IMAGE: "Choose Image",
-  UPLOAD_IMAGE: "Upload Image", 
+  UPLOAD_IMAGE: "Upload Image",
   SELECT_IMAGE: "Select Image",
   DELETE_IMAGE: "Delete Image",
   DELETE_IMAGE_SUCCESS: "Image deleted successfully",
@@ -57,7 +57,7 @@ const common = {
   PRODUCT_INFORMATION: "Product Information",
   EDIT_PRODUCT: "Edit Product",
   PRODUCT_NOT_FOUND: "Product not found",
-  
+
   // Product fields
   PRODUCT_SKU: "SKU",
   PRODUCT_NAME: "Product Name",
@@ -71,17 +71,17 @@ const common = {
   CREATED_AT: "Created At",
   UPDATED_AT: "Updated At",
   ACTIONS: "Actions",
-  
+
   // Units
   PIECE: "Piece",
-  BOX: "Box", 
+  BOX: "Box",
   BOTTLE: "Bottle",
   CAN: "Can",
   PACK: "Pack",
   CUP: "Cup",
   BAG: "Bag",
   SET: "Set",
-  
+
   // Form placeholders and messages
   ENTER_SKU: "Enter SKU",
   ENTER_PRODUCT_NAME: "Enter product name",
@@ -90,7 +90,7 @@ const common = {
   ENTER_THUMBNAIL_URL: "Enter thumbnail URL",
   SELECT_UNIT: "Select unit",
   SELECT_STATUS: "Select status",
-  
+
   // Validation messages
   SKU_REQUIRED: "SKU is required",
   PRODUCT_NAME_REQUIRED: "Product name is required",
@@ -98,20 +98,21 @@ const common = {
   QUANTITY_MIN_ERROR: "Quantity must be greater than or equal to 0",
   SKU_ALREADY_EXISTS: "SKU already exists",
   CANNOT_DEACTIVATE_PRODUCT: "Cannot Deactivate Product",
-  PRODUCT_IN_USE_MESSAGE: "This product is currently being used in active promotions or additional services. Please deactivate those first before changing this product's status.",
-  
+  PRODUCT_IN_USE_MESSAGE:
+    "This product is currently being used in active promotions or additional services. Please deactivate those first before changing this product's status.",
+
   // Success/Error messages
   CREATE_SUCCESS: "Created successfully",
   CREATE_FAILED: "Create failed",
-  UPDATE_SUCCESS: "Updated successfully", 
+  UPDATE_SUCCESS: "Updated successfully",
   UPDATE_FAILED: "Update failed",
   DELETE_SUCCESS: "Deleted successfully",
   DELETE_FAILED: "Delete failed",
-  
+
   // Confirmations
   DELETE_CONFIRM: "Are you sure you want to delete?",
   ACTION_CANNOT_UNDONE: "This action cannot be undone",
-  
+
   // Actions
   VIEW_DETAIL: "View Detail",
   UPDATE: "Update",
@@ -131,7 +132,7 @@ const common = {
   GENRE_LIST: "Genre List",
   GENRE_NAME_MAX_LENGTH: "Genre name cannot exceed 50 characters!",
 
-  // Country management  
+  // Country management
   COUNTRY_NAME: "Country Name",
   DELETE_COUNTRY_CONFIRM_TITLE: "Are you sure you want to delete this country?",
   DELETE_COUNTRY_SUCCESS: "Country deleted successfully!",
@@ -177,10 +178,10 @@ const common = {
 
   // Director management
   DIRECTOR_NAME: "Director",
-  DIRECTOR_LIST: "Director List", 
+  DIRECTOR_LIST: "Director List",
   CREATE_DIRECTOR: "Create Director",
   UPDATE_DIRECTOR: "Update Director",
-  DELETE_DIRECTOR: "Delete Director", 
+  DELETE_DIRECTOR: "Delete Director",
   DIRECTOR_DETAIL: "Director Detail",
   DIRECTOR_CREATED_SUCCESS: "Director created successfully!",
   DIRECTOR_UPDATED_SUCCESS: "Director updated successfully!",

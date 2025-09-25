@@ -24,7 +24,7 @@ const menu = {
   PRICE_MANAGEMENT: "Price",
   PRICE_LIST_MANAGEMENT: "Price List",
   PRICE_ITEM_MANAGEMENT: "Price Item",
-  
+
   TICKET_PRICE_MANAGEMENT: "Ticket Price",
   // Ticket Price removed BASE_TICKET_PRICE: "Base Ticket Price",
 

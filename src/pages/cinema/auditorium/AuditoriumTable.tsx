@@ -32,7 +32,7 @@ const AuditoriumTable = ({ data, cinemaId }: AuditoriumTableProps) => {
   const [open, setOpen] = useState(false);
   const [openSeatModal, setOpenSeatModal] = useState(false);
   const [auditoriumUpdate, setAuditoriumUpdate] = useState<Auditorium | null>(
-    null
+    null,
   );
   const [deleteAuditorium, { isLoading }] = useDeleteAuditoriumMutation();
 

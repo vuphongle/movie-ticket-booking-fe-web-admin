@@ -43,7 +43,7 @@ const ProductSelect = ({ onProductChange, ...props }: ProductSelectProps) => {
 
   // Xử lý trường hợp không có dữ liệu
   const safeProducts = (products || []).filter(
-    (product: Product) => product && product.id && product.name
+    (product: Product) => product && product.id && product.name,
   );
   const options = safeProducts.map((product: Product) => ({
     label: `${product.name} (${product.sku || "N/A"}) - SL: ${product.quantity || 0} ${product.unit || ""}`,

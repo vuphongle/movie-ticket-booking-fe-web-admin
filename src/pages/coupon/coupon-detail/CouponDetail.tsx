@@ -37,7 +37,7 @@ const CouponDetail = () => {
 
   const { couponId } = useParams<{ couponId: string }>();
   const { data: coupon, isLoading: isFetchingCoupon } = useGetCouponByIdQuery(
-    parseInt(couponId!)
+    parseInt(couponId!),
   );
 
   const [updateCoupon, { isLoading: isLoadingUpdateCoupon }] =
@@ -54,8 +54,8 @@ const CouponDetail = () => {
           name: coupon.name || "",
           description: coupon.description || "",
           status: Boolean(coupon.status),
-          startDate: coupon.startDate ? dayjs(coupon.startDate) : null,
-          endDate: coupon.endDate ? dayjs(coupon.endDate) : null,
+          startAt: coupon.startAt ? dayjs(coupon.startAt) : null,
+          endAt: coupon.endAt ? dayjs(coupon.endAt) : null,
         });
       } catch {
         // Handle date parsing errors gracefully
@@ -283,11 +283,11 @@ const CouponDetail = () => {
                             value &&
                             getFieldValue("startDate") &&
                             dayjs(value).isBefore(
-                              dayjs(getFieldValue("startDate"))
+                              dayjs(getFieldValue("startDate")),
                             )
                           ) {
                             return Promise.reject(
-                              new Error(t("COUPON_END_DATE_AFTER_START"))
+                              new Error(t("COUPON_END_DATE_AFTER_START")),
                             );
                           }
                           return Promise.resolve();

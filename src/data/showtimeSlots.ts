@@ -91,7 +91,7 @@ export function calculateSlotSpans(movieDuration: number): number {
  * Get slot by ID (regenerate to get updated translations)
  */
 export function getSlotById(slotId: number): TimeSlot | undefined {
-  return getTimeSlots().find(slot => slot.id === slotId);
+  return getTimeSlots().find((slot) => slot.id === slotId);
 }
 
 /**
@@ -105,7 +105,10 @@ export function getSlotStartTime(slotId: number): string | null {
 /**
  * Get end time for a movie spanning multiple slots
  */
-export function getSlotEndTime(startSlotId: number, spans: number): string | null {
+export function getSlotEndTime(
+  startSlotId: number,
+  spans: number,
+): string | null {
   const endSlotId = startSlotId + spans - 1;
   const endSlot = getSlotById(endSlotId);
   return endSlot ? endSlot.endTime : null;
@@ -114,12 +117,15 @@ export function getSlotEndTime(startSlotId: number, spans: number): string | nul
 /**
  * Check if combination doesn't overflow available slots
  */
-export function isValidSlotCombination(startSlotId: number, spans: number): boolean {
+export function isValidSlotCombination(
+  startSlotId: number,
+  spans: number,
+): boolean {
   // Check if spans exceed maximum allowed
   if (spans > MAX_SLOT_SPANS) {
     return false;
   }
-  
+
   // Check if combination doesn't overflow available slots
   const endSlotId = startSlotId + spans - 1;
   return endSlotId <= getTimeSlots().length;
@@ -128,46 +134,52 @@ export function isValidSlotCombination(startSlotId: number, spans: number): bool
 /**
  * Get preview time range for a slot selection (shows slot boundaries for blocking)
  */
-export function getPreviewTimeRange(slotId: number, spans: number): {
+export function getPreviewTimeRange(
+  slotId: number,
+  spans: number,
+): {
   startTime: string;
   endTime: string;
 } | null {
   if (!isValidSlotCombination(slotId, spans)) {
     return null;
   }
-  
+
   const startTime = getSlotStartTime(slotId);
   const endTime = getSlotEndTime(slotId, spans);
-  
+
   if (!startTime || !endTime) {
     return null;
   }
-  
+
   return { startTime, endTime };
 }
 
 /**
  * Get actual runtime time range (shows real movie end time)
  */
-export function getActualTimeRange(slotId: number, movieDuration: number): {
+export function getActualTimeRange(
+  slotId: number,
+  movieDuration: number,
+): {
   startTime: string;
   endTime: string;
 } | null {
   const startTime = getSlotStartTime(slotId);
   if (!startTime) return null;
-  
+
   // Calculate actual end time = start + runtime + buffer
   const effectiveRuntime = calculateEffectiveRuntime(movieDuration);
-  const [startHour, startMin] = startTime.split(':').map(Number);
-  
+  const [startHour, startMin] = startTime.split(":").map(Number);
+
   const startTotalMinutes = startHour * 60 + startMin;
   const endTotalMinutes = startTotalMinutes + effectiveRuntime;
-  
+
   const endHour = Math.floor(endTotalMinutes / 60);
   const endMin = endTotalMinutes % 60;
-  
-  const endTime = `${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}`;
-  
+
+  const endTime = `${endHour.toString().padStart(2, "0")}:${endMin.toString().padStart(2, "0")}`;
+
   return { startTime, endTime };
 }
 
@@ -177,16 +189,17 @@ export function getActualTimeRange(slotId: number, movieDuration: number): {
 export function getAvailableSlots(movieDuration: number): TimeSlot[] {
   const spans = calculateSlotSpans(movieDuration);
   const slots = getTimeSlots();
-  
-  return slots.filter(slot => 
-    isValidSlotCombination(slot.id, spans)
-  );
+
+  return slots.filter((slot) => isValidSlotCombination(slot.id, spans));
 }
 
 /**
  * Convert slot selection to start/end times for API (uses slot boundaries for blocking)
  */
-export function slotToApiTimes(slotId: number, movieDuration: number): {
+export function slotToApiTimes(
+  slotId: number,
+  movieDuration: number,
+): {
   startTime: string;
   endTime: string;
 } | null {
@@ -197,7 +210,10 @@ export function slotToApiTimes(slotId: number, movieDuration: number): {
 /**
  * Convert slot selection to actual runtime times for display
  */
-export function slotToActualTimes(slotId: number, movieDuration: number): {
+export function slotToActualTimes(
+  slotId: number,
+  movieDuration: number,
+): {
   startTime: string;
   endTime: string;
 } | null {
@@ -214,17 +230,20 @@ export function requiresMultipleSlots(movieDuration: number): boolean {
 /**
  * Calculate actual end time from existing showtime data
  */
-export function calculateActualEndTime(startTime: string, movieDuration: number): string {
+export function calculateActualEndTime(
+  startTime: string,
+  movieDuration: number,
+): string {
   const effectiveRuntime = calculateEffectiveRuntime(movieDuration);
-  const [startHour, startMin] = startTime.split(':').map(Number);
-  
+  const [startHour, startMin] = startTime.split(":").map(Number);
+
   const startTotalMinutes = startHour * 60 + startMin;
   const endTotalMinutes = startTotalMinutes + effectiveRuntime;
-  
+
   const endHour = Math.floor(endTotalMinutes / 60);
   const endMin = endTotalMinutes % 60;
-  
-  return `${endHour.toString().padStart(2, '0')}:${endMin.toString().padStart(2, '0')}`;
+
+  return `${endHour.toString().padStart(2, "0")}:${endMin.toString().padStart(2, "0")}`;
 }
 
 /**
@@ -232,21 +251,21 @@ export function calculateActualEndTime(startTime: string, movieDuration: number)
  */
 export function getSlotSelectOptions(movieDuration?: number) {
   const slots = getTimeSlots();
-  
+
   if (!movieDuration) {
-    return slots.map(slot => ({
+    return slots.map((slot) => ({
       label: slot.label,
       value: slot.id,
       disabled: false,
     }));
   }
-  
+
   const spans = calculateSlotSpans(movieDuration);
-  
-  return slots.map(slot => {
+
+  return slots.map((slot) => {
     // Check if this slot + spans would overflow
     const wouldOverflow = slot.id + spans - 1 > slots.length;
-    
+
     return {
       label: slot.label,
       value: slot.id,

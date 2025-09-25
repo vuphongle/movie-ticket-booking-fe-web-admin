@@ -6,7 +6,7 @@ import type {
   CreatePriceListRequest,
   UpdatePriceListRequest,
   PriceListFilter,
-  PaginatedPriceListResponse
+  PaginatedPriceListResponse,
 } from "@/types";
 
 // Define a service using a base URL and expected endpoints
@@ -31,12 +31,13 @@ export const priceListApi = createApi({
       query: (filter) => {
         const params = new URLSearchParams();
         if (filter?.name) params.append("name", filter.name);
-        if (filter?.status !== undefined) params.append("status", filter.status.toString());
+        if (filter?.status !== undefined)
+          params.append("status", filter.status.toString());
         if (filter?.validAt) params.append("validAt", filter.validAt);
-        
+
         // Include price items count
         params.append("includePriceItemsCount", "true");
-        
+
         const queryString = params.toString();
         return `price-lists${queryString ? `?${queryString}` : ""}`;
       },
@@ -54,11 +55,12 @@ export const priceListApi = createApi({
           size: size.toString(),
           sort: sort,
         });
-        
+
         if (filter?.name) params.append("name", filter.name);
-        if (filter?.status !== undefined) params.append("status", filter.status.toString());
+        if (filter?.status !== undefined)
+          params.append("status", filter.status.toString());
         if (filter?.validAt) params.append("validAt", filter.validAt);
-        
+
         return `price-lists/paginated?${params.toString()}`;
       },
       providesTags: ["PriceList"],
@@ -155,9 +157,9 @@ export const priceListApi = createApi({
     // Clone price list with all price items
     clonePriceList: builder.mutation<
       PriceList,
-      { 
-        id: number; 
-        name: string; 
+      {
+        id: number;
+        name: string;
         priority?: number;
         status?: boolean;
         validFrom?: string;

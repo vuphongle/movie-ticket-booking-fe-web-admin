@@ -1,12 +1,12 @@
 // Target types for price items
 export enum PriceTargetType {
-  PRODUCT = 'PRODUCT',
-  ADDITIONAL_SERVICE = 'ADDITIONAL_SERVICE', 
-  TICKET = 'TICKET',
+  PRODUCT = "PRODUCT",
+  ADDITIONAL_SERVICE = "ADDITIONAL_SERVICE",
+  TICKET = "TICKET",
   // Legacy - kept for compatibility
-  ORDER = 'ORDER',
-  SEAT_TYPE = 'SEAT_TYPE',
-  SERVICE = 'SERVICE'
+  ORDER = "ORDER",
+  SEAT_TYPE = "SEAT_TYPE",
+  SERVICE = "SERVICE",
 }
 
 // Import existing types from ticketPrice.types.ts
@@ -15,10 +15,10 @@ import type {
   GraphicsType,
   ScreeningTimeType,
   DayType,
-  AuditoriumType
-} from './ticketPrice.types';
-import type { Product } from './product.types';
-import type { AdditionalService } from './additionalService.types';
+  AuditoriumType,
+} from "./ticketPrice.types";
+import type { Product } from "./product.types";
+import type { AdditionalService } from "./additionalService.types";
 
 // PriceList interfaces
 export interface PriceList {
@@ -52,19 +52,19 @@ export interface PriceItem {
   priceListId: number;
   targetType: PriceTargetType;
   targetId?: number; // nullable when targetType = TICKET
-  
+
   // Fields for tickets (when targetType = TICKET)
   seatType?: SeatType; // nullable, null = wildcard
-  graphicsType?: GraphicsType; // nullable, null = wildcard  
+  graphicsType?: GraphicsType; // nullable, null = wildcard
   screeningTimeType?: ScreeningTimeType; // nullable, null = wildcard
   dayType?: DayType; // nullable, null = wildcard
   auditoriumType?: AuditoriumType; // nullable, null = wildcard
-  
+
   price: number; // Applied price
   minQty?: number; // Minimum quantity to apply this price
   priority: number; // Higher number = higher priority
   status: boolean; // Active status
-  
+
   // Populated fields
   priceList?: PriceList;
   product?: Product; // Populated when targetType = PRODUCT
@@ -75,14 +75,14 @@ export interface CreatePriceItemRequest {
   priceListId: number;
   targetType: PriceTargetType;
   targetId?: number;
-  
+
   // Ticket-specific fields
   seatType?: SeatType;
   graphicsType?: GraphicsType;
   screeningTimeType?: ScreeningTimeType;
   dayType?: DayType;
   auditoriumType?: AuditoriumType;
-  
+
   price: number;
   minQty?: number;
   priority: number;
@@ -106,7 +106,7 @@ export interface PriceItemFilter {
   targetId?: number;
   status?: boolean;
   effectiveAt?: string; // Check effectiveness at specific date
-  
+
   // Ticket-specific filters
   seatType?: SeatType;
   graphicsType?: GraphicsType;
@@ -130,7 +130,7 @@ export interface PaginatedPriceListResponse {
 export interface PaginatedPriceItemResponse {
   content: PriceItem[];
   totalElements: number;
-  totalPages: number;  
+  totalPages: number;
   size: number;
   number: number;
 }

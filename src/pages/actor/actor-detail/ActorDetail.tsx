@@ -58,7 +58,7 @@ const ActorDetail = () => {
   const { actorId } = useParams<{ actorId: string }>();
   const { data: imagesData } = useGetImagesQuery();
   const { data: actor, isLoading: isFetchingActors } = useGetActorByIdQuery(
-    actorId!
+    actorId!,
   );
   const { isLoading: isFetchingImages } = useGetImagesQuery();
 
@@ -105,7 +105,7 @@ const ActorDetail = () => {
           ? actor.avatar.startsWith("http")
             ? actor.avatar
             : `${API_DOMAIN}${actor.avatar}`
-          : actor?.avatar || null
+          : actor?.avatar || null,
       );
     }
   }, [actor, avatar]);
@@ -318,7 +318,7 @@ const ActorDetail = () => {
 
                       if (dayjs(value).isAfter(dayjs(), "day")) {
                         return Promise.reject(
-                          new Error(t("BIRTH_DATE_FUTURE_ERROR"))
+                          new Error(t("BIRTH_DATE_FUTURE_ERROR")),
                         );
                       }
 

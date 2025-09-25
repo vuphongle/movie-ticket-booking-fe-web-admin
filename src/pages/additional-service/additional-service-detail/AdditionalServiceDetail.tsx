@@ -163,7 +163,7 @@ const AdditionalServiceDetail = () => {
   // Use safe image loading hook
   const { imageUrl: thumbnail, setImageUrl: setThumbnail } = useImageLoading(
     additionalService?.thumbnail,
-    API_DOMAIN
+    API_DOMAIN,
   );
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -196,7 +196,7 @@ const AdditionalServiceDetail = () => {
       (existingItem, idx) =>
         idx !== index &&
         existingItem.productId === item.productId &&
-        !existingItem.isEditing
+        !existingItem.isEditing,
     );
 
     if (existingIndex !== -1) {
@@ -226,7 +226,7 @@ const AdditionalServiceDetail = () => {
     } else {
       // Restore original data
       const originalItem = originalComboItems.find(
-        (orig) => orig.id === item.id
+        (orig) => orig.id === item.id,
       );
       if (originalItem) {
         const newItems = [...comboItems];
@@ -283,18 +283,18 @@ const AdditionalServiceDetail = () => {
         if (values.type === "COMBO") {
           // Check for unsaved items (still in editing mode)
           const editingItems = (comboItems || []).filter(
-            (item) => item.isEditing
+            (item) => item.isEditing,
           );
 
           if (editingItems.length > 0) {
             message.error(
-              "Vui lòng lưu tất cả các items đang chỉnh sửa trước khi cập nhật"
+              "Vui lòng lưu tất cả các items đang chỉnh sửa trước khi cập nhật",
             );
             return Promise.reject("Items still in editing mode");
           }
 
           const validItems = (comboItems || []).filter(
-            (item) => item.productId && !item.isEditing
+            (item) => item.productId && !item.isEditing,
           );
 
           if (validItems.length < MIN_COMBO_ITEMS) {
@@ -304,7 +304,7 @@ const AdditionalServiceDetail = () => {
 
           // Check for duplicate products
           const uniqueProductIds = new Set(
-            validItems.map((item) => item.productId)
+            validItems.map((item) => item.productId),
           );
           if (uniqueProductIds.size !== validItems.length) {
             message.error("Không thể có sản phẩm trùng lặp trong combo");
@@ -611,7 +611,7 @@ const AdditionalServiceDetail = () => {
                             validator: (_, value) => {
                               if (value <= 0) {
                                 return Promise.reject(
-                                  t("DEFAULT_QUANTITY_POSITIVE")
+                                  t("DEFAULT_QUANTITY_POSITIVE"),
                                 );
                               }
                               return Promise.resolve();
@@ -801,7 +801,7 @@ const AdditionalServiceDetail = () => {
                                 (item.productId
                                   ? t("NOT_SET")
                                   : t("SELECT_PRODUCT_FIRST"))
-                              ).toUpperCase()
+                              ).toUpperCase(),
                             )}
                           </Tag>
                         </Space>

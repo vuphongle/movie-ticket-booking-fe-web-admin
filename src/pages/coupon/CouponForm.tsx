@@ -32,6 +32,7 @@ import {
 } from "@/app/services/coupons.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 import type { UpsertCouponRequest, Coupon } from "@/types";
+import { CouponType, CouponStatus, CouponStackingPolicy } from "@/types";
 
 const { Title } = Typography;
 
@@ -88,8 +89,8 @@ const CouponForm = () => {
         name: couponData.name,
         description: couponData.description,
         status: couponData.status,
-        startDate: couponData.startDate ? dayjs(couponData.startDate) : null,
-        endDate: couponData.endDate ? dayjs(couponData.endDate) : null,
+        startAt: couponData.startAt ? dayjs(couponData.startAt) : null,
+        endAt: couponData.endAt ? dayjs(couponData.endAt) : null,
       });
     } else if (!isEdit) {
       // Set default values for new coupon
@@ -103,12 +104,19 @@ const CouponForm = () => {
     setLoading(true);
     try {
       const payload: UpsertCouponRequest = {
+        type: CouponType.DISCOUNT, // Default to DISCOUNT
         code: values.code,
         name: values.name,
         description: values.description,
-        status: isEdit ? values.status : false, // Force false for new coupons
-        startDate: values.startDate ? values.startDate.toISOString() : null,
-        endDate: values.endDate ? values.endDate.toISOString() : null,
+        status: isEdit
+          ? values.status
+            ? CouponStatus.ACTIVE
+            : CouponStatus.INACTIVE
+          : CouponStatus.INACTIVE, // Convert boolean to enum
+        visible: true, // Default visible
+        stackingPolicy: CouponStackingPolicy.EXCLUSIVE, // Default stacking policy
+        startAt: values.startAt ? values.startAt.toISOString() : "",
+        endAt: values.endAt ? values.endAt.toISOString() : "",
       };
 
       let result;
@@ -136,8 +144,8 @@ const CouponForm = () => {
           totalDetailsCount: 0,
           aggregateUsedCount: 0,
           timeWindow:
-            result.startDate && result.endDate
-              ? `${new Date(result.startDate).toLocaleDateString()} - ${new Date(result.endDate).toLocaleDateString()}`
+            result.startAt && result.endAt
+              ? `${new Date(result.startAt).toLocaleDateString()} - ${new Date(result.endAt).toLocaleDateString()}`
               : "",
         };
       }
@@ -399,7 +407,7 @@ const CouponForm = () => {
                             }
                             if (value.isBefore(startDate)) {
                               return Promise.reject(
-                                new Error(t("COUPON_END_DATE_AFTER_START"))
+                                new Error(t("COUPON_END_DATE_AFTER_START")),
                               );
                             }
                             return Promise.resolve();

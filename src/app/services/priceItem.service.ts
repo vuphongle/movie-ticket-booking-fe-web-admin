@@ -15,9 +15,13 @@ export const priceItemApi = createApi({
     baseUrl: "/", // Will be overridden per endpoint
     prepareHeaders: (headers, { getState, endpoint }) => {
       // Only add auth for admin endpoints
-      if (endpoint?.startsWith('get') || endpoint?.startsWith('create') || 
-          endpoint?.startsWith('update') || endpoint?.startsWith('delete') || 
-          endpoint?.startsWith('toggle')) {
+      if (
+        endpoint?.startsWith("get") ||
+        endpoint?.startsWith("create") ||
+        endpoint?.startsWith("update") ||
+        endpoint?.startsWith("delete") ||
+        endpoint?.startsWith("toggle")
+      ) {
         const token = (getState() as RootState).auth.accessToken;
         if (token) {
           headers.set("Authorization", `Bearer ${token}`);
@@ -32,19 +36,26 @@ export const priceItemApi = createApi({
     getPriceItems: builder.query<PriceItem[], PriceItemFilter | void>({
       query: (filter) => {
         const params = new URLSearchParams();
-        if (filter?.priceListId) params.append("priceListId", filter.priceListId.toString());
+        if (filter?.priceListId)
+          params.append("priceListId", filter.priceListId.toString());
         if (filter?.targetType) params.append("targetType", filter.targetType);
-        if (filter?.targetId) params.append("targetId", filter.targetId.toString());
-        if (filter?.status !== undefined) params.append("status", filter.status.toString());
-        if (filter?.effectiveAt) params.append("effectiveAt", filter.effectiveAt);
-        
+        if (filter?.targetId)
+          params.append("targetId", filter.targetId.toString());
+        if (filter?.status !== undefined)
+          params.append("status", filter.status.toString());
+        if (filter?.effectiveAt)
+          params.append("effectiveAt", filter.effectiveAt);
+
         // Ticket-specific filters
         if (filter?.seatType) params.append("seatType", filter.seatType);
-        if (filter?.graphicsType) params.append("graphicsType", filter.graphicsType);
-        if (filter?.screeningTimeType) params.append("screeningTimeType", filter.screeningTimeType);
+        if (filter?.graphicsType)
+          params.append("graphicsType", filter.graphicsType);
+        if (filter?.screeningTimeType)
+          params.append("screeningTimeType", filter.screeningTimeType);
         if (filter?.dayType) params.append("dayType", filter.dayType);
-        if (filter?.auditoriumType) params.append("auditoriumType", filter.auditoriumType);
-        
+        if (filter?.auditoriumType)
+          params.append("auditoriumType", filter.auditoriumType);
+
         const queryString = params.toString();
         return `${API_BASE_ADMIN}price-items${queryString ? `?${queryString}` : ""}`;
       },
@@ -59,7 +70,8 @@ export const priceItemApi = createApi({
 
     // Get price items by price list ID
     getPriceItemsByPriceListId: builder.query<PriceItem[], number>({
-      query: (priceListId) => `${API_BASE_ADMIN}price-items/by-price-list/${priceListId}`,
+      query: (priceListId) =>
+        `${API_BASE_ADMIN}price-items/by-price-list/${priceListId}`,
       providesTags: (_result, _error, priceListId) => [
         { type: "PriceItem", id: `LIST_${priceListId}` },
       ],
@@ -67,7 +79,8 @@ export const priceItemApi = createApi({
 
     // Get price items by target type
     getPriceItemsByTargetType: builder.query<PriceItem[], PriceTargetType>({
-      query: (targetType) => `${API_BASE_ADMIN}price-items/by-target-type/${targetType}`,
+      query: (targetType) =>
+        `${API_BASE_ADMIN}price-items/by-target-type/${targetType}`,
       providesTags: (_result, _error, targetType) => [
         { type: "PriceItem", id: `TYPE_${targetType}` },
       ],
@@ -155,7 +168,7 @@ export const priceItemApi = createApi({
         params.append("screeningTimeType", conditions.screeningTimeType);
         params.append("dayType", conditions.dayType);
         params.append("auditoriumType", conditions.auditoriumType);
-        
+
         if (conditions.effectiveAt) {
           return `${API_BASE_AUTH_PUBLIC}price-items/ticket/price/at/${conditions.effectiveAt}?${params.toString()}`;
         } else {

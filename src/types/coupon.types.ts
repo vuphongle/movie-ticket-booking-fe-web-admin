@@ -1,177 +1,105 @@
 // Enums matching backend
-export enum TargetType {
-  ORDER = 'ORDER',
-  SEAT_TYPE = 'SEAT_TYPE',
-  SERVICE = 'SERVICE'
+export enum CouponType {
+  DISCOUNT = "DISCOUNT",
+  GIFT = "GIFT",
 }
 
-export enum BenefitType {
-  DISCOUNT_PERCENT = 'DISCOUNT_PERCENT',
-  DISCOUNT_AMOUNT = 'DISCOUNT_AMOUNT',
-  FREE_PRODUCT = 'FREE_PRODUCT'
+export enum CouponStatus {
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  EXPIRED = "EXPIRED",
 }
 
-export enum SelectionStrategy {
-  HIGHEST_PRICE_FIRST = 'HIGHEST_PRICE_FIRST',
-  LOWEST_PRICE_FIRST = 'LOWEST_PRICE_FIRST',
-  FIFO = 'FIFO'
+export enum CouponTargetType {
+  ORDER = "ORDER",
+  PRODUCT = "PRODUCT",
+  CATEGORY = "CATEGORY",
 }
 
-// Coupon main interface (simplified)
+export enum CouponBenefitType {
+  DISCOUNT_PERCENT = "DISCOUNT_PERCENT",
+  DISCOUNT_AMOUNT = "DISCOUNT_AMOUNT",
+}
+
+export enum CouponStackingPolicy {
+  EXCLUSIVE = "EXCLUSIVE",
+  STACKABLE = "STACKABLE",
+}
+
+// Coupon main interface (matching new BE schema)
 export interface Coupon {
   id: number;
+  type: CouponType;
   code: string;
   name: string;
   description?: string;
-  status: boolean;
-  startDate: string; // ISO datetime string
-  endDate: string; // ISO datetime string
+  status: CouponStatus;
+  visible: boolean;
+  startAt: string; // ISO datetime string
+  endAt: string; // ISO datetime string
+  stackingPolicy: CouponStackingPolicy;
+  orderMinTotal?: number;
+  orderMaxDiscount?: number;
+  usageLimit?: number;
+  usedCount: number;
   createdAt?: string;
   updatedAt?: string;
 }
 
-// Coupon Detail
+// Coupon Detail (matching new BE schema)
 export interface CouponDetail {
   id: number;
   couponId: number;
-  enabled: boolean;
-  targetType: TargetType;
-  targetRefId?: number;
-  benefitType: BenefitType;
-  
-  // Benefit values
-  percent?: number;
-  amount?: number;
-  giftServiceId?: number;
-  giftQuantity?: number;
-  
-  // Conditions/Limits
-  lineMaxDiscount?: number;
-  minQuantity?: number;
-  limitQuantityApplied?: number;
-  minOrderTotal?: number;
-  
-  // Usage limits
-  detailUsageLimit?: number;
-  detailUsedCount: number;
-  
-  // Priority & Selection
-  linePriority: number;
-  selectionStrategy: SelectionStrategy;
-  
-  // Date range (required)
-  startDate: string; // ISO datetime string - required
-  endDate: string; // ISO datetime string - required
-  
-  notes?: string;
+  targetType: CouponTargetType;
+  giftServiceId?: number; // ID reference for target (movie_id, product_id, cinema_id...)
   createdAt?: string;
   updatedAt?: string;
+}
+
+// Coupon Detail Rule (new entity)
+export interface CouponDetailRule {
+  id: number;
+  couponDetailId: number;
+  benefitType: CouponBenefitType;
+  percent?: number;
+  amount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Request DTOs (matching new BE schema)
+export interface UpsertCouponRequest {
+  type: CouponType;
+  code: string;
+  name: string;
+  description?: string;
+  status: CouponStatus;
+  visible: boolean;
+  startAt: string; // ISO datetime string
+  endAt: string; // ISO datetime string
+  stackingPolicy: CouponStackingPolicy;
+  orderMinTotal?: number;
+  orderMaxDiscount?: number;
+  usageLimit?: number;
+}
+
+export interface UpsertCouponDetailRequest {
+  couponId: number;
+  targetType: CouponTargetType;
+  giftServiceId?: number;
+}
+
+export interface UpsertCouponDetailRuleRequest {
+  couponDetailId: number;
+  benefitType: CouponBenefitType;
+  percent?: number;
+  amount?: number;
 }
 
 // Filter interface for UI
 export interface CouponFilter {
-  activeStatus?: 'ALL' | 'ACTIVE' | 'HIDDEN' | 'EXPIRED';
+  activeStatus?: "ALL" | "ACTIVE" | "INACTIVE" | "EXPIRED";
   hasEnabledDetails?: boolean;
-}
-
-// Request DTOs
-export interface UpsertCouponRequest {
-  code: string;
-  name: string;
-  description?: string;
-  status: boolean;
-  startDate: string;
-  endDate: string;
-}
-
-export interface UpsertCouponDetailRequest {
-  enabled: boolean;
-  targetType: TargetType;
-  targetRefId?: number;
-  benefitType: BenefitType;
-  
-  // Benefit values
-  percent?: number;
-  amount?: number;
-  giftServiceId?: number;
-  giftQuantity?: number;
-  
-  // Conditions/Limits
-  lineMaxDiscount?: number;
-  minQuantity?: number;
-  limitQuantityApplied?: number;
-  minOrderTotal?: number;
-  
-  // Usage limits
-  detailUsageLimit?: number;
-  
-  // Priority & Selection
-  linePriority: number;
-  selectionStrategy?: SelectionStrategy;
-  
-  // Date range (required)
-  startDate: string; // ISO datetime string - required
-  endDate: string; // ISO datetime string - required
-  
-  notes?: string;
-}
-
-// Preview & Apply DTOs
-export interface TicketItem {
-  seatTypeId: number;
-  qty: number;
-  unitPrice: number;
-}
-
-export interface ServiceItem {
-  serviceId: number;
-  qty: number;
-  unitPrice: number;
-}
-
-export interface CouponPreviewRequest {
-  tickets: TicketItem[];
-  services?: ServiceItem[];
-}
-
-export interface DetailApplicationResult {
-  detailId: number;
-  applied: boolean;
-  reason: string;
-  lineDiscount: number;
-  affectedQuantity: number;
-}
-
-export interface GiftItem {
-  serviceId: number;
-  serviceName: string;
-  quantity: number;
-}
-
-export interface CouponPreviewResponse {
-  totalDiscount: number;
-  detailResults: DetailApplicationResult[];
-  gifts: GiftItem[];
-}
-
-export interface CouponApplyRequest {
-  orderId: number;
-  couponCode: string;
-  cart: CouponPreviewRequest;
-}
-
-export interface CouponApplyResponse {
-  status: string;
-  idempotentToken?: string;
-  appliedDetailIds?: number[];
-  previewResult?: CouponPreviewResponse;
-  errorMessage?: string;
-}
-
-export interface RedemptionConfirmRequest {
-  orderId: number;
-  couponCode: string;
-  appliedDetailIds: number[];
 }
 
 // Component Props
@@ -201,19 +129,4 @@ export interface CouponDetailTableProps {
   loading?: boolean;
   onEdit?: (detail: CouponDetail) => void;
   onDelete?: (id: number) => void;
-  onDuplicate?: (id: number) => void;
-  onToggleEnabled?: (id: number, enabled: boolean) => void;
-  onUpdatePriority?: (detailId: number, newPriority: number) => void;
-}
-
-export interface CouponPreviewModalProps {
-  couponId: number;
-  open: boolean;
-  onCancel: () => void;
-}
-
-// Filter & Search types
-export interface CouponFilter {
-  activeStatus?: 'ACTIVE' | 'HIDDEN' | 'EXPIRED' | 'ALL';
-  hasEnabledDetails?: boolean;
 }

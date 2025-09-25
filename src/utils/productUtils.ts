@@ -10,19 +10,22 @@ export const UNIT_OPTIONS = [
   { labelKey: "SET", value: "set" },
 ] as const;
 
-export type UnitValue = typeof UNIT_OPTIONS[number]["value"];
+export type UnitValue = (typeof UNIT_OPTIONS)[number]["value"];
 
 /**
  * Lấy text hiển thị cho unit value với i18n
  */
-export const getUnitLabel = (value: string | null | undefined, t: any): string => {
+export const getUnitLabel = (
+  value: string | null | undefined,
+  t: any,
+): string => {
   if (!value) return "-";
-  
-  const unitOption = UNIT_OPTIONS.find(option => option.value === value);
+
+  const unitOption = UNIT_OPTIONS.find((option) => option.value === value);
   if (unitOption) {
     return t(unitOption.labelKey);
   }
-  
+
   // Fallback về giá trị gốc nếu không tìm thấy
   return value;
 };
@@ -31,7 +34,7 @@ export const getUnitLabel = (value: string | null | undefined, t: any): string =
  * Lấy danh sách options cho Select component với i18n
  */
 export const getUnitOptions = (t: any) => {
-  return UNIT_OPTIONS.map(option => ({
+  return UNIT_OPTIONS.map((option) => ({
     label: t(option.labelKey),
     value: option.value,
   }));

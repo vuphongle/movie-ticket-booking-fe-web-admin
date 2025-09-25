@@ -16,7 +16,7 @@ interface ScheduleFiltersProps {
   onStatusChange: (value: number | string) => void;
   dateRange: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null;
   onDateRangeChange: (
-    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+    dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null,
   ) => void;
   movies: Movie[];
 }
@@ -39,7 +39,7 @@ const ScheduleFilters = memo(
         { label: t("SHOWING"), value: 2 },
         { label: t("ENDED"), value: 3 },
       ],
-      [t]
+      [t],
     );
 
     return (
@@ -77,7 +77,7 @@ const ScheduleFilters = memo(
         </Row>
       </Card>
     );
-  }
+  },
 );
 
 ScheduleFilters.displayName = "ScheduleFilters";

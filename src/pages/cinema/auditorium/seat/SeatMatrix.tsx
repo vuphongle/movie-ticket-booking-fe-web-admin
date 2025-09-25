@@ -40,7 +40,7 @@ function SeatMatrix({ seats, auditorium }: SeatMatrixProps) {
                 auditorium={auditorium}
               />
             </Row>
-          )
+          ),
         )
       }
     </div>

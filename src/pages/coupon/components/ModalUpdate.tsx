@@ -16,6 +16,7 @@ import {
   useUpdateCouponMutation,
 } from "@/app/services/coupons.service";
 import type { Coupon, UpsertCouponRequest } from "@/types";
+import { CouponType, CouponStatus, CouponStackingPolicy } from "@/types";
 
 interface ModalUpdateProps {
   open: boolean;
@@ -48,8 +49,8 @@ const ModalUpdate = ({
           name: coupon.name,
           description: coupon.description,
           status: coupon.status,
-          startDate: coupon.startDate ? dayjs(coupon.startDate) : null,
-          endDate: coupon.endDate ? dayjs(coupon.endDate) : null,
+          startAt: coupon.startAt ? dayjs(coupon.startAt) : null,
+          endAt: coupon.endAt ? dayjs(coupon.endAt) : null,
         });
       } else {
         // Reset form for create
@@ -62,12 +63,19 @@ const ModalUpdate = ({
     setLoading(true);
     try {
       const payload: UpsertCouponRequest = {
+        type: CouponType.DISCOUNT, // Default to DISCOUNT type
         code: values.code,
         name: values.name,
         description: values.description,
-        status: values.status,
-        startDate: values.startDate ? values.startDate.toISOString() : null,
-        endDate: values.endDate ? values.endDate.toISOString() : null,
+        status: values.status ? CouponStatus.ACTIVE : CouponStatus.INACTIVE, // Convert boolean to enum
+        visible: true, // Default visible to true
+        stackingPolicy: CouponStackingPolicy.EXCLUSIVE, // Default stacking policy
+        startAt: values.startAt ? values.startAt.toISOString() : "",
+        endAt: values.endAt ? values.endAt.toISOString() : "",
+        // Optional fields from form can be added later
+        usageLimit: values.usageLimit || undefined,
+        orderMinTotal: values.orderMinTotal || undefined,
+        orderMaxDiscount: values.orderMaxDiscount || undefined,
       };
 
       if (isEdit && coupon) {
@@ -184,7 +192,7 @@ const ModalUpdate = ({
           <Col span={12}>
             <Form.Item
               label={t("COUPON_START_DATE_LABEL")}
-              name="startDate"
+              name="startAt"
               rules={[
                 { required: true, message: t("COUPON_START_DATE_REQUIRED") },
               ]}
@@ -200,19 +208,19 @@ const ModalUpdate = ({
           <Col span={12}>
             <Form.Item
               label={t("COUPON_END_DATE_LABEL")}
-              name="endDate"
-              dependencies={["startDate"]}
+              name="endAt"
+              dependencies={["startAt"]}
               rules={[
                 { required: true, message: t("COUPON_END_DATE_REQUIRED") },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    const startDate = getFieldValue("startDate");
+                    const startDate = getFieldValue("startAt");
                     if (!value || !startDate) {
                       return Promise.resolve();
                     }
                     if (value.isBefore(startDate)) {
                       return Promise.reject(
-                        new Error(t("COUPON_END_DATE_AFTER_START"))
+                        new Error(t("COUPON_END_DATE_AFTER_START")),
                       );
                     }
                     return Promise.resolve();

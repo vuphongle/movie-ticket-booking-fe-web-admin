@@ -238,7 +238,7 @@ const DirectorCreate = () => {
 
                       if (dayjs(value).isAfter(dayjs(), "day")) {
                         return Promise.reject(
-                          new Error(t("BIRTH_DATE_FUTURE_ERROR"))
+                          new Error(t("BIRTH_DATE_FUTURE_ERROR")),
                         );
                       }
 

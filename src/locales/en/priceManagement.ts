@@ -1,7 +1,7 @@
 const priceManagement = {
   // Common
   ANY: "Any",
-  
+
   // Buttons
   CREATE_PRICE_LIST_BUTTON: "Create Price List",
   CREATE_PRICE_ITEM_BUTTON: "Create Price Item",
@@ -13,7 +13,7 @@ const priceManagement = {
   CANCEL_BUTTON: "Cancel",
   REFRESH_BUTTON: "Refresh",
   VIEW_DETAILS: "View Details",
-  
+
   // PriceList Fields
   PRICE_LIST_NAME: "Price List Name",
   PRIORITY: "Priority",
@@ -24,7 +24,7 @@ const priceManagement = {
   VALID_TO: "Valid To",
   FROM: "From",
   TO: "To",
-  
+
   // PriceItem Fields
   TARGET_TYPE: "Target Type",
   TARGET_ID: "Target ID",
@@ -39,26 +39,26 @@ const priceManagement = {
   MIN_QUANTITY: "Minimum Quantity",
   EFFECTIVE_FROM: "Effective From",
   EFFECTIVE_TO: "Effective To",
-  
+
   // Ticket-specific fields
   SEAT_TYPE: "Seat Type",
   GRAPHICS_TYPE: "Graphics Type",
   SCREENING_TIME_TYPE: "Screening Time Type",
   DAY_TYPE: "Day Type",
   AUDITORIUM_TYPE: "Auditorium Type",
-  
+
   // Target Types
   TARGET_TYPE_PRODUCT: "Product",
   TARGET_TYPE_ADDITIONAL_SERVICE: "Additional Service",
   TARGET_TYPE_TICKET: "Ticket",
-  
+
   // Status Tags
   ACTIVE: "Active",
   INACTIVE: "Inactive",
   PENDING: "Pending",
   EXPIRED: "Expired",
   NO_TIME_LIMIT: "No Time Limit",
-  
+
   // Table Columns
   PRICE_ITEMS_COUNT: "Price Items Count",
   ITEMS: "items",
@@ -66,7 +66,7 @@ const priceManagement = {
   UPDATED_AT: "Updated At",
   ACTIONS: "Actions",
   OF: "of",
-  
+
   // Placeholders
   ENTER_PRICE_LIST_NAME: "Enter price list name",
   ENTER_PRIORITY: "Enter priority",
@@ -78,22 +78,22 @@ const priceManagement = {
   SELECT_GRAPHICS_TYPE: "Select graphics type",
   SELECT_ADDITIONAL_SERVICE: "Select additional service",
   SIMULATE_AT: "Simulate At",
-  
+
   // Seat Types
   SEAT_TYPE_NORMAL: "Normal",
   SEAT_TYPE_STANDARD: "Standard",
   SEAT_TYPE_COUPLE: "Couple",
-  
+
   // Graphics Types
   GRAPHICS_TYPE_2D: "2D",
   GRAPHICS_TYPE_3D: "3D",
   GRAPHICS_TYPE_IMAX: "IMAX",
-  
+
   // Day Types
   DAY_TYPE_WEEKDAY: "Weekday",
-  DAY_TYPE_WEEKEND: "Weekend", 
+  DAY_TYPE_WEEKEND: "Weekend",
   DAY_TYPE_HOLIDAY: "Holiday",
-  
+
   // Screening Time Types
   SELECT_SCREENING_TIME_TYPE: "Select screening time type",
   SCREENING_TIME_MORNING: "Morning",
@@ -102,14 +102,14 @@ const priceManagement = {
   SCREENING_TIME_NIGHT: "Night",
   SCREENING_TIME_EARLY: "Early",
   SCREENING_TIME_REGULAR: "Regular",
-  
+
   // Auditorium Types
   AUDITORIUM_TYPE_STANDARD: "Standard",
   AUDITORIUM_TYPE_VIP: "VIP",
   AUDITORIUM_TYPE_IMAX: "IMAX",
   AUDITORIUM_TYPE_4DX: "4DX",
   AUDITORIUM_TYPE_GOLDCLASS: "Gold Class",
-  
+
   // Validation Messages
   PRICE_LIST_NAME_REQUIRED: "Price list name is required!",
   PRICE_LIST_NAME_MIN_LENGTH: "Price list name must be at least 3 characters!",
@@ -118,18 +118,26 @@ const priceManagement = {
   PRICE_REQUIRED: "Price is required!",
   PRICE_MUST_GREATER_THAN_ZERO: "Price must be greater than 0!",
   TARGET_TYPE_REQUIRED: "Target type is required!",
-  
+
   // Tooltips
-  PRIORITY_TOOLTIP: "Higher number means higher priority when calculating prices",
+  PRIORITY_TOOLTIP:
+    "Higher number means higher priority when calculating prices",
   VALIDITY_PERIOD_TOOLTIP: "Leave empty for unlimited validity period",
-  SEAT_TYPE_TOOLTIP: "Select the type of seat this price applies to. Leave empty to apply to all seat types",
-  GRAPHICS_TYPE_TOOLTIP: "Select the movie format this price applies to (2D, 3D, etc.). Leave empty to apply to all formats", 
-  SCREENING_TIME_TYPE_TOOLTIP: "Select the time period this price applies to (morning, afternoon, evening). Leave empty to apply to all times",
-  DAY_TYPE_TOOLTIP: "Select the day type this price applies to (weekday, weekend, holiday). Leave empty to apply to all days",
-  AUDITORIUM_TYPE_TOOLTIP: "Select the auditorium type this price applies to (standard, IMAX, etc.). Leave empty to apply to all auditorium types",
-  MIN_QUANTITY_TOOLTIP: "Minimum quantity required to apply this price. Leave empty for no minimum requirement",
-  SIMULATE_AT_TOOLTIP: "Set the date and time for price simulation to test how pricing rules work at different times",
-  
+  SEAT_TYPE_TOOLTIP:
+    "Select the type of seat this price applies to. Leave empty to apply to all seat types",
+  GRAPHICS_TYPE_TOOLTIP:
+    "Select the movie format this price applies to (2D, 3D, etc.). Leave empty to apply to all formats",
+  SCREENING_TIME_TYPE_TOOLTIP:
+    "Select the time period this price applies to (morning, afternoon, evening). Leave empty to apply to all times",
+  DAY_TYPE_TOOLTIP:
+    "Select the day type this price applies to (weekday, weekend, holiday). Leave empty to apply to all days",
+  AUDITORIUM_TYPE_TOOLTIP:
+    "Select the auditorium type this price applies to (standard, IMAX, etc.). Leave empty to apply to all auditorium types",
+  MIN_QUANTITY_TOOLTIP:
+    "Minimum quantity required to apply this price. Leave empty for no minimum requirement",
+  SIMULATE_AT_TOOLTIP:
+    "Set the date and time for price simulation to test how pricing rules work at different times",
+
   // Messages
   UPDATE_STATUS_SUCCESS: "Status updated successfully!",
   REFRESH_SUCCESS: "Refreshed successfully!",
@@ -137,12 +145,13 @@ const priceManagement = {
   UPDATE_ERROR: "Update failed!",
   DELETE_ERROR: "Delete failed!",
   UPDATE_STATUS_ERROR: "Status update failed!",
-  
+
   // Confirm Messages
   DELETE_CONFIRM_TITLE: "Are you sure you want to delete?",
   DELETE_CONFIRM_CONTENT: "This action cannot be undone!",
   CLONE_CONFIRM_TITLE: "Clone Price List",
-  CLONE_CONFIRM_CONTENT: "Are you sure you want to clone '{{name}}'? This will create a copy of the price list and all its price items.",
+  CLONE_CONFIRM_CONTENT:
+    "Are you sure you want to clone '{{name}}'? This will create a copy of the price list and all its price items.",
   CLONE_SUCCESS: "Price list cloned successfully!",
   CLONE_ERROR: "Failed to clone price list!",
   CAN_ACTIVATE_LATER: "can be activated later",
@@ -157,7 +166,6 @@ const priceManagement = {
   TICKET_PRICES: "Ticket Prices",
   PRODUCT_PRICES: "Product Prices",
   ADDITIONAL_SERVICE_PRICES: "Additional Service Prices",
-  
 };
 
 export default priceManagement;

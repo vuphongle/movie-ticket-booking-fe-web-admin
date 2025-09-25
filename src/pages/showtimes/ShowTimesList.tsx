@@ -29,7 +29,7 @@ interface SearchValues {
 const ShowTimesList = () => {
   const [form] = Form.useForm();
   const [_dateSelected, setDateSelected] = useState<Dayjs>(
-    dayjs(new Date().toISOString())
+    dayjs(new Date().toISOString()),
   );
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -97,7 +97,7 @@ const ShowTimesList = () => {
             initialValues={{
               showDate: dayjs(
                 formatDate(new Date().toISOString()),
-                "DD/MM/YYYY"
+                "DD/MM/YYYY",
               ),
             }}
           >

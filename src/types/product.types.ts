@@ -130,7 +130,7 @@ export interface ProductFilters {
 // Sort types
 export interface ProductSort {
   field: keyof Product;
-  order: 'asc' | 'desc';
+  order: "asc" | "desc";
 }
 
 // Table column types

@@ -1,33 +1,34 @@
-import type { Coupon } from '@/types';
+import type { Coupon } from "@/types";
+import { CouponStatus } from "@/types";
 
 /**
  * Utility functions for Coupon operations
  */
 
-export type ActiveStatus = 'ACTIVE' | 'HIDDEN' | 'EXPIRED';
+export type ActiveStatus = "ACTIVE" | "INACTIVE" | "EXPIRED";
 
 /**
  * Calculate active status based on coupon properties
  */
 export const getActiveStatus = (coupon: Coupon): ActiveStatus => {
   const now = new Date();
-  
-  if (!coupon.status) {
-    return 'HIDDEN';
+
+  if (coupon.status === CouponStatus.INACTIVE) {
+    return "INACTIVE";
   }
-  
-  const startDate = new Date(coupon.startDate);
-  const endDate = new Date(coupon.endDate);
+
+  const startDate = new Date(coupon.startAt);
+  const endDate = new Date(coupon.endAt);
 
   if (now > endDate) {
-    return 'EXPIRED';
+    return "EXPIRED";
   }
 
   if (now < startDate) {
-    return 'HIDDEN'; // Not yet started
+    return "INACTIVE"; // Not yet started
   }
-  
-  return 'ACTIVE';
+
+  return "ACTIVE";
 };
 
 /**
@@ -35,18 +36,18 @@ export const getActiveStatus = (coupon: Coupon): ActiveStatus => {
  */
 export const formatTimeWindow = (coupon: Coupon): string => {
   try {
-    const startDate = new Date(coupon.startDate);
-    const endDate = new Date(coupon.endDate);
-    
-    const formatter = new Intl.DateTimeFormat('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
+    const startDate = new Date(coupon.startAt);
+    const endDate = new Date(coupon.endAt);
+
+    const formatter = new Intl.DateTimeFormat("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
     });
-    
+
     return `${formatter.format(startDate)} - ${formatter.format(endDate)}`;
   } catch {
-    return 'N/A';
+    return "N/A";
   }
 };
 
@@ -55,14 +56,14 @@ export const formatTimeWindow = (coupon: Coupon): string => {
  */
 export const getActiveStatusText = (status: ActiveStatus): string => {
   switch (status) {
-    case 'ACTIVE':
-      return 'Kích hoạt';
-    case 'HIDDEN':
-      return 'Ẩn';
-    case 'EXPIRED':
-      return 'Hết hạn';
+    case "ACTIVE":
+      return "Kích hoạt";
+    case "INACTIVE":
+      return "Không hoạt động";
+    case "EXPIRED":
+      return "Hết hạn";
     default:
-      return 'Không xác định';
+      return "Không xác định";
   }
 };
 
@@ -71,13 +72,13 @@ export const getActiveStatusText = (status: ActiveStatus): string => {
  */
 export const getActiveStatusColor = (status: ActiveStatus): string => {
   switch (status) {
-    case 'ACTIVE':
-      return 'success';
-    case 'HIDDEN':
-      return 'default';
-    case 'EXPIRED':
-      return 'error';
+    case "ACTIVE":
+      return "success";
+    case "INACTIVE":
+      return "default";
+    case "EXPIRED":
+      return "error";
     default:
-      return 'default';
+      return "default";
   }
 };

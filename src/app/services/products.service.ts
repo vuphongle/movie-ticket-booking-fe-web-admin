@@ -43,28 +43,34 @@ export const productApi = createApi({
     }),
 
     // Get products with pagination
-    getProductsPaginated: builder.query<ProductsPaginatedResponse, ProductsQueryParams>({
+    getProductsPaginated: builder.query<
+      ProductsPaginatedResponse,
+      ProductsQueryParams
+    >({
       query: ({ status, page = 0, size = 10, name }) => {
         const params = new URLSearchParams();
         if (status !== undefined) params.append("status", status.toString());
         if (page !== undefined) params.append("page", page.toString());
         if (size !== undefined) params.append("size", size.toString());
         if (name) params.append("name", name);
-        
+
         return `products?${params.toString()}`;
       },
       providesTags: ["Product"],
     }),
 
     // Search products with filters
-    searchProducts: builder.query<ProductsPaginatedResponse, ProductSearchParams>({
+    searchProducts: builder.query<
+      ProductsPaginatedResponse,
+      ProductSearchParams
+    >({
       query: ({ name, status, page = 0, size = 10 }) => {
         const params = new URLSearchParams();
         if (name) params.append("name", name);
         if (status !== undefined) params.append("status", status.toString());
         params.append("page", page.toString());
         params.append("size", size.toString());
-        
+
         return `products/search?${params.toString()}`;
       },
       providesTags: ["Product"],
@@ -103,7 +109,10 @@ export const productApi = createApi({
     }),
 
     // Update product
-    updateProduct: builder.mutation<Product, { productId: string | number } & UpdateProductRequest>({
+    updateProduct: builder.mutation<
+      Product,
+      { productId: string | number } & UpdateProductRequest
+    >({
       query: ({ productId, ...updatedProduct }) => ({
         url: `products/${productId}`,
         method: "PUT",
@@ -137,18 +146,24 @@ export const productApi = createApi({
     }),
 
     // Check if SKU exists
-    checkSkuExists: builder.query<{ exists: boolean }, { sku: string; excludeId?: string | number }>({
+    checkSkuExists: builder.query<
+      { exists: boolean },
+      { sku: string; excludeId?: string | number }
+    >({
       query: ({ sku, excludeId }) => {
         const params = new URLSearchParams();
         params.append("sku", sku);
         if (excludeId) params.append("excludeId", excludeId.toString());
-        
+
         return `products/check-sku?${params.toString()}`;
       },
     }),
 
     // Check if product can be deactivated
-    checkCanDeactivateProduct: builder.query<{ canDeactivate: boolean; message?: string }, number>({
+    checkCanDeactivateProduct: builder.query<
+      { canDeactivate: boolean; message?: string },
+      number
+    >({
       query: (productId) => `products/${productId}/can-deactivate`,
     }),
 

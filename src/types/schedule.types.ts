@@ -1,4 +1,4 @@
-import type { Movie } from './movie.types';
+import type { Movie } from "./movie.types";
 
 // Schedule types
 export interface Schedule {

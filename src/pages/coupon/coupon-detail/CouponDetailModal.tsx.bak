@@ -63,26 +63,20 @@ const CouponDetailModal = ({
   // Get additional services for dropdown
   const { data: additionalServices = [], isLoading: isLoadingServices } =
     useGetAdditionalServicesQuery();
+  // Temporary simplification: remove complex date validation since new CouponDetail schema is simpler
   useEffect(() => {
     if (detail) {
-      // Convert date strings to dayjs objects for DatePicker
-      const formValues = {
-        ...detail,
-        startDate: detail.startDate ? dayjs(detail.startDate) : undefined,
-        endDate: detail.endDate ? dayjs(detail.endDate) : undefined,
-      };
-      form.setFieldsValue(formValues);
+      // Fill with simplified detail fields
+      form.setFieldsValue({
+        targetType: detail.targetType || "ORDER",
+        giftServiceId: detail.giftServiceId,
+      });
     } else {
-      // Set default values for new detail, using parent coupon dates
-      const defaultValues = {
-        enabled: true,
-        linePriority: 1,
-        selectionStrategy: "HIGHEST_PRICE_FIRST",
-        startDate: coupon?.startDate ? dayjs(coupon.startDate) : undefined,
-        endDate: coupon?.endDate ? dayjs(coupon.endDate) : undefined,
-      };
+      // Set defaults for new detail
       form.resetFields();
-      form.setFieldsValue(defaultValues);
+      form.setFieldsValue({
+        targetType: "ORDER",
+      });
     }
   }, [detail, form, coupon]);
 
@@ -510,8 +504,8 @@ const CouponDetailModal = ({
                     }
 
                     // Validate against parent coupon start date
-                    if (coupon?.startDate) {
-                      const parentStartDate = dayjs(coupon.startDate);
+                    if (coupon?.startAt) {
+                      const parentStartDate = dayjs(coupon.startAt);
                       if (value.isBefore(parentStartDate, "day")) {
                         return Promise.reject(
                           new Error(
@@ -522,8 +516,8 @@ const CouponDetailModal = ({
                     }
 
                     // Validate against parent coupon end date
-                    if (coupon?.endDate) {
-                      const parentEndDate = dayjs(coupon.endDate);
+                    if (coupon?.endAt) {
+                      const parentEndDate = dayjs(coupon.endAt);
                       if (value.isAfter(parentEndDate, "day")) {
                         return Promise.reject(
                           new Error(

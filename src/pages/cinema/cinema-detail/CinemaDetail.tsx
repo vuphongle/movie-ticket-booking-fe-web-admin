@@ -35,7 +35,7 @@ const CinemaDetail = () => {
 
   const { cinemaId } = useParams<{ cinemaId: string }>();
   const { data: cinema, isLoading: isFetchingCinema } = useGetCinemaByIdQuery(
-    cinemaId!
+    cinemaId!,
   );
 
   const [updateCinema, { isLoading: isLoadingUpdateCinema }] =
