@@ -24,6 +24,17 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
 
   const columns: ColumnsType<Coupon> = [
     {
+      title: "Kind",
+      dataIndex: "kind",
+      key: "kind",
+      width: 100,
+      render: (kind: string) => (
+        <Tag color={kind === 'VOUCHER' ? 'blue' : 'green'}>
+          {kind}
+        </Tag>
+      ),
+    },
+    {
       title: t("COUPON_TABLE_CODE"),
       dataIndex: "code",
       key: "code",
@@ -31,7 +42,9 @@ const CouponTable = ({ data, loading = false }: CouponTableProps) => {
       ...getColumnSearchProps("code"),
       render: (text: string, record: Coupon) => (
         <RouterLink to={`/admin/coupons/${record.id}/detail`}>
-          <span style={{ fontWeight: "bold", color: "#1890ff" }}>{text}</span>
+          <span style={{ fontWeight: "bold", color: "#1890ff" }}>
+            {text || <Tag color="default">NO CODE</Tag>}
+          </span>
         </RouterLink>
       ),
     },

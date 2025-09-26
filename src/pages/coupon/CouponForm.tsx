@@ -31,7 +31,7 @@ import {
   useGetCouponByIdQuery,
 } from "@/app/services/coupons.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
-import type { UpsertCouponRequest, Coupon } from "@/types";
+import type { UpsertCouponRequest, Coupon, CouponKind } from "@/types";
 
 const { Title } = Typography;
 
@@ -84,6 +84,7 @@ const CouponForm = () => {
   useEffect(() => {
     if (isEdit && couponData) {
       form.setFieldsValue({
+        kind: couponData.kind || 'VOUCHER', // Default to VOUCHER for backward compatibility
         code: couponData.code,
         name: couponData.name,
         description: couponData.description,
@@ -94,6 +95,7 @@ const CouponForm = () => {
     } else if (!isEdit) {
       // Set default values for new coupon
       form.setFieldsValue({
+        kind: 'VOUCHER', // Default to VOUCHER
         status: false, // Always false for new coupons
       });
     }
@@ -103,6 +105,7 @@ const CouponForm = () => {
     setLoading(true);
     try {
       const payload: UpsertCouponRequest = {
+        kind: values.kind,
         code: values.code,
         name: values.name,
         description: values.description,
@@ -265,34 +268,67 @@ const CouponForm = () => {
               {/* Left Column */}
               <Col xs={24} lg={12}>
                 <Form.Item
-                  label={t("COUPON_CODE_LABEL")}
-                  name="code"
-                  rules={[
-                    { required: true, message: t("COUPON_CODE_REQUIRED") },
-                    {
-                      min: 3,
-                      message: t("COUPON_CODE_MIN_LENGTH"),
-                    },
-                    {
-                      max: 50,
-                      message: t("COUPON_CODE_MAX_LENGTH"),
-                    },
-                    {
-                      pattern: /^[a-zA-Z0-9_-]+$/,
-                      message: t("COUPON_CODE_PATTERN"),
-                    },
-                  ]}
-                  extra={t("COUPON_CODE_EXTRA")}
+                  label="Coupon Kind"
+                  name="kind"
+                  rules={[{ required: true, message: "Please select coupon kind" }]}
+                  extra="VOUCHER requires a code, DISPLAY is for marketing purposes"
                 >
-                  <Input
-                    placeholder={t("COUPON_CODE_PLACEHOLDER")}
-                    style={{ textTransform: "uppercase" }}
-                    onChange={(e) => {
-                      const value = e.target.value.toUpperCase();
-                      const cleanValue = value.replace(/[^A-Z0-9_-]/g, "");
-                      form.setFieldValue("code", cleanValue);
-                    }}
-                  />
+                  <Select placeholder="Select coupon kind">
+                    <Select.Option value="VOUCHER">VOUCHER</Select.Option>
+                    <Select.Option value="DISPLAY">DISPLAY</Select.Option>
+                  </Select>
+                </Form.Item>
+
+                <Form.Item
+                  noStyle
+                  shouldUpdate={(prevValues, currentValues) => 
+                    prevValues.kind !== currentValues.kind
+                  }
+                >
+                  {({ getFieldValue }) => {
+                    const kind = getFieldValue('kind');
+                    const isVoucher = kind === 'VOUCHER';
+                    
+                    return (
+                      <Form.Item
+                        label={t("COUPON_CODE_LABEL")}
+                        name="code"
+                        rules={isVoucher ? [
+                          { required: true, message: t("COUPON_CODE_REQUIRED") },
+                          {
+                            min: 3,
+                            message: t("COUPON_CODE_MIN_LENGTH"),
+                          },
+                          {
+                            max: 50,
+                            message: t("COUPON_CODE_MAX_LENGTH"),
+                          },
+                          {
+                            pattern: /^[a-zA-Z0-9_-]+$/,
+                            message: t("COUPON_CODE_PATTERN"),
+                          },
+                        ] : []}
+                        extra={isVoucher 
+                          ? t("COUPON_CODE_EXTRA") 
+                          : "Code is optional for DISPLAY coupons"
+                        }
+                      >
+                        <Input
+                          placeholder={isVoucher 
+                            ? t("COUPON_CODE_PLACEHOLDER") 
+                            : "Optional code for DISPLAY coupon"
+                          }
+                          style={{ textTransform: "uppercase" }}
+                          disabled={!isVoucher}
+                          onChange={(e) => {
+                            const value = e.target.value.toUpperCase();
+                            const cleanValue = value.replace(/[^A-Z0-9_-]/g, "");
+                            form.setFieldValue("code", cleanValue);
+                          }}
+                        />
+                      </Form.Item>
+                    );
+                  }}
                 </Form.Item>
 
                 <Form.Item

@@ -1,4 +1,9 @@
 // Enums matching backend
+export enum CouponKind {
+  DISPLAY = 'DISPLAY',
+  VOUCHER = 'VOUCHER'
+}
+
 export enum TargetType {
   ORDER = 'ORDER',
   SEAT_TYPE = 'SEAT_TYPE',
@@ -17,10 +22,11 @@ export enum SelectionStrategy {
   FIFO = 'FIFO'
 }
 
-// Coupon main interface (simplified)
+// Coupon main interface (updated)
 export interface Coupon {
   id: number;
-  code: string;
+  kind: CouponKind;
+  code?: string; // Optional for DISPLAY type coupons
   name: string;
   description?: string;
   status: boolean;
@@ -30,7 +36,27 @@ export interface Coupon {
   updatedAt?: string;
 }
 
-// Coupon Detail
+// Coupon Detail Terms (new interface)
+export interface CouponDetailTerms {
+  id: number;
+  
+  // Benefit values (moved from CouponDetail)
+  percent?: number;
+  amount?: number;
+  giftServiceId?: number;
+  giftQuantity?: number;
+  
+  // Limit conditions (moved from CouponDetail)
+  limitQuantityApplied?: number;
+  
+  // Usage tracking (moved from CouponDetail)
+  detailUsedCount: number;
+  
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Coupon Detail (updated)
 export interface CouponDetail {
   id: number;
   couponId: number;
@@ -39,21 +65,16 @@ export interface CouponDetail {
   targetRefId?: number;
   benefitType: BenefitType;
   
-  // Benefit values
-  percent?: number;
-  amount?: number;
-  giftServiceId?: number;
-  giftQuantity?: number;
+  // Terms relationship (1-1)
+  terms?: CouponDetailTerms;
   
-  // Conditions/Limits
+  // Conditions/Limits (remaining in CouponDetail)
   lineMaxDiscount?: number;
   minQuantity?: number;
-  limitQuantityApplied?: number;
   minOrderTotal?: number;
   
-  // Usage limits
+  // Usage limits (remaining in CouponDetail)
   detailUsageLimit?: number;
-  detailUsedCount: number;
   
   // Priority & Selection
   linePriority: number;
@@ -74,9 +95,21 @@ export interface CouponFilter {
   hasEnabledDetails?: boolean;
 }
 
-// Request DTOs
+// Request DTOs (updated)
+export interface TermsData {
+  // Benefit values (moved from main request)
+  percent?: number;
+  amount?: number;
+  giftServiceId?: number;
+  giftQuantity?: number;
+  
+  // Limit conditions (moved from main request)
+  limitQuantityApplied?: number;
+}
+
 export interface UpsertCouponRequest {
-  code: string;
+  kind: CouponKind;
+  code?: string; // Optional, required only for VOUCHER type
   name: string;
   description?: string;
   status: boolean;
@@ -90,19 +123,15 @@ export interface UpsertCouponDetailRequest {
   targetRefId?: number;
   benefitType: BenefitType;
   
-  // Benefit values
-  percent?: number;
-  amount?: number;
-  giftServiceId?: number;
-  giftQuantity?: number;
+  // Terms data (embedded)
+  terms?: TermsData;
   
-  // Conditions/Limits
+  // Conditions/Limits (remaining in CouponDetail)
   lineMaxDiscount?: number;
   minQuantity?: number;
-  limitQuantityApplied?: number;
   minOrderTotal?: number;
   
-  // Usage limits
+  // Usage limits (remaining in CouponDetail)
   detailUsageLimit?: number;
   
   // Priority & Selection
