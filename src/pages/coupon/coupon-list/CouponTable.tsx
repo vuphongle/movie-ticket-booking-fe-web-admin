@@ -3,18 +3,13 @@ import type { ColumnsType } from "antd/es/table";
 import type { MenuProps } from "antd";
 import {
   DeleteOutlined,
-  EyeOutlined,
   SettingOutlined,
-  CopyOutlined,
   EditOutlined,
-  PoweroffOutlined,
 } from "@ant-design/icons";
-import { Link as RouterLink } from "react-router-dom";
 import useSearchTable from "@/hooks/useSearchTable";
 import { formatDate } from "@/utils/functionUtils";
 import {
   useDeleteCouponMutation,
-  useDuplicateCouponMutation,
   useUpdateCouponMutation,
 } from "@/app/services/coupons.service";
 import { message } from "antd";
@@ -36,8 +31,6 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
   const { getColumnSearchProps } = useSearchTable();
 
   const [deleteCoupon, { isLoading: isDeleting }] = useDeleteCouponMutation();
-  const [duplicateCoupon, { isLoading: isDuplicating }] =
-    useDuplicateCouponMutation();
   const [updateCoupon, { isLoading: isUpdating }] = useUpdateCouponMutation();
 
   const handleDelete = async (coupon: Coupon) => {
@@ -56,15 +49,6 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
         }
       },
     });
-  };
-
-  const handleDuplicate = async (coupon: Coupon) => {
-    try {
-      await duplicateCoupon(coupon.id).unwrap();
-      message.success("Coupon duplicated successfully");
-    } catch {
-      message.error("Failed to duplicate coupon");
-    }
   };
 
   const handleToggleStatus = async (coupon: Coupon) => {
@@ -98,31 +82,10 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
 
   const getActionMenuItems = (record: Coupon): MenuProps["items"] => [
     {
-      key: "view",
-      icon: <EyeOutlined />,
-      label: (
-        <RouterLink to={`/admin/coupons/${record.id}/detail`}>
-          View Details
-        </RouterLink>
-      ),
-    },
-    {
       key: "edit",
       icon: <EditOutlined />,
       label: "Edit",
       onClick: () => onEdit?.(record),
-    },
-    {
-      key: "toggleStatus",
-      icon: <PoweroffOutlined />,
-      label: record.status ? "Deactivate" : "Activate",
-      onClick: () => handleToggleStatus(record),
-    },
-    {
-      key: "duplicate",
-      icon: <CopyOutlined />,
-      label: "Duplicate",
-      onClick: () => handleDuplicate(record),
     },
     {
       type: "divider",
@@ -251,7 +214,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
       columns={columns}
       dataSource={data}
       rowKey="id"
-      loading={loading || isDeleting || isDuplicating || isUpdating}
+      loading={loading || isDeleting || isUpdating}
       scroll={{ x: 900 }}
       size="small"
       pagination={{
