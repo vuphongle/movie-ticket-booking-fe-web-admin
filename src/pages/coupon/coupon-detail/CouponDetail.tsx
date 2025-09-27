@@ -1,155 +1,263 @@
-import { DeleteOutlined, LeftOutlined, SaveOutlined } from "@ant-design/icons";
+import { LeftOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {
   Button,
-  Col,
-  Flex,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
   Space,
   Spin,
-  Switch,
   theme,
-  DatePicker,
+  Tabs,
+  Card,
+  Row,
+  Col,
+  Tag,
+  Typography,
+  Descriptions,
+  Modal,
+  message,
 } from "antd";
-import { useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useTranslation } from "react-i18next";
-import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
-import dayjs from "dayjs";
+import { Link as RouterLink, useParams, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
-  useDeleteCouponMutation,
   useGetCouponByIdQuery,
-  useUpdateCouponMutation,
+  useDeleteCouponMutation,
+  useGetCouponDetailsQuery,
 } from "@/app/services/coupons.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
-import CouponDetailList from "./CouponDetailList";
+import CouponModal from "../coupon-list/CouponModal";
+import CouponDetailsTab from "./CouponDetailsTab";
+import { formatDate } from "@/utils/functionUtils";
+import { CouponKind } from "@/types";
+
+const { Title, Text } = Typography;
 
 const CouponDetail = () => {
-  const { t, i18n } = useTranslation();
+  const { couponId } = useParams<{ couponId: string }>();
+  const navigate = useNavigate();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
 
-  const { couponId } = useParams<{ couponId: string }>();
-  const { data: coupon, isLoading: isFetchingCoupon } = useGetCouponByIdQuery(
-    parseInt(couponId!)
-  );
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
-  const [updateCoupon, { isLoading: isLoadingUpdateCoupon }] =
-    useUpdateCouponMutation();
-  const [deleteCoupon, { isLoading: isLoadingDeleteCoupon }] =
-    useDeleteCouponMutation();
+  const {
+    data: coupon,
+    isLoading: isFetchingCoupon,
+    refetch: refetchCoupon,
+  } = useGetCouponByIdQuery(Number(couponId));
 
-  // Force re-render when language changes
-  useEffect(() => {
-    if (coupon && !isFetchingCoupon) {
-      try {
-        form.setFieldsValue({
-          code: coupon.code || "",
-          name: coupon.name || "",
-          description: coupon.description || "",
-          status: Boolean(coupon.status),
-          startDate: coupon.startDate ? dayjs(coupon.startDate) : null,
-          endDate: coupon.endDate ? dayjs(coupon.endDate) : null,
-        });
-      } catch {
-        // Handle date parsing errors gracefully
-        form.setFieldsValue({
-          code: coupon.code || "",
-          name: coupon.name || "",
-          description: coupon.description || "",
-          status: Boolean(coupon.status),
-          startDate: null,
-          endDate: null,
-        });
-      }
+  const {
+    data: couponDetails = [],
+    isLoading: isFetchingDetails,
+    refetch: refetchDetails,
+  } = useGetCouponDetailsQuery(Number(couponId));
+
+  const [deleteCoupon, { isLoading: isDeleting }] = useDeleteCouponMutation();
+
+  if (!couponId || isNaN(Number(couponId))) {
+    return <div>Invalid coupon ID</div>;
+  }
+
+  const handleEdit = () => {
+    setEditModalOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!coupon) return;
+
+    Modal.confirm({
+      title: "Delete Coupon",
+      content: `Are you sure you want to delete coupon "${coupon.name}"? This action cannot be undone and will also delete all associated details and codes.`,
+      okText: "Delete",
+      cancelText: "Cancel",
+      okType: "danger",
+      onOk: async () => {
+        try {
+          await deleteCoupon(coupon.id).unwrap();
+          message.success("Coupon deleted successfully");
+          navigate("/admin/coupons");
+        } catch {
+          message.error("Failed to delete coupon");
+        }
+      },
+    });
+  };
+
+  const handleModalSuccess = () => {
+    refetchCoupon();
+    setEditModalOpen(false);
+  };
+
+  const getStatusTag = (
+    status: boolean,
+    startDate: string,
+    endDate: string
+  ) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (!status) {
+      return <Tag color="red">Inactive</Tag>;
     }
-  }, [coupon, isFetchingCoupon, form]);
+
+    if (now < start) {
+      return <Tag color="orange">Scheduled</Tag>;
+    }
+
+    if (now > end) {
+      return <Tag color="gray">Expired</Tag>;
+    }
+
+    return <Tag color="green">Active</Tag>;
+  };
+
+  const getKindTag = (kind: CouponKind) => {
+    return kind === CouponKind.VOUCHER ? (
+      <Tag color="green">Voucher</Tag>
+    ) : (
+      <Tag color="blue">Display</Tag>
+    );
+  };
 
   const breadcrumb = [
-    { label: t("COUPON_LIST_TITLE"), href: "/admin/coupons" },
+    { label: "Coupon Management", href: "/admin/coupons" },
     {
-      label: coupon?.name || t("COUPON_DETAIL_TITLE"),
-      href: `/admin/coupons/${coupon?.id}/detail`,
+      label: coupon?.name || "Coupon Detail",
+      href: `/admin/coupons/${couponId}/detail`,
     },
   ];
 
   if (isFetchingCoupon) {
-    return (
-      <Spin
-        size="large"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      />
-    );
+    return <Spin size="large" fullscreen />;
   }
 
-  const handleUpdate = (values: any) => {
-    const formattedValues = {
-      ...values,
-      startDate: values.startDate
-        ? values.startDate.format("YYYY-MM-DD")
-        : null,
-      endDate: values.endDate ? values.endDate.format("YYYY-MM-DD") : null,
-    };
+  if (!coupon) {
+    return <div>Coupon not found</div>;
+  }
 
-    updateCoupon({
-      id: parseInt(couponId!),
-      ...formattedValues,
-    })
-      .unwrap()
-      .then(() => {
-        message.success(t("COUPON_UPDATE_SUCCESS"));
-      })
-      .catch((error) => {
-        message.error(error.data?.message || t("COUPON_UPDATE_ERROR"));
-      });
-  };
-
-  const handleDelete = () => {
-    Modal.confirm({
-      title: t("COUPON_DELETE_CONFIRM_TITLE"),
-      content: t("COUPON_DELETE_CONFIRM_CONTENT"),
-      okText: t("COUPON_DELETE_BTN"),
-      okType: "danger",
-      cancelText: t("COUPON_CANCEL_BTN"),
-      onOk: () => {
-        deleteCoupon(parseInt(couponId!))
-          .unwrap()
-          .then((_data) => {
-            message.success(t("COUPON_DELETE_SUCCESS"));
-            setTimeout(() => {
-              navigate("/admin/coupons");
-            }, 1500);
-          })
-          .catch((error) => {
-            message.error(error.data?.message || t("COUPON_DELETE_ERROR"));
-          });
-      },
-      footer: (_, { OkBtn, CancelBtn }) => (
-        <>
-          <CancelBtn />
-          <OkBtn />
-        </>
+  const tabItems = [
+    {
+      key: "details",
+      label: `Coupon Details (${couponDetails.length})`,
+      children: (
+        <CouponDetailsTab
+          couponId={Number(couponId)}
+          coupon={coupon}
+          details={couponDetails}
+          loading={isFetchingDetails}
+          onRefresh={refetchDetails}
+        />
       ),
-    });
-  };
+    },
+  ];
 
   return (
     <>
       <Helmet>
-        <title>{coupon?.name || t("COUPON_DETAIL_TITLE")}</title>
+        <title>{coupon.name} | Coupon Management | Admin</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
+
+      <Card style={{ marginBottom: 16 }}>
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Space align="center">
+              <RouterLink to="/admin/coupons">
+                <Button type="default" icon={<LeftOutlined />}>
+                  Back to List
+                </Button>
+              </RouterLink>
+              <div
+                style={{
+                  flexDirection: "row",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                }}
+              >
+                <Title level={3} style={{ margin: 0 }}>
+                  {coupon.name}
+                </Title>
+                <Space>
+                  {getKindTag(coupon.kind)}
+                  {getStatusTag(
+                    coupon.status,
+                    coupon.startDate,
+                    coupon.endDate
+                  )}
+                  {coupon.code && (
+                    <Tag color="purple" style={{ fontFamily: "monospace" }}>
+                      {coupon.code}
+                    </Tag>
+                  )}
+                </Space>
+              </div>
+            </Space>
+          </Col>
+          <Col>
+            <Space>
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={handleEdit}
+              >
+                Edit Coupon
+              </Button>
+              <Button
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={handleDelete}
+                loading={isDeleting}
+              >
+                Delete
+              </Button>
+            </Space>
+          </Col>
+        </Row>
+      </Card>
+
+      {/* Coupon Info Section */}
+      <Card style={{ marginBottom: 16 }}>
+        <Descriptions column={2} bordered size="small">
+          <Descriptions.Item label="ID">#{coupon.id}</Descriptions.Item>
+          <Descriptions.Item label="Kind">
+            {getKindTag(coupon.kind)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Name">{coupon.name}</Descriptions.Item>
+          <Descriptions.Item label="Code">
+            {coupon.code ? (
+              <Tag color="purple" style={{ fontFamily: "monospace" }}>
+                {coupon.code}
+              </Tag>
+            ) : (
+              <Text type="secondary">—</Text>
+            )}
+          </Descriptions.Item>
+          <Descriptions.Item label="Status" span={2}>
+            {getStatusTag(coupon.status, coupon.startDate, coupon.endDate)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Start Date">
+            {formatDate(coupon.startDate)}
+          </Descriptions.Item>
+          <Descriptions.Item label="End Date">
+            {formatDate(coupon.endDate)}
+          </Descriptions.Item>
+          <Descriptions.Item label="Created At">
+            {coupon.createdAt ? formatDate(coupon.createdAt) : "—"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Updated At">
+            {coupon.updatedAt ? formatDate(coupon.updatedAt) : "—"}
+          </Descriptions.Item>
+          {coupon.description && (
+            <Descriptions.Item label="Description" span={2}>
+              {coupon.description}
+            </Descriptions.Item>
+          )}
+        </Descriptions>
+      </Card>
+
+      {/* Tabs Section */}
       <div
         style={{
           padding: 24,
@@ -158,157 +266,15 @@ const CouponDetail = () => {
           borderRadius: borderRadiusLG,
         }}
       >
-        <Flex
-          justify="space-between"
-          align="center"
-          style={{ marginBottom: "1rem" }}
-        >
-          <Space>
-            <RouterLink to="/admin/coupons">
-              <Button type="default" icon={<LeftOutlined />}>
-                Quay lại
-              </Button>
-            </RouterLink>
-            <Button
-              style={{ backgroundColor: "rgb(60, 141, 188)" }}
-              type="primary"
-              icon={<SaveOutlined />}
-              onClick={() => form.submit()}
-              loading={isLoadingUpdateCoupon}
-            >
-              {t("COUPON_UPDATE_BTN")}
-            </Button>
-          </Space>
-          <Button
-            type="primary"
-            danger
-            icon={<DeleteOutlined />}
-            onClick={handleDelete}
-            loading={isLoadingDeleteCoupon}
-          >
-            {t("COUPON_DELETE_BTN")}
-          </Button>
-        </Flex>
-
-        <Form
-          key={i18n.language}
-          form={form}
-          layout="vertical"
-          autoComplete="off"
-          onFinish={handleUpdate}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                label={t("COUPON_CODE_LABEL")}
-                name="code"
-                rules={[
-                  {
-                    required: true,
-                    message: t("COUPON_CODE_REQUIRED"),
-                  },
-                ]}
-              >
-                <Input placeholder={t("COUPON_CODE_PLACEHOLDER")} />
-              </Form.Item>
-
-              <Form.Item
-                label={t("COUPON_NAME_LABEL")}
-                name="name"
-                rules={[
-                  {
-                    required: true,
-                    message: t("COUPON_NAME_REQUIRED"),
-                  },
-                ]}
-              >
-                <Input placeholder={t("COUPON_NAME_PLACEHOLDER")} />
-              </Form.Item>
-
-              <Form.Item
-                label={t("COUPON_DESCRIPTION_LABEL")}
-                name="description"
-              >
-                <Input.TextArea
-                  rows={4}
-                  placeholder={t("COUPON_DESCRIPTION_PLACEHOLDER")}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                label={t("COUPON_STATUS_LABEL")}
-                name="status"
-                valuePropName="checked"
-              >
-                <Switch
-                  checkedChildren={t("COUPON_STATUS_ACTIVE")}
-                  unCheckedChildren={t("COUPON_STATUS_INACTIVE")}
-                />
-              </Form.Item>
-
-              <Row gutter={16}>
-                <Col span={12}>
-                  <Form.Item
-                    label={t("COUPON_START_DATE_LABEL")}
-                    name="startDate"
-                    rules={[
-                      {
-                        required: true,
-                        message: t("COUPON_START_DATE_REQUIRED"),
-                      },
-                    ]}
-                  >
-                    <DatePicker
-                      style={{ width: "100%" }}
-                      format="DD/MM/YYYY"
-                      placeholder={t("SELECT_DATE")}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item
-                    label={t("COUPON_END_DATE_LABEL")}
-                    name="endDate"
-                    dependencies={["startDate"]}
-                    rules={[
-                      {
-                        required: true,
-                        message: t("COUPON_END_DATE_REQUIRED"),
-                      },
-                      ({ getFieldValue }) => ({
-                        validator: async (_rule, value) => {
-                          if (
-                            value &&
-                            getFieldValue("startDate") &&
-                            dayjs(value).isBefore(
-                              dayjs(getFieldValue("startDate"))
-                            )
-                          ) {
-                            return Promise.reject(
-                              new Error(t("COUPON_END_DATE_AFTER_START"))
-                            );
-                          }
-                          return Promise.resolve();
-                        },
-                      }),
-                    ]}
-                  >
-                    <DatePicker
-                      style={{ width: "100%" }}
-                      format="DD/MM/YYYY"
-                      placeholder={t("SELECT_DATE")}
-                    />
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Form>
+        <Tabs items={tabItems} />
       </div>
 
-      <CouponDetailList couponId={parseInt(couponId!)} coupon={coupon} />
+      <CouponModal
+        open={editModalOpen}
+        coupon={coupon}
+        onCancel={() => setEditModalOpen(false)}
+        onSuccess={handleModalSuccess}
+      />
     </>
   );
 };

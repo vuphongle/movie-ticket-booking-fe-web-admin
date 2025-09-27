@@ -6,11 +6,7 @@ import type {
     CouponDetail,
     UpsertCouponRequest, 
     UpsertCouponDetailRequest,
-    CouponPreviewRequest,
-    CouponPreviewResponse,
-    CouponApplyRequest,
-    CouponApplyResponse,
-    RedemptionConfirmRequest
+    CouponListParams
 } from "@/types";
 
 // Define a service using a base URL and expected endpoints
@@ -32,8 +28,11 @@ export const couponApi = createApi({
     }),
     endpoints: (builder) => ({
         // Header endpoints
-        getCoupons: builder.query<Coupon[], void>({
-            query: () => 'coupons',
+        getCoupons: builder.query<Coupon[], CouponListParams | void>({
+            query: (params) => ({
+                url: 'coupons',
+                params: params || {},
+            }),
             providesTags: (result) =>
                 result
                     ? [
@@ -139,46 +138,6 @@ export const couponApi = createApi({
                 { type: 'Coupon', id: 'LIST' },
             ],
         }),
-
-        // Preview & Apply endpoints
-        previewCoupon: builder.mutation<CouponPreviewResponse, { couponId: number } & CouponPreviewRequest>({
-            query: ({ couponId, ...previewData }) => ({
-                url: `coupons/${couponId}/preview`,
-                method: 'POST',
-                body: previewData,
-            }),
-        }),
-        applyCoupon: builder.mutation<CouponApplyResponse, CouponApplyRequest>({
-            query: (applyData) => ({
-                url: 'coupons/apply',
-                method: 'POST',
-                body: applyData,
-            }),
-        }),
-
-        // Redemption endpoints
-        confirmRedemption: builder.mutation<void, RedemptionConfirmRequest>({
-            query: (confirmData) => ({
-                url: 'redemptions/confirm',
-                method: 'POST',
-                body: confirmData,
-            }),
-            invalidatesTags: [
-                { type: 'CouponDetail', id: 'LIST' },
-                { type: 'Coupon', id: 'LIST' },
-            ],
-        }),
-        revertRedemption: builder.mutation<void, RedemptionConfirmRequest>({
-            query: (revertData) => ({
-                url: 'redemptions/revert',
-                method: 'POST',
-                body: revertData,
-            }),
-            invalidatesTags: [
-                { type: 'CouponDetail', id: 'LIST' },
-                { type: 'Coupon', id: 'LIST' },
-            ],
-        }),
     }),
 });
 
@@ -197,12 +156,4 @@ export const {
     useUpdateCouponDetailMutation,
     useDeleteCouponDetailMutation,
     useDuplicateCouponDetailMutation,
-
-    // Preview & Apply hooks
-    usePreviewCouponMutation,
-    useApplyCouponMutation,
-
-    // Redemption hooks
-    useConfirmRedemptionMutation,
-    useRevertRedemptionMutation,
 } = couponApi;
