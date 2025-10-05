@@ -9,7 +9,7 @@ interface UseImageLoadingResult {
 
 export const useImageLoading = (
   initialUrl?: string | null,
-  apiDomain?: string
+  apiDomain?: string,
 ): UseImageLoadingResult => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,14 +19,14 @@ export const useImageLoading = (
     if (initialUrl) {
       setIsLoading(true);
       setHasError(false);
-      
+
       // Construct full URL if needed
-      const fullUrl = initialUrl.startsWith("http") 
-        ? initialUrl 
-        : apiDomain 
-          ? `${apiDomain}${initialUrl}` 
+      const fullUrl = initialUrl.startsWith("http")
+        ? initialUrl
+        : apiDomain
+          ? `${apiDomain}${initialUrl}`
           : initialUrl;
-      
+
       // Test if image can be loaded
       const img = new Image();
       img.onload = () => {
@@ -51,13 +51,13 @@ export const useImageLoading = (
     if (url) {
       setIsLoading(true);
       setHasError(false);
-      
-      const fullUrl = url.startsWith("http") 
-        ? url 
-        : apiDomain 
-          ? `${apiDomain}${url}` 
+
+      const fullUrl = url.startsWith("http")
+        ? url
+        : apiDomain
+          ? `${apiDomain}${url}`
           : url;
-      
+
       const img = new Image();
       img.onload = () => {
         setImageUrl(fullUrl);

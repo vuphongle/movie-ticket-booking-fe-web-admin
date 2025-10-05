@@ -113,7 +113,7 @@ const PriceItemModal = ({
       console.error("❌ [DEBUG] Form submission error:", error);
       message.error(
         error.data?.message ||
-          (isEditing ? t("UPDATE_ERROR") : t("CREATE_ERROR"))
+          (isEditing ? t("UPDATE_ERROR") : t("CREATE_ERROR")),
       );
     }
   };
@@ -320,7 +320,7 @@ const PriceItemModal = ({
                           onChange={() => {
                             setTimeout(
                               () => form.validateFields(["targetId"]),
-                              100
+                              100,
                             );
                           }}
                         >
@@ -357,7 +357,7 @@ const PriceItemModal = ({
                           onChange={() => {
                             setTimeout(
                               () => form.validateFields(["targetId"]),
-                              100
+                              100,
                             );
                           }}
                         >

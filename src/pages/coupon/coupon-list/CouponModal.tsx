@@ -11,6 +11,7 @@ import {
   Alert,
 } from "antd";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   useCreateCouponMutation,
   useUpdateCouponMutation,
@@ -41,26 +42,22 @@ const CouponModal = ({
 }: CouponModalProps) => {
   const [form] = Form.useForm<CouponFormValues>();
   const isEditing = !!coupon;
+  const { t } = useTranslation();
 
   const [createCoupon, { isLoading: isCreating }] = useCreateCouponMutation();
   const [updateCoupon, { isLoading: isUpdating }] = useUpdateCouponMutation();
 
   const isLoading = isCreating || isUpdating;
-
-  // Watch for kind field changes to show/hide code field
   const kindValue = Form.useWatch("kind", form);
 
   useEffect(() => {
     if (open) {
       if (isEditing && coupon) {
-        // Populate form with existing coupon data
         form.setFieldsValue({
           ...coupon,
           dateRange: [dayjs(coupon.startDate), dayjs(coupon.endDate)],
         });
       } else {
-        // Reset form for creating new coupon
-        // New coupons must be created with status = false (hidden) per backend requirement
         form.resetFields();
         form.setFieldsValue({
           kind: CouponKind.DISPLAY,
@@ -69,6 +66,21 @@ const CouponModal = ({
       }
     }
   }, [open, isEditing, coupon, form]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const fieldsWithErrors = form
+      .getFieldsError()
+      .filter(({ errors }) => errors.length > 0);
+
+    if (fieldsWithErrors.length > 0) {
+      const fieldNames = fieldsWithErrors.map(({ name }) => name);
+      form.validateFields(fieldNames).catch(() => {
+        // Ignore validation errors; this re-triggers localization updates
+      });
+    }
+  }, [t, form, open]);
 
   const handleSubmit = async (values: CouponFormValues) => {
     try {
@@ -88,15 +100,15 @@ const CouponModal = ({
 
       if (isEditing && coupon) {
         await updateCoupon({ id: coupon.id, ...payload }).unwrap();
-        message.success("Coupon updated successfully");
+        message.success(t("COUPON_UPDATE_SUCCESS"));
       } else {
         await createCoupon(payload).unwrap();
         message.success({
           content: (
             <div>
-              <div>Coupon created successfully!</div>
+              <div>{t("COUPON_CREATE_SUCCESS")}</div>
               <small style={{ color: "#666" }}>
-                The coupon is inactive. Add coupon details to activate it.
+                {t("COUPON_CREATE_INACTIVE_HINT")}
               </small>
             </div>
           ),
@@ -110,7 +122,7 @@ const CouponModal = ({
       // Try to show backend error message if available
       const errorMessage =
         error?.data?.message ||
-        (isEditing ? "Failed to update coupon" : "Failed to create coupon");
+        (isEditing ? t("COUPON_UPDATE_ERROR") : t("COUPON_CREATE_ERROR"));
       message.error(errorMessage);
     }
   };
@@ -122,12 +134,16 @@ const CouponModal = ({
 
   return (
     <Modal
-      title={isEditing ? "Edit Coupon" : "Create New Coupon"}
+      title={
+        isEditing
+          ? t("COUPON_UPDATE_MODAL_TITLE")
+          : t("COUPON_CREATE_MODAL_TITLE")
+      }
       open={open}
       onCancel={handleCancel}
       onOk={() => form.submit()}
-      okText={isEditing ? "Update" : "Create"}
-      cancelText="Cancel"
+      okText={isEditing ? t("COUPON_UPDATE_BTN") : t("COUPON_CREATE_BTN")}
+      cancelText={t("COUPON_CANCEL_BTN")}
       confirmLoading={isLoading}
       width={600}
     >
@@ -135,8 +151,8 @@ const CouponModal = ({
         {/* Warning for new coupons */}
         {!isEditing && (
           <Alert
-            message="New Coupon Requirement"
-            description="New coupons must be created with 'Inactive' status. After adding coupon details, you can activate the coupon."
+            message={t("COUPON_CREATE_ALERT_TITLE")}
+            description={t("COUPON_CREATE_ALERT_DESCRIPTION")}
             type="info"
             showIcon
             style={{ marginBottom: 16 }}
@@ -147,30 +163,34 @@ const CouponModal = ({
           <Col span={12}>
             <Form.Item
               name="kind"
-              label="Coupon Kind"
-              rules={[{ required: true, message: "Please select coupon kind" }]}
+              label={t("COUPON_KIND_LABEL")}
+              rules={[{ required: true, message: t("COUPON_KIND_REQUIRED") }]}
             >
-              <Select placeholder="Select coupon kind">
+              <Select placeholder={t("COUPON_KIND_PLACEHOLDER")}>
                 <Select.Option value={CouponKind.DISPLAY}>
-                  Display
+                  {t("COUPON_KIND_DISPLAY")}
                 </Select.Option>
                 <Select.Option value={CouponKind.VOUCHER}>
-                  Voucher
+                  {t("COUPON_KIND_VOUCHER")}
                 </Select.Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="status" label="Status" valuePropName="checked">
+            <Form.Item
+              name="status"
+              label={t("COUPON_STATUS_LABEL")}
+              valuePropName="checked"
+            >
               <Switch
-                checkedChildren="Active"
-                unCheckedChildren="Inactive"
+                checkedChildren={t("COUPON_STATUS_ACTIVE")}
+                unCheckedChildren={t("COUPON_STATUS_INACTIVE")}
                 disabled={!isEditing}
               />
             </Form.Item>
             {!isEditing && (
               <small style={{ color: "#666", fontSize: "12px" }}>
-                New coupons must be created as inactive
+                {t("COUPON_NEW_INACTIVE_NOTE")}
               </small>
             )}
           </Col>
@@ -178,37 +198,36 @@ const CouponModal = ({
 
         <Form.Item
           name="name"
-          label="Coupon Name"
+          label={t("COUPON_NAME_LABEL")}
           rules={[
-            { required: true, message: "Please enter coupon name" },
-            { max: 100, message: "Name cannot exceed 100 characters" },
+            { required: true, message: t("COUPON_NAME_REQUIRED") },
+            { max: 100, message: t("COUPON_NAME_MAX_LENGTH") },
           ]}
         >
-          <Input placeholder="Enter coupon name" />
+          <Input placeholder={t("COUPON_NAME_PLACEHOLDER")} />
         </Form.Item>
 
         {/* Code field - only for VOUCHER type */}
         {kindValue === CouponKind.VOUCHER && (
           <Form.Item
             name="code"
-            label="Coupon Code"
+            label={t("COUPON_CODE_LABEL")}
             rules={[
               {
                 required: true,
-                message: "Please enter coupon code for voucher type",
+                message: t("COUPON_CODE_REQUIRED"),
               },
-              { min: 3, message: "Code must be at least 3 characters" },
-              { max: 20, message: "Code cannot exceed 20 characters" },
+              { min: 3, message: t("COUPON_CODE_MIN_LENGTH") },
+              { max: 20, message: t("COUPON_CODE_MAX_LENGTH") },
               {
                 pattern: /^[A-Za-z0-9_-]+$/,
-                message:
-                  "Code can only contain letters, numbers, underscore and dash",
+                message: t("COUPON_CODE_PATTERN"),
               },
             ]}
-            extra="Code will be automatically converted to uppercase"
+            extra={t("COUPON_CODE_AUTO_UPPERCASE")}
           >
             <Input
-              placeholder="Enter coupon code (e.g. SAVE20)"
+              placeholder={t("COUPON_CODE_PLACEHOLDER_EXAMPLE")}
               style={{ textTransform: "uppercase" }}
             />
           </Form.Item>
@@ -216,14 +235,12 @@ const CouponModal = ({
 
         <Form.Item
           name="description"
-          label="Description"
-          rules={[
-            { max: 500, message: "Description cannot exceed 500 characters" },
-          ]}
+          label={t("COUPON_DESCRIPTION_LABEL")}
+          rules={[{ max: 500, message: t("COUPON_DESCRIPTION_MAX_LENGTH") }]}
         >
           <TextArea
             rows={3}
-            placeholder="Enter coupon description (optional)"
+            placeholder={t("COUPON_DESCRIPTION_PLACEHOLDER")}
             showCount
             maxLength={500}
           />
@@ -231,13 +248,13 @@ const CouponModal = ({
 
         <Form.Item
           name="dateRange"
-          label="Valid Date Range"
-          rules={[{ required: true, message: "Please select date range" }]}
+          label={t("COUPON_DATE_RANGE_LABEL")}
+          rules={[{ required: true, message: t("COUPON_DATE_RANGE_REQUIRED") }]}
         >
           <RangePicker
             style={{ width: "100%" }}
             format="YYYY-MM-DD"
-            placeholder={["Start Date", "End Date"]}
+            placeholder={[t("SELECT_START_DATE"), t("SELECT_END_DATE")]}
             disabledDate={(current) =>
               current && current < dayjs().startOf("day")
             }

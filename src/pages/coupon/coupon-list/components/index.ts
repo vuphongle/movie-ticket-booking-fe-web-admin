@@ -1,7 +1,7 @@
-export { 
+export {
   CouponNameDisplay,
   CouponCodeDisplay,
   CouponKindDisplay,
   CouponStatusDisplay,
-  CouponDateRangeDisplay
+  CouponDateRangeDisplay,
 } from "./CouponDisplayComponents";

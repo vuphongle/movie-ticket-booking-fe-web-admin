@@ -7,7 +7,7 @@ import Highlighter from "react-highlight-words";
 interface UseSearchTableReturn {
   getColumnSearchProps: (
     dataIndex: string,
-    subDataIndex?: string[] | null
+    subDataIndex?: string[] | null,
   ) => Partial<TableColumnType<any>>;
 }
 
@@ -19,7 +19,7 @@ const useSearchTable = (): UseSearchTableReturn => {
   const handleSearch = (
     selectedKeys: React.Key[],
     confirm: () => void,
-    dataIndex: string
+    dataIndex: string,
   ) => {
     confirm();
     setSearchText(selectedKeys[0] as string);
@@ -29,12 +29,12 @@ const useSearchTable = (): UseSearchTableReturn => {
   const getNestedValue = (path: string[], object: any): any =>
     path.reduce(
       (obj, key) => (obj && obj[key] !== undefined ? obj[key] : null),
-      object
+      object,
     );
 
   const getColumnSearchProps = (
     dataIndex: string,
-    subDataIndex: string[] | null = null
+    subDataIndex: string[] | null = null,
   ): Partial<TableColumnType<any>> => ({
     filterDropdown: ({
       setSelectedKeys,

@@ -61,15 +61,17 @@ const additionalService = {
   COMBO_PRODUCTS: "Combo sản phẩm",
   SINGLE_PRODUCT: "Sản phẩm lẻ",
   SELECT_PRODUCT_FIRST: "Chọn sản phẩm trước",
-    // Combo warning
-  UNSAVED_COMBO_ITEMS_WARNING: "⚠️ Có {{count}} mục chưa lưu. Vui lòng lưu tất cả trước khi cập nhật.",
+  // Combo warning
+  UNSAVED_COMBO_ITEMS_WARNING:
+    "⚠️ Có {{count}} mục chưa lưu. Vui lòng lưu tất cả trước khi cập nhật.",
   PRODUCT: "Sản phẩm",
   PRODUCT_NOT_SELECTED: "Vui lòng chọn sản phẩm",
   SERVICE_TYPE_REQUIRED: "Vui lòng chọn loại dịch vụ",
   DEFAULT_QUANTITY: "Số lượng mặc định",
   DEFAULT_QUANTITY_REQUIRED: "Nhập số lượng mặc định",
   ENTER_DEFAULT_QUANTITY: "Nhập số lượng mặc định",
-  WARNING_DUPLICATE_PRODUCT: "⚠️ Sản phẩm trùng lặp sẽ được gộp số lượng khi lưu",
+  WARNING_DUPLICATE_PRODUCT:
+    "⚠️ Sản phẩm trùng lặp sẽ được gộp số lượng khi lưu",
 };
 
 export default additionalService;

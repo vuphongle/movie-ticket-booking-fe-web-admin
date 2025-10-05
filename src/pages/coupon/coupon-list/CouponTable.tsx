@@ -20,6 +20,7 @@ import {
   CouponKindDisplay,
   CouponDateRangeDisplay,
 } from "./components";
+import { useTranslation } from "react-i18next";
 
 interface CouponTableProps {
   data: Coupon[];
@@ -29,23 +30,24 @@ interface CouponTableProps {
 
 const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
   const { getColumnSearchProps } = useSearchTable();
+  const { t } = useTranslation();
 
   const [deleteCoupon, { isLoading: isDeleting }] = useDeleteCouponMutation();
   const [updateCoupon, { isLoading: isUpdating }] = useUpdateCouponMutation();
 
   const handleDelete = async (coupon: Coupon) => {
     Modal.confirm({
-      title: "Delete Coupon",
-      content: `Are you sure you want to delete coupon "${coupon.name}"? This action cannot be undone.`,
-      okText: "Delete",
-      cancelText: "Cancel",
+      title: t("COUPON_DELETE_CONFIRM_TITLE"),
+      content: t("COUPON_DELETE_CONFIRM_WITH_NAME", { name: coupon.name }),
+      okText: t("DELETE"),
+      cancelText: t("CANCEL"),
       okType: "danger",
       onOk: async () => {
         try {
           await deleteCoupon(coupon.id).unwrap();
-          message.success("Coupon deleted successfully");
+          message.success(t("COUPON_DELETE_SUCCESS"));
         } catch {
-          message.error("Failed to delete coupon");
+          message.error(t("COUPON_DELETE_ERROR"));
         }
       },
     });
@@ -53,13 +55,18 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
 
   const handleToggleStatus = async (coupon: Coupon) => {
     const newStatus = !coupon.status;
-    const statusText = newStatus ? "activate" : "deactivate";
+    const confirmTitle = newStatus
+      ? t("COUPON_ACTIVATE_CONFIRM_TITLE")
+      : t("COUPON_DEACTIVATE_CONFIRM_TITLE");
+    const confirmContent = newStatus
+      ? t("COUPON_ACTIVATE_CONFIRM_MESSAGE", { name: coupon.name })
+      : t("COUPON_DEACTIVATE_CONFIRM_MESSAGE", { name: coupon.name });
 
     Modal.confirm({
-      title: `${newStatus ? "Activate" : "Deactivate"} Coupon`,
-      content: `Are you sure you want to ${statusText} coupon "${coupon.name}"?`,
-      okText: newStatus ? "Activate" : "Deactivate",
-      cancelText: "Cancel",
+      title: confirmTitle,
+      content: confirmContent,
+      okText: newStatus ? t("COUPON_ACTIVATE") : t("COUPON_DEACTIVATE"),
+      cancelText: t("CANCEL"),
       onOk: async () => {
         try {
           await updateCoupon({
@@ -72,9 +79,17 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
             startDate: coupon.startDate,
             endDate: coupon.endDate,
           }).unwrap();
-          message.success(`Coupon ${statusText}d successfully`);
+          message.success(
+            newStatus
+              ? t("COUPON_ACTIVATE_SUCCESS")
+              : t("COUPON_DEACTIVATE_SUCCESS"),
+          );
         } catch {
-          message.error(`Failed to ${statusText} coupon`);
+          message.error(
+            newStatus
+              ? t("COUPON_ACTIVATE_ERROR")
+              : t("COUPON_DEACTIVATE_ERROR"),
+          );
         }
       },
     });
@@ -84,7 +99,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
     {
       key: "edit",
       icon: <EditOutlined />,
-      label: "Edit",
+      label: t("EDIT"),
       onClick: () => onEdit?.(record),
     },
     {
@@ -93,7 +108,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
     {
       key: "delete",
       icon: <DeleteOutlined />,
-      label: "Delete",
+      label: t("DELETE"),
       danger: true,
       onClick: () => handleDelete(record),
     },
@@ -101,15 +116,15 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
 
   const columns: ColumnsType<Coupon> = [
     {
-      title: "Status",
+      title: t("COUPON_TABLE_STATUS"),
       dataIndex: "status",
       key: "status",
       width: 90,
       filters: [
-        { text: "Active", value: "active" },
-        { text: "Inactive", value: "inactive" },
-        { text: "Scheduled", value: "scheduled" },
-        { text: "Expired", value: "expired" },
+        { text: t("COUPON_STATUS_ACTIVE"), value: "active" },
+        { text: t("COUPON_STATUS_INACTIVE"), value: "inactive" },
+        { text: t("COUPON_STATUS_UPCOMING"), value: "scheduled" },
+        { text: t("COUPON_STATUS_EXPIRED"), value: "expired" },
       ],
       onFilter: (value, record) => {
         const now = new Date();
@@ -135,14 +150,14 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
           checked={status}
           loading={isUpdating}
           onChange={() => handleToggleStatus(record)}
-          checkedChildren="ON"
-          unCheckedChildren="OFF"
+          checkedChildren={t("ACTIVE")}
+          unCheckedChildren={t("INACTIVE")}
           style={{ opacity: status ? 1 : 0.6 }}
         />
       ),
     },
     {
-      title: "Name",
+      title: t("COUPON_TABLE_NAME"),
       dataIndex: "name",
       key: "name",
       width: "25%",
@@ -150,7 +165,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
       render: (_, record: Coupon) => <CouponNameDisplay coupon={record} />,
     },
     {
-      title: "Code",
+      title: t("COUPON_TABLE_CODE"),
       dataIndex: "code",
       key: "code",
       width: 90,
@@ -158,20 +173,20 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
       render: (code: string | null) => <CouponCodeDisplay code={code} />,
     },
     {
-      title: "Kind",
+      title: t("COUPON_TABLE_KIND"),
       dataIndex: "kind",
       key: "kind",
       width: 80,
       filters: [
-        { text: "Display", value: "DISPLAY" },
-        { text: "Voucher", value: "VOUCHER" },
+        { text: t("COUPON_KIND_DISPLAY"), value: "DISPLAY" },
+        { text: t("COUPON_KIND_VOUCHER"), value: "VOUCHER" },
       ],
       onFilter: (value, record) => record.kind === value,
       render: (kind) => <CouponKindDisplay kind={kind} />,
     },
 
     {
-      title: "Date Range",
+      title: t("COUPON_TABLE_VALIDITY_PERIOD"),
       key: "dateRange",
       width: 110,
       render: (_, record: Coupon) => (
@@ -182,7 +197,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
       ),
     },
     {
-      title: "Created",
+      title: t("CREATED_AT"),
       dataIndex: "createdAt",
       key: "createdAt",
       width: 90,
@@ -192,7 +207,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
       render: (text: string) => (text ? formatDate(text) : "—"),
     },
     {
-      title: "Actions",
+      title: t("COUPON_TABLE_ACTIONS"),
       key: "actions",
       width: 60,
       align: "center",
@@ -222,7 +237,7 @@ const CouponTable = ({ data, loading, onEdit }: CouponTableProps) => {
         showSizeChanger: true,
         showQuickJumper: true,
         showTotal: (total, range) =>
-          `${range[0]}-${range[1]} of ${total} items`,
+          `${range[0]}-${range[1]} ${t("PAGINATION_TOTAL")} ${total} ${t("PAGINATION_ITEMS")}`,
         responsive: true,
         size: "small",
       }}

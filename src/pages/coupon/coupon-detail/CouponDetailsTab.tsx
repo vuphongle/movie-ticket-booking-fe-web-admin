@@ -18,6 +18,7 @@ import { formatDate } from "@/utils/functionUtils";
 import type { Coupon, CouponDetail } from "@/types";
 import CouponDetailModalSimplified from "./CouponDetailModalSimplified";
 import { TargetTypeDisplay, BenefitTypeDisplay } from "./components";
+import { useTranslation } from "react-i18next";
 
 interface CouponDetailsTabProps {
   couponId: number;
@@ -34,6 +35,7 @@ const CouponDetailsTab = ({
   loading,
   onRefresh,
 }: CouponDetailsTabProps) => {
+  const { t } = useTranslation();
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [editingDetail, setEditingDetail] = useState<CouponDetail | null>(null);
 
@@ -56,19 +58,18 @@ const CouponDetailsTab = ({
 
   const handleDeleteDetail = async (detail: CouponDetail) => {
     Modal.confirm({
-      title: "Delete Coupon Detail",
-      content:
-        "Are you sure you want to delete this coupon detail? This action cannot be undone.",
-      okText: "Delete",
-      cancelText: "Cancel",
+      title: t("COUPON_DETAIL_DELETE_CONFIRM_TITLE"),
+      content: t("COUPON_DETAIL_DELETE_CONFIRM_CONTENT"),
+      okText: t("COUPON_DETAIL_DELETE_OK"),
+      cancelText: t("COUPON_DETAIL_DELETE_CANCEL"),
       okType: "danger",
       onOk: async () => {
         try {
           await deleteDetail(detail.id).unwrap();
-          message.success("Coupon detail deleted successfully");
+          message.success(t("COUPON_DETAIL_DELETE_SUCCESS"));
           onRefresh();
         } catch {
-          message.error("Failed to delete coupon detail");
+          message.error(t("DELETE_DETAIL_ERROR"));
         }
       },
     });
@@ -77,10 +78,10 @@ const CouponDetailsTab = ({
   const handleDuplicateDetail = async (detail: CouponDetail) => {
     try {
       await duplicateDetail(detail.id).unwrap();
-      message.success("Coupon detail duplicated successfully");
+      message.success(t("COUPON_DETAIL_DUPLICATE_SUCCESS"));
       onRefresh();
     } catch {
-      message.error("Failed to duplicate coupon detail");
+      message.error(t("COUPON_DETAIL_DUPLICATE_ERROR"));
     }
   };
 
@@ -105,13 +106,13 @@ const CouponDetailsTab = ({
           : undefined,
       }).unwrap();
       message.success(
-        `Coupon detail ${newEnabled ? "enabled" : "disabled"} successfully`
+        newEnabled
+          ? t("COUPON_DETAIL_ENABLE_SUCCESS")
+          : t("COUPON_DETAIL_DISABLE_SUCCESS"),
       );
       onRefresh();
     } catch {
-      message.error(
-        `Failed to ${newEnabled ? "enable" : "disable"} coupon detail`
-      );
+      message.error(t("STATUS_UPDATE_ERROR"));
     }
   };
 
@@ -130,13 +131,13 @@ const CouponDetailsTab = ({
     {
       key: "edit",
       icon: <EditOutlined />,
-      label: "Edit",
+      label: t("COUPON_DETAIL_EDIT_MENU"),
       onClick: () => handleEditDetail(record),
     },
     {
       key: "duplicate",
       icon: <CopyOutlined />,
-      label: "Duplicate",
+      label: t("COUPON_DETAIL_DUPLICATE_MENU"),
       onClick: () => handleDuplicateDetail(record),
     },
     {
@@ -145,7 +146,7 @@ const CouponDetailsTab = ({
     {
       key: "delete",
       icon: <DeleteOutlined />,
-      label: "Delete",
+      label: t("COUPON_DETAIL_DELETE_MENU"),
       danger: true,
       onClick: () => handleDeleteDetail(record),
     },
@@ -153,13 +154,13 @@ const CouponDetailsTab = ({
 
   const columns: ColumnsType<CouponDetail> = [
     {
-      title: "Status",
+      title: t("COUPON_DETAIL_STATUS_COLUMN"),
       dataIndex: "enabled",
       key: "enabled",
       width: 80,
       filters: [
-        { text: "Enabled", value: true },
-        { text: "Disabled", value: false },
+        { text: t("ACTIVE"), value: true },
+        { text: t("INACTIVE"), value: false },
       ],
       onFilter: (value, record) => record.enabled === value,
       render: (enabled: boolean, record: CouponDetail) => (
@@ -173,7 +174,7 @@ const CouponDetailsTab = ({
       ),
     },
     {
-      title: "Target",
+      title: t("COUPON_DETAIL_TARGET_COLUMN"),
       key: "target",
       width: 120,
       render: (_, record) => (
@@ -184,7 +185,7 @@ const CouponDetailsTab = ({
       ),
     },
     {
-      title: "Benefit",
+      title: t("COUPON_DETAIL_BENEFIT_COLUMN"),
       key: "benefit",
       width: 130,
       render: (_, record) => (
@@ -195,7 +196,7 @@ const CouponDetailsTab = ({
       ),
     },
     {
-      title: "Usage Count",
+      title: t("COUPON_DETAIL_USAGE_COLUMN"),
       key: "usageCount",
       width: 90,
       align: "center",
@@ -206,14 +207,14 @@ const CouponDetailsTab = ({
       ),
     },
     {
-      title: "Created",
+      title: t("CREATED_AT"),
       dataIndex: "createdAt",
       key: "createdAt",
       width: 100,
       render: (text: string) => (text ? formatDate(text) : "—"),
     },
     {
-      title: "Actions",
+      title: t("COUPON_DETAIL_ACTIONS_COLUMN"),
       key: "actions",
       width: 60,
       align: "center",
@@ -238,7 +239,7 @@ const CouponDetailsTab = ({
           icon={<PlusOutlined />}
           onClick={handleCreateDetail}
         >
-          Add Detail
+          {t("ADD_COUPON_DETAIL_BTN")}
         </Button>
       </Space>
 
@@ -254,7 +255,7 @@ const CouponDetailsTab = ({
           showSizeChanger: true,
           showQuickJumper: true,
           showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} items`,
+            `${range[0]}-${range[1]} ${t("PAGINATION_TOTAL")} ${total} ${t("PAGINATION_ITEMS")}`,
           responsive: true,
           size: "small",
         }}

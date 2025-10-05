@@ -106,7 +106,7 @@ const ProductDetail = () => {
     if (form.isFieldsTouched()) {
       const fieldsErrors = form.getFieldsError();
       const fieldsWithErrors = fieldsErrors.filter(
-        ({ errors }) => errors.length > 0
+        ({ errors }) => errors.length > 0,
       );
 
       if (fieldsWithErrors.length > 0) {
@@ -123,7 +123,7 @@ const ProductDetail = () => {
       setThumbnail(
         product?.thumbnail && product.thumbnail.startsWith("/api")
           ? `${API_DOMAIN}${product.thumbnail}`
-          : product?.thumbnail || null
+          : product?.thumbnail || null,
       );
     }
   }, [product, thumbnail]);

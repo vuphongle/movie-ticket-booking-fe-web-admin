@@ -27,6 +27,7 @@ import CouponModal from "../coupon-list/CouponModal";
 import CouponDetailsTab from "./CouponDetailsTab";
 import { formatDate } from "@/utils/functionUtils";
 import { CouponKind } from "@/types";
+import { useTranslation } from "react-i18next";
 
 const { Title, Text } = Typography;
 
@@ -36,6 +37,7 @@ const CouponDetail = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const { t } = useTranslation();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -54,7 +56,7 @@ const CouponDetail = () => {
   const [deleteCoupon, { isLoading: isDeleting }] = useDeleteCouponMutation();
 
   if (!couponId || isNaN(Number(couponId))) {
-    return <div>Invalid coupon ID</div>;
+    return <div>{t("COUPON_INVALID_ID")}</div>;
   }
 
   const handleEdit = () => {
@@ -65,18 +67,20 @@ const CouponDetail = () => {
     if (!coupon) return;
 
     Modal.confirm({
-      title: "Delete Coupon",
-      content: `Are you sure you want to delete coupon "${coupon.name}"? This action cannot be undone and will also delete all associated details and codes.`,
-      okText: "Delete",
-      cancelText: "Cancel",
+      title: t("COUPON_DELETE_CONFIRM_TITLE"),
+      content: t("COUPON_DELETE_WITH_DETAILS_CONFIRM_MESSAGE", {
+        name: coupon.name,
+      }),
+      okText: t("DELETE"),
+      cancelText: t("CANCEL"),
       okType: "danger",
       onOk: async () => {
         try {
           await deleteCoupon(coupon.id).unwrap();
-          message.success("Coupon deleted successfully");
+          message.success(t("COUPON_DELETE_SUCCESS"));
           navigate("/admin/coupons");
         } catch {
-          message.error("Failed to delete coupon");
+          message.error(t("COUPON_DELETE_ERROR"));
         }
       },
     });
@@ -90,39 +94,39 @@ const CouponDetail = () => {
   const getStatusTag = (
     status: boolean,
     startDate: string,
-    endDate: string
+    endDate: string,
   ) => {
     const now = new Date();
     const start = new Date(startDate);
     const end = new Date(endDate);
 
     if (!status) {
-      return <Tag color="red">Inactive</Tag>;
+      return <Tag color="red">{t("COUPON_STATUS_INACTIVE")}</Tag>;
     }
 
     if (now < start) {
-      return <Tag color="orange">Scheduled</Tag>;
+      return <Tag color="orange">{t("COUPON_STATUS_UPCOMING")}</Tag>;
     }
 
     if (now > end) {
-      return <Tag color="gray">Expired</Tag>;
+      return <Tag color="gray">{t("COUPON_STATUS_EXPIRED")}</Tag>;
     }
 
-    return <Tag color="green">Active</Tag>;
+    return <Tag color="green">{t("COUPON_STATUS_ACTIVE")}</Tag>;
   };
 
   const getKindTag = (kind: CouponKind) => {
     return kind === CouponKind.VOUCHER ? (
-      <Tag color="green">Voucher</Tag>
+      <Tag color="green">{t("COUPON_KIND_VOUCHER")}</Tag>
     ) : (
-      <Tag color="blue">Display</Tag>
+      <Tag color="blue">{t("COUPON_KIND_DISPLAY")}</Tag>
     );
   };
 
   const breadcrumb = [
-    { label: "Coupon Management", href: "/admin/coupons" },
+    { label: t("COUPON_LIST_BREADCRUMB"), href: "/admin/coupons" },
     {
-      label: coupon?.name || "Coupon Detail",
+      label: coupon?.name || t("COUPON_DETAIL_TITLE"),
       href: `/admin/coupons/${couponId}/detail`,
     },
   ];
@@ -132,13 +136,13 @@ const CouponDetail = () => {
   }
 
   if (!coupon) {
-    return <div>Coupon not found</div>;
+    return <div>{t("COUPON_NOT_FOUND")}</div>;
   }
 
   const tabItems = [
     {
       key: "details",
-      label: `Coupon Details (${couponDetails.length})`,
+      label: `${t("COUPON_DETAIL_LIST_TITLE")} (${couponDetails.length})`,
       children: (
         <CouponDetailsTab
           couponId={Number(couponId)}
@@ -154,7 +158,11 @@ const CouponDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{coupon.name} | Coupon Management | Admin</title>
+        <title>
+          {coupon.name
+            ? `${coupon.name} | ${t("COUPON_DETAIL_TITLE")}`
+            : t("COUPON_DETAIL_TITLE")}
+        </title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
 
@@ -164,7 +172,7 @@ const CouponDetail = () => {
             <Space align="center">
               <RouterLink to="/admin/coupons">
                 <Button type="default" icon={<LeftOutlined />}>
-                  Back to List
+                  {t("BACK_TO_LIST")}
                 </Button>
               </RouterLink>
               <div
@@ -183,7 +191,7 @@ const CouponDetail = () => {
                   {getStatusTag(
                     coupon.status,
                     coupon.startDate,
-                    coupon.endDate
+                    coupon.endDate,
                   )}
                   {coupon.code && (
                     <Tag color="purple" style={{ fontFamily: "monospace" }}>
@@ -201,7 +209,7 @@ const CouponDetail = () => {
                 icon={<EditOutlined />}
                 onClick={handleEdit}
               >
-                Edit Coupon
+                {t("EDIT_COUPON")}
               </Button>
               <Button
                 type="primary"
@@ -210,7 +218,7 @@ const CouponDetail = () => {
                 onClick={handleDelete}
                 loading={isDeleting}
               >
-                Delete
+                {t("DELETE")}
               </Button>
             </Space>
           </Col>
@@ -220,12 +228,14 @@ const CouponDetail = () => {
       {/* Coupon Info Section */}
       <Card style={{ marginBottom: 16 }}>
         <Descriptions column={2} bordered size="small">
-          <Descriptions.Item label="ID">#{coupon.id}</Descriptions.Item>
-          <Descriptions.Item label="Kind">
+          <Descriptions.Item label={t("ID")}>#{coupon.id}</Descriptions.Item>
+          <Descriptions.Item label={t("COUPON_KIND_LABEL")}>
             {getKindTag(coupon.kind)}
           </Descriptions.Item>
-          <Descriptions.Item label="Name">{coupon.name}</Descriptions.Item>
-          <Descriptions.Item label="Code">
+          <Descriptions.Item label={t("COUPON_NAME_LABEL")}>
+            {coupon.name}
+          </Descriptions.Item>
+          <Descriptions.Item label={t("COUPON_CODE_LABEL")}>
             {coupon.code ? (
               <Tag color="purple" style={{ fontFamily: "monospace" }}>
                 {coupon.code}
@@ -234,23 +244,23 @@ const CouponDetail = () => {
               <Text type="secondary">—</Text>
             )}
           </Descriptions.Item>
-          <Descriptions.Item label="Status" span={2}>
+          <Descriptions.Item label={t("COUPON_STATUS_LABEL")} span={2}>
             {getStatusTag(coupon.status, coupon.startDate, coupon.endDate)}
           </Descriptions.Item>
-          <Descriptions.Item label="Start Date">
+          <Descriptions.Item label={t("COUPON_START_DATE_LABEL")}>
             {formatDate(coupon.startDate)}
           </Descriptions.Item>
-          <Descriptions.Item label="End Date">
+          <Descriptions.Item label={t("COUPON_END_DATE_LABEL")}>
             {formatDate(coupon.endDate)}
           </Descriptions.Item>
-          <Descriptions.Item label="Created At">
+          <Descriptions.Item label={t("CREATED_AT")}>
             {coupon.createdAt ? formatDate(coupon.createdAt) : "—"}
           </Descriptions.Item>
-          <Descriptions.Item label="Updated At">
+          <Descriptions.Item label={t("UPDATED_AT")}>
             {coupon.updatedAt ? formatDate(coupon.updatedAt) : "—"}
           </Descriptions.Item>
           {coupon.description && (
-            <Descriptions.Item label="Description" span={2}>
+            <Descriptions.Item label={t("COUPON_DESCRIPTION_LABEL")} span={2}>
               {coupon.description}
             </Descriptions.Item>
           )}

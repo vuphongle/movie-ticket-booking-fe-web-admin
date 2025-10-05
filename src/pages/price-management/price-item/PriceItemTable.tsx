@@ -77,7 +77,7 @@ const PriceItemTable = ({
         return priceItem.additionalService.name;
       }
       const service = additionalServices.find(
-        (s) => Number(s.id) === priceItem.targetId
+        (s) => Number(s.id) === priceItem.targetId,
       );
       return service?.name ? service.name : `Service ID: ${priceItem.targetId}`;
     }
@@ -167,7 +167,7 @@ const PriceItemTable = ({
   // Render dimension value with "Any" for null and proper translations
   const renderDimension = (
     value: string | null | undefined,
-    type: "seat" | "graphics" | "time" | "day" | "room"
+    type: "seat" | "graphics" | "time" | "day" | "room",
   ) => {
     const getLabel = (type: string) => {
       switch (type) {

@@ -1,19 +1,19 @@
 // Enums matching backend
 export enum CouponKind {
-  DISPLAY = 'DISPLAY',
-  VOUCHER = 'VOUCHER'
+  DISPLAY = "DISPLAY",
+  VOUCHER = "VOUCHER",
 }
 
 export enum TargetType {
-  PRODUCT = 'PRODUCT',
-  ADDITIONAL_SERVICE = 'ADDITIONAL_SERVICE',
-  TICKET = 'TICKET'
+  PRODUCT = "PRODUCT",
+  ADDITIONAL_SERVICE = "ADDITIONAL_SERVICE",
+  TICKET = "TICKET",
 }
 
 export enum BenefitType {
-  DISCOUNT_PERCENT = 'DISCOUNT_PERCENT',
-  DISCOUNT_AMOUNT = 'DISCOUNT_AMOUNT',
-  FREE_PRODUCT = 'FREE_PRODUCT'
+  DISCOUNT_PERCENT = "DISCOUNT_PERCENT",
+  DISCOUNT_AMOUNT = "DISCOUNT_AMOUNT",
+  FREE_PRODUCT = "FREE_PRODUCT",
 }
 
 // Coupon main interface (updated)
@@ -33,19 +33,19 @@ export interface Coupon {
 // Coupon Detail Terms (new interface)
 export interface CouponDetailTerms {
   id: number;
-  
+
   // Benefit values (moved from CouponDetail)
   percent?: number;
   amount?: number;
   giftServiceId?: number;
   giftQuantity?: number;
-  
+
   // Limit conditions (moved from CouponDetail)
   limitQuantityApplied?: number;
-  
+
   // Usage tracking (moved from CouponDetail)
   detailUsedCount: number;
-  
+
   createdAt?: string;
   updatedAt?: string;
 }
@@ -58,10 +58,10 @@ export interface CouponDetail {
   targetType: TargetType;
   targetRefId?: number;
   benefitType: BenefitType;
-  
-  // Terms relationship (1-1) 
+
+  // Terms relationship (1-1)
   terms?: CouponDetailTerms;
-  
+
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -69,7 +69,7 @@ export interface CouponDetail {
 
 // Filter interface for UI
 export interface CouponFilter {
-  activeStatus?: 'ALL' | 'ACTIVE' | 'HIDDEN' | 'EXPIRED';
+  activeStatus?: "ALL" | "ACTIVE" | "HIDDEN" | "EXPIRED";
   hasEnabledDetails?: boolean;
 }
 
@@ -80,7 +80,7 @@ export interface TermsData {
   amount?: number;
   giftServiceId?: number;
   giftQuantity?: number;
-  
+
   // Limit conditions (moved from main request)
   limitQuantityApplied?: number;
 }
@@ -100,10 +100,10 @@ export interface UpsertCouponDetailRequest {
   targetType: TargetType;
   targetRefId?: number;
   benefitType: BenefitType;
-  
+
   // Terms data (embedded, matches backend TermsData inner class)
   terms?: TermsData;
-  
+
   notes?: string;
 }
 
@@ -130,8 +130,8 @@ export interface CouponDetailTableProps {
 // Filter & Search types (updated)
 export interface CouponFilter {
   keyword?: string; // Search by name/description/code
-  kind?: CouponKind | 'ALL';
-  status?: boolean | 'ALL';
+  kind?: CouponKind | "ALL";
+  status?: boolean | "ALL";
   dateRange?: [string, string]; // Apply date range filter
 }
 

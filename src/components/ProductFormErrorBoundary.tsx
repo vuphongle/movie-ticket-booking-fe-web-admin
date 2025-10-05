@@ -26,7 +26,7 @@ class ProductFormErrorBoundary extends Component<Props, State> {
     console.error(
       "ProductForm Error Boundary caught an error:",
       error,
-      errorInfo
+      errorInfo,
     );
   }
 

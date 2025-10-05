@@ -12,10 +12,12 @@ import { useGetProductsQuery } from "@/app/services/products.service";
 import { useGetAdditionalServicesQuery } from "@/app/services/additionalServices.service";
 import { TargetType, type Product, type AdditionalService } from "@/types";
 import { API_DOMAIN } from "@/data/constants";
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
 export const TargetSelector = () => {
+  const { t } = useTranslation();
   const targetType = Form.useWatch("targetType");
 
   const { data: products = [], isLoading: isLoadingProducts } =
@@ -28,12 +30,12 @@ export const TargetSelector = () => {
       return (
         <Form.Item
           name="targetRefId"
-          label="Target Reference ID"
-          extra="Optional for ticket targets"
+          label={t("COUPON_DETAIL_REF_ID_LABEL")}
+          extra={t("REF_ID_TOOLTIP_ORDER")}
         >
           <InputNumber
             style={{ width: "100%" }}
-            placeholder="Optional for tickets"
+            placeholder={t("COUPON_DETAIL_REF_ID_PLACEHOLDER_TICKET")}
             min={1}
             disabled
           />
@@ -45,12 +47,12 @@ export const TargetSelector = () => {
       return (
         <Form.Item
           name="targetRefId"
-          label="Select Product"
-          rules={[{ required: true, message: "Please select a product" }]}
+          label={t("COUPON_DETAIL_TARGET_PRODUCT_LABEL")}
+          rules={[{ required: true, message: t("PRODUCT_REQUIRED") }]}
         >
           <Select
             style={{ width: "100%" }}
-            placeholder="Select a product"
+            placeholder={t("SELECT_PRODUCT")}
             loading={isLoadingProducts}
             showSearch
             filterOption={(input, option) =>
@@ -81,7 +83,8 @@ export const TargetSelector = () => {
                     <div>
                       <div style={{ fontWeight: 500 }}>{product.name}</div>
                       <small style={{ color: "#666" }}>
-                        SKU: {product.sku || "N/A"}
+                        {t("PRODUCT_SKU")}:{" "}
+                        {product.sku || t("NOT_AVAILABLE_SHORT")}
                       </small>
                     </div>
                   </Space>
@@ -97,12 +100,12 @@ export const TargetSelector = () => {
       return (
         <Form.Item
           name="targetRefId"
-          label="Select Service"
-          rules={[{ required: true, message: "Please select a service" }]}
+          label={t("COUPON_DETAIL_TARGET_SERVICE_LABEL")}
+          rules={[{ required: true, message: t("SERVICE_REQUIRED") }]}
         >
           <Select
             style={{ width: "100%" }}
-            placeholder="Select a service"
+            placeholder={t("SELECT_SERVICE_PLACEHOLDER")}
             loading={isLoadingServices}
             showSearch
             filterOption={(input, option) =>
@@ -133,7 +136,9 @@ export const TargetSelector = () => {
                     <div>
                       <div style={{ fontWeight: 500 }}>{service.name}</div>
                       <small style={{ color: "#666" }}>
-                        Type: {service.type}
+                        {t("COUPON_DETAIL_SERVICE_TYPE_LABEL", {
+                          type: service.type,
+                        })}
                         {service.description &&
                           ` • ${service.description.substring(0, 30)}...`}
                       </small>
@@ -152,20 +157,24 @@ export const TargetSelector = () => {
 
   return (
     <>
-      <Title level={5}>Target Configuration</Title>
+      <Title level={5}>{t("COUPON_DETAIL_TARGET_SECTION_TITLE")}</Title>
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
             name="targetType"
-            label="Target Type"
-            rules={[{ required: true, message: "Please select target type" }]}
+            label={t("COUPON_DETAIL_TARGET_TYPE_LABEL")}
+            rules={[{ required: true, message: t("TARGET_TYPE_REQUIRED") }]}
           >
-            <Select placeholder="Select target type">
-              <Select.Option value={TargetType.PRODUCT}>Product</Select.Option>
-              <Select.Option value={TargetType.ADDITIONAL_SERVICE}>
-                Additional Service
+            <Select placeholder={t("SELECT_TARGET_PLACEHOLDER")}>
+              <Select.Option value={TargetType.PRODUCT}>
+                {t("COUPON_TARGET_PRODUCT")}
               </Select.Option>
-              <Select.Option value={TargetType.TICKET}>Ticket</Select.Option>
+              <Select.Option value={TargetType.ADDITIONAL_SERVICE}>
+                {t("COUPON_TARGET_SERVICE")}
+              </Select.Option>
+              <Select.Option value={TargetType.TICKET}>
+                {t("COUPON_TARGET_TICKET")}
+              </Select.Option>
             </Select>
           </Form.Item>
         </Col>

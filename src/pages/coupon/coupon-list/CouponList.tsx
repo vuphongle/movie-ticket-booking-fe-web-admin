@@ -2,6 +2,7 @@ import { PlusOutlined, ReloadOutlined } from "@ant-design/icons";
 import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useGetCouponsQuery } from "@/app/services/coupons.service";
 import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
 import CouponTable from "./CouponTable";
@@ -9,6 +10,7 @@ import CouponModal from "./CouponModal";
 import type { Coupon } from "@/types";
 
 const CouponList = () => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -41,7 +43,9 @@ const CouponList = () => {
     setEditingCoupon(null);
   };
 
-  const breadcrumb = [{ label: "Coupon Management", href: "/admin/coupons" }];
+  const breadcrumb = [
+    { label: t("COUPON_LIST_BREADCRUMB"), href: "/admin/coupons" },
+  ];
 
   if (isFetchingCoupons) {
     return <Spin size="large" fullscreen />;
@@ -50,7 +54,7 @@ const CouponList = () => {
   return (
     <>
       <Helmet>
-        <title>Coupon Management | Admin</title>
+        <title>{t("COUPON_LIST_TITLE")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -68,7 +72,7 @@ const CouponList = () => {
             icon={<PlusOutlined />}
             onClick={handleCreate}
           >
-            Create Coupon
+            {t("COUPON_CREATE_BTN")}
           </Button>
           <Button
             style={{ backgroundColor: "rgb(0, 192, 239)" }}
@@ -77,7 +81,7 @@ const CouponList = () => {
             onClick={handleRefresh}
             loading={isFetchingCoupons}
           >
-            Refresh
+            {t("COUPON_REFRESH_BTN")}
           </Button>
         </Space>
 

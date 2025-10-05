@@ -57,7 +57,7 @@ const AdditionalServiceCreate = () => {
         if (serviceType === "SINGLE") {
           if (!createData.productId || !createData.defaultQuantity) {
             throw new Error(
-              "Vui lòng chọn sản phẩm và số lượng cho dịch vụ đơn"
+              "Vui lòng chọn sản phẩm và số lượng cho dịch vụ đơn",
             );
           }
           // Remove items for SINGLE type
@@ -111,7 +111,7 @@ const AdditionalServiceCreate = () => {
       })
       .catch((error) => {
         message.error(
-          error?.data?.message || error?.message || t("CREATE_FAILED")
+          error?.data?.message || error?.message || t("CREATE_FAILED"),
         );
       });
   };
@@ -271,7 +271,7 @@ const AdditionalServiceCreate = () => {
                         const duplicateCount = currentItems.filter(
                           (item: any) =>
                             item?.productId === currentProductId &&
-                            currentProductId
+                            currentProductId,
                         ).length;
 
                         return (

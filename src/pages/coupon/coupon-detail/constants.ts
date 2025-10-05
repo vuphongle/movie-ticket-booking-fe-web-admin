@@ -2,7 +2,7 @@ import { TargetType, BenefitType } from "@/types";
 
 export const TARGET_TYPE_COLORS: Record<TargetType, string> = {
   TICKET: "blue",
-  ADDITIONAL_SERVICE: "green", 
+  ADDITIONAL_SERVICE: "green",
   PRODUCT: "purple",
 };
 

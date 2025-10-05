@@ -2,6 +2,7 @@ import { Tag, Space, Tooltip } from "antd";
 import { Link as RouterLink } from "react-router-dom";
 import { formatDate } from "@/utils/functionUtils";
 import type { Coupon, CouponKind } from "@/types";
+import { useTranslation } from "react-i18next";
 
 interface CouponNameDisplayProps {
   coupon: Coupon;
@@ -40,9 +41,10 @@ interface CouponKindDisplayProps {
 }
 
 export const CouponKindDisplay = ({ kind }: CouponKindDisplayProps) => {
+  const { t } = useTranslation();
   const kindConfig = {
-    DISPLAY: { color: "blue", label: "Display" },
-    VOUCHER: { color: "green", label: "Voucher" },
+    DISPLAY: { color: "blue", label: t("COUPON_KIND_DISPLAY") },
+    VOUCHER: { color: "green", label: t("COUPON_KIND_VOUCHER") },
   } as const;
 
   const config = kindConfig[kind] || { color: "default", label: kind };
@@ -63,6 +65,7 @@ export const CouponStatusDisplay = ({
   endDate,
   coupon,
 }: CouponStatusDisplayProps) => {
+  const { t } = useTranslation();
   const now = new Date();
   const start = new Date(startDate);
   const end = new Date(endDate);
@@ -74,25 +77,25 @@ export const CouponStatusDisplay = ({
       createdAt && now.getTime() - createdAt.getTime() < 3600000; // 1 hour
 
     const tooltipTitle = isNewCoupon
-      ? "New coupons are created inactive. Add coupon details first, then activate."
-      : "Coupon is currently inactive";
+      ? t("COUPON_STATUS_INACTIVE_NEW_TOOLTIP")
+      : t("COUPON_STATUS_INACTIVE_TOOLTIP");
 
     return (
       <Tooltip title={tooltipTitle}>
-        <Tag color="red">Inactive</Tag>
+        <Tag color="red">{t("COUPON_STATUS_INACTIVE")}</Tag>
       </Tooltip>
     );
   }
 
   if (now < start) {
-    return <Tag color="orange">Scheduled</Tag>;
+    return <Tag color="orange">{t("COUPON_STATUS_UPCOMING")}</Tag>;
   }
 
   if (now > end) {
-    return <Tag color="gray">Expired</Tag>;
+    return <Tag color="gray">{t("COUPON_STATUS_EXPIRED")}</Tag>;
   }
 
-  return <Tag color="green">Active</Tag>;
+  return <Tag color="green">{t("COUPON_STATUS_ACTIVE")}</Tag>;
 };
 
 interface CouponDateRangeDisplayProps {
@@ -103,13 +106,16 @@ interface CouponDateRangeDisplayProps {
 export const CouponDateRangeDisplay = ({
   startDate,
   endDate,
-}: CouponDateRangeDisplayProps) => (
-  <Space direction="vertical" size={0}>
-    <small style={{ fontSize: "11px" }}>
-      <strong>Start:</strong> {formatDate(startDate)}
-    </small>
-    <small style={{ fontSize: "11px" }}>
-      <strong>End:</strong> {formatDate(endDate)}
-    </small>
-  </Space>
-);
+}: CouponDateRangeDisplayProps) => {
+  const { t } = useTranslation();
+  return (
+    <Space direction="vertical" size={0}>
+      <small style={{ fontSize: "11px" }}>
+        <strong>{t("COUPON_START_DATE_LABEL")}:</strong> {formatDate(startDate)}
+      </small>
+      <small style={{ fontSize: "11px" }}>
+        <strong>{t("COUPON_END_DATE_LABEL")}:</strong> {formatDate(endDate)}
+      </small>
+    </Space>
+  );
+};

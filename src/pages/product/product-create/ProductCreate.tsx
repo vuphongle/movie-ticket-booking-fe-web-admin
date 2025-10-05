@@ -87,7 +87,7 @@ const ProductCreate = () => {
       // Clear all field errors first
       const fieldsErrors = form.getFieldsError();
       const fieldsWithErrors = fieldsErrors.filter(
-        ({ errors }) => errors.length > 0
+        ({ errors }) => errors.length > 0,
       );
 
       if (fieldsWithErrors.length > 0) {

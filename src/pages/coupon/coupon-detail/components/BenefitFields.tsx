@@ -11,10 +11,12 @@ import {
 import { useGetAdditionalServicesQuery } from "@/app/services/additionalServices.service";
 import { BenefitType, type AdditionalService } from "@/types";
 import { API_DOMAIN } from "@/data/constants";
+import { useTranslation } from "react-i18next";
 
 const { Title } = Typography;
 
 export const BenefitFields = () => {
+  const { t } = useTranslation();
   const benefitType = Form.useWatch("benefitType");
   const { data: additionalServices = [], isLoading: isLoadingServices } =
     useGetAdditionalServicesQuery();
@@ -25,20 +27,20 @@ export const BenefitFields = () => {
         return (
           <Form.Item
             name="percent"
-            label="Discount Percentage"
+            label={t("COUPON_DETAIL_PERCENT_LABEL")}
             rules={[
-              { required: true, message: "Please enter discount percentage" },
+              { required: true, message: t("PERCENT_REQUIRED") },
               {
                 type: "number",
                 min: 0.01,
                 max: 100,
-                message: "Percentage must be between 0.01 and 100",
+                message: t("PERCENT_RANGE_MESSAGE"),
               },
             ]}
           >
             <InputNumber
               style={{ width: "100%" }}
-              placeholder="Enter discount percentage"
+              placeholder={t("ENTER_PERCENTAGE")}
               precision={2}
               min={0.01}
               max={100}
@@ -52,19 +54,19 @@ export const BenefitFields = () => {
         return (
           <Form.Item
             name="amount"
-            label="Discount Amount"
+            label={t("COUPON_DETAIL_AMOUNT_LABEL")}
             rules={[
-              { required: true, message: "Please enter discount amount" },
+              { required: true, message: t("AMOUNT_REQUIRED") },
               {
                 type: "number",
                 min: 0.01,
-                message: "Amount must be greater than 0",
+                message: t("AMOUNT_MIN_MESSAGE"),
               },
             ]}
           >
             <InputNumber
               style={{ width: "100%" }}
-              placeholder="Enter discount amount"
+              placeholder={t("ENTER_AMOUNT")}
               precision={2}
               min={0.01}
               formatter={(value) => `$${value}`}
@@ -79,14 +81,12 @@ export const BenefitFields = () => {
             <Col span={12}>
               <Form.Item
                 name="giftServiceId"
-                label="Select Gift Service"
-                rules={[
-                  { required: true, message: "Please select a gift service" },
-                ]}
+                label={t("COUPON_DETAIL_FREE_SERVICE_LABEL")}
+                rules={[{ required: true, message: t("SERVICE_REQUIRED") }]}
               >
                 <Select
                   style={{ width: "100%" }}
-                  placeholder="Select a gift service"
+                  placeholder={t("SELECT_SERVICE_PLACEHOLDER")}
                   loading={isLoadingServices}
                   showSearch
                   filterOption={(input, option) =>
@@ -119,7 +119,9 @@ export const BenefitFields = () => {
                               {service.name}
                             </div>
                             <small style={{ color: "#666" }}>
-                              Type: {service.type}
+                              {t("COUPON_DETAIL_SERVICE_TYPE_LABEL", {
+                                type: service.type,
+                              })}
                             </small>
                           </div>
                         </Space>
@@ -132,19 +134,19 @@ export const BenefitFields = () => {
             <Col span={12}>
               <Form.Item
                 name="giftQuantity"
-                label="Gift Quantity"
+                label={t("COUPON_DETAIL_GIFT_QUANTITY_LABEL")}
                 rules={[
-                  { required: true, message: "Please enter gift quantity" },
+                  { required: true, message: t("GIFT_QUANTITY_REQUIRED") },
                   {
                     type: "number",
                     min: 1,
-                    message: "Quantity must be positive",
+                    message: t("GIFT_QUANTITY_MIN_MESSAGE"),
                   },
                 ]}
               >
                 <InputNumber
                   style={{ width: "100%" }}
-                  placeholder="Enter quantity"
+                  placeholder={t("ENTER_QUANTITY")}
                   min={1}
                 />
               </Form.Item>
@@ -159,21 +161,21 @@ export const BenefitFields = () => {
 
   return (
     <>
-      <Title level={5}>Benefit Configuration</Title>
+      <Title level={5}>{t("COUPON_DETAIL_BENEFIT_SECTION_TITLE")}</Title>
       <Form.Item
         name="benefitType"
-        label="Benefit Type"
-        rules={[{ required: true, message: "Please select benefit type" }]}
+        label={t("COUPON_DETAIL_BENEFIT_TYPE_LABEL")}
+        rules={[{ required: true, message: t("BENEFIT_TYPE_REQUIRED") }]}
       >
-        <Select placeholder="Select benefit type">
+        <Select placeholder={t("SELECT_BENEFIT_TYPE_PLACEHOLDER")}>
           <Select.Option value={BenefitType.DISCOUNT_PERCENT}>
-            Discount Percentage
+            {t("BENEFIT_DISCOUNT_PERCENT")}
           </Select.Option>
           <Select.Option value={BenefitType.DISCOUNT_AMOUNT}>
-            Discount Amount
+            {t("BENEFIT_DISCOUNT_AMOUNT")}
           </Select.Option>
           <Select.Option value={BenefitType.FREE_PRODUCT}>
-            Free Product/Service
+            {t("BENEFIT_FREE_PRODUCT")}
           </Select.Option>
         </Select>
       </Form.Item>
