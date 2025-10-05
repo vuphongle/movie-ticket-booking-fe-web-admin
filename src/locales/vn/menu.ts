@@ -24,7 +24,7 @@ const menu = {
   PRICE_MANAGEMENT: "Giá",
   PRICE_LIST_MANAGEMENT: "Danh sách bảng giá",
   PRICE_ITEM_MANAGEMENT: "Mục giá",
-  
+
   TICKET_PRICE_MANAGEMENT: "Giá vé",
   // Ticket Price removed BASE_TICKET_PRICE: "Giá vé cơ bản",
 

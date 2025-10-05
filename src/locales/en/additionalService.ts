@@ -58,14 +58,16 @@ const additionalService = {
   COMBO_PRODUCTS: "Combo Products",
   SINGLE_PRODUCT: "Single Product",
   SELECT_PRODUCT_FIRST: "Choose product first",
-  UNSAVED_COMBO_ITEMS_WARNING: "⚠️ There are {{count}} unsaved item(s). Please save all before updating.",
+  UNSAVED_COMBO_ITEMS_WARNING:
+    "⚠️ There are {{count}} unsaved item(s). Please save all before updating.",
   PRODUCT: "Product",
   PRODUCT_NOT_SELECTED: "Please select a product",
   SERVICE_TYPE_REQUIRED: "Please select a service type",
   DEFAULT_QUANTITY: "Default Quantity",
   DEFAULT_QUANTITY_REQUIRED: "Default quantity is required",
   ENTER_DEFAULT_QUANTITY: "Enter default quantity",
-  WARNING_DUPLICATE_PRODUCT: "⚠️ Duplicate products will have their quantities merged upon saving",
+  WARNING_DUPLICATE_PRODUCT:
+    "⚠️ Duplicate products will have their quantities merged upon saving",
 };
 
 export default additionalService;

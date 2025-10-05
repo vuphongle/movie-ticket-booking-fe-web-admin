@@ -126,7 +126,7 @@ const ReviewTable = ({ data, movieId, onReviewDeleted }: ReviewTableProps) => {
           return review;
         }
         return item;
-      })
+      }),
     );
   };
 

@@ -66,7 +66,7 @@ const ProductTable = ({ data }: ProductTableProps) => {
 
   const handleToggleStatus = async (
     id: string | number,
-    currentStatus: boolean
+    currentStatus: boolean,
   ) => {
     try {
       // Nếu đang chuyển từ active sang inactive, kiểm tra trước

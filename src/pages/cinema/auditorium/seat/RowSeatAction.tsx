@@ -27,7 +27,7 @@ function RowSeatAction({
   }, [i18n.language, form]);
 
   const onFinish = (
-    values: Omit<RowSeatUpdateValues, "rowIndex" | "auditoriumId">
+    values: Omit<RowSeatUpdateValues, "rowIndex" | "auditoriumId">,
   ) => {
     updateRowSeat({ auditoriumId: auditorium.id, rowIndex, ...values })
       .unwrap()

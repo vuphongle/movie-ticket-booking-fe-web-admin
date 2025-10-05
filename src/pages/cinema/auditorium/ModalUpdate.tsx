@@ -102,7 +102,7 @@ const ModalUpdate = (props: ModalUpdateProps) => {
                 validator: (_, value) => {
                   if (value <= 0) {
                     return Promise.reject(
-                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO")
+                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO"),
                     );
                   }
                   return Promise.resolve();
@@ -127,7 +127,7 @@ const ModalUpdate = (props: ModalUpdateProps) => {
                 validator: (_, value) => {
                   if (value <= 0) {
                     return Promise.reject(
-                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO")
+                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO"),
                     );
                   }
                   return Promise.resolve();

@@ -22,19 +22,19 @@ export function getShowtimeErrorMessage(error: ErrorResponse): string {
   switch (errorCode) {
     case ShowtimeErrorCode.SLOT_CONFLICT:
       return i18n.t("SLOT_CONFLICT_ERROR");
-    
+
     case ShowtimeErrorCode.INVALID_SLOT:
       return i18n.t("INVALID_SLOT_ERROR");
-    
+
     case ShowtimeErrorCode.SPAN_OVERFLOW:
       return i18n.t("SPAN_OVERFLOW_ERROR");
-    
+
     case ShowtimeErrorCode.MOVIE_TOO_LONG:
       return i18n.t("MOVIE_TOO_LONG_ERROR");
-    
+
     case ShowtimeErrorCode.BAD_INPUT:
       return i18n.t("BAD_INPUT_ERROR");
-    
+
     default:
       return defaultMessage;
   }
@@ -52,32 +52,31 @@ export function handleShowtimeError(error: ErrorResponse): void {
  * Validate slot selection trước khi submit
  */
 export function validateSlotSelection(
-  movieDuration: number, 
-  slotId: number, 
-  maxSlots: number = 6
+  movieDuration: number,
+  slotId: number,
+  maxSlots: number = 6,
 ): { isValid: boolean; errorMessage?: string } {
-  
   if (!movieDuration || movieDuration <= 0) {
     return {
       isValid: false,
-      errorMessage: i18n.t("BAD_INPUT_ERROR")
+      errorMessage: i18n.t("BAD_INPUT_ERROR"),
     };
   }
 
   if (!slotId || slotId < 1 || slotId > maxSlots) {
     return {
       isValid: false,
-      errorMessage: i18n.t("SLOT_REQUIRED")
+      errorMessage: i18n.t("SLOT_REQUIRED"),
     };
   }
 
-  // Calculate spans using consistent function  
+  // Calculate spans using consistent function
   const spans = calculateSlotSpans(movieDuration);
 
   if (spans > 2) {
     return {
       isValid: false,
-      errorMessage: i18n.t("MOVIE_TOO_LONG_ERROR")
+      errorMessage: i18n.t("MOVIE_TOO_LONG_ERROR"),
     };
   }
 
@@ -86,7 +85,7 @@ export function validateSlotSelection(
   if (endSlot > maxSlots) {
     return {
       isValid: false,
-      errorMessage: i18n.t("SPAN_OVERFLOW_ERROR")
+      errorMessage: i18n.t("SPAN_OVERFLOW_ERROR"),
     };
   }
 
@@ -98,7 +97,9 @@ export function validateSlotSelection(
  */
 export function isShowtimeError(error: ErrorResponse): boolean {
   const errorCode = error.data?.code || error.data?.error;
-  return Object.values(ShowtimeErrorCode).includes(errorCode as ShowtimeErrorCode);
+  return Object.values(ShowtimeErrorCode).includes(
+    errorCode as ShowtimeErrorCode,
+  );
 }
 
 /**
@@ -109,21 +110,21 @@ export function parseShowtimeError(error: any): ErrorResponse {
   if (error?.data) {
     return error;
   }
-  
+
   if (error?.error) {
     return {
       data: {
         message: error.error,
-        code: error.status?.toString()
+        code: error.status?.toString(),
       },
-      status: error.status
+      status: error.status,
     };
   }
 
   return {
     data: {
       message: i18n.t("BAD_INPUT_ERROR"),
-      code: "UNKNOWN_ERROR"
-    }
+      code: "UNKNOWN_ERROR",
+    },
   };
 }

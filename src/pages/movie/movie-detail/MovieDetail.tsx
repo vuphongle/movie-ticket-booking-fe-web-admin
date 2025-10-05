@@ -112,7 +112,7 @@ const MovieDetail = () => {
       // Clear all field errors first
       const fieldsErrors = form.getFieldsError();
       const fieldsWithErrors = fieldsErrors.filter(
-        ({ errors }) => errors.length > 0
+        ({ errors }) => errors.length > 0,
       );
 
       if (fieldsWithErrors.length > 0) {
@@ -130,7 +130,7 @@ const MovieDetail = () => {
       setPoster(
         movie?.poster && movie.poster.startsWith("/api")
           ? `${API_DOMAIN}${movie.poster}`
-          : movie?.poster
+          : movie?.poster,
       );
     }
   }, [movie, poster]);
@@ -323,7 +323,7 @@ const MovieDetail = () => {
                 ...movie,
                 genreIds: movie.genres?.map((genre: any) => genre.id),
                 directorIds: movie.directors?.map(
-                  (director: any) => director.id
+                  (director: any) => director.id,
                 ),
                 actorIds: movie.actors?.map((actor: any) => actor.id),
                 countryId: movie.country?.id,

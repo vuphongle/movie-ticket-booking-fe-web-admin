@@ -50,7 +50,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 71,
         label: t("CINEMA_LIST"),
         url: "/admin/cinemas",
-      }
+      },
     ],
   },
   {
@@ -63,7 +63,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 81,
         label: t("MOVIE_LIST"),
         url: "/admin/movies",
-      }
+      },
     ],
   },
   {
@@ -159,7 +159,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 31,
         label: t("USER_LIST"),
         url: "/admin/users",
-      }
+      },
     ],
   },
   {
@@ -198,7 +198,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 61,
         label: t("ADDITIONAL_SERVICE_LIST"),
         url: "/admin/additional-services",
-      }
+      },
     ],
   },
   {
@@ -211,7 +211,7 @@ export const getMenuData = (t: (key: string) => string) => [
         id: 7001,
         label: t("PRODUCT_LIST"),
         url: "/admin/products",
-      }
+      },
     ],
   },
   {
