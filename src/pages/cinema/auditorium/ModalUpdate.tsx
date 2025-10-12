@@ -100,9 +100,19 @@ const ModalUpdate = (props: ModalUpdateProps) => {
               },
               {
                 validator: (_, value) => {
+                  if (value == null) {
+                    return Promise.resolve();
+                  }
+
                   if (value <= 0) {
                     return Promise.reject(
-                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO"),
+                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO")
+                    );
+                  }
+
+                  if (value > 20) {
+                    return Promise.reject(
+                      t("TOTAL_ROWS_MUST_LESS_THAN_OR_EQUAL_TWENTY")
                     );
                   }
                   return Promise.resolve();
@@ -112,6 +122,8 @@ const ModalUpdate = (props: ModalUpdateProps) => {
           >
             <InputNumber
               placeholder={t("ENTER_TOTAL_ROWS")}
+              min={1}
+              max={20}
               style={{ width: "100%" }}
             />
           </Form.Item>
@@ -125,9 +137,19 @@ const ModalUpdate = (props: ModalUpdateProps) => {
               },
               {
                 validator: (_, value) => {
+                  if (value == null) {
+                    return Promise.resolve();
+                  }
+
                   if (value <= 0) {
                     return Promise.reject(
-                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO"),
+                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO")
+                    );
+                  }
+
+                  if (value > 20) {
+                    return Promise.reject(
+                      t("TOTAL_COLUMNS_MUST_LESS_THAN_OR_EQUAL_TWENTY")
                     );
                   }
                   return Promise.resolve();
@@ -137,6 +159,8 @@ const ModalUpdate = (props: ModalUpdateProps) => {
           >
             <InputNumber
               placeholder={t("ENTER_TOTAL_COLUMNS")}
+              min={1}
+              max={20}
               style={{ width: "100%" }}
             />
           </Form.Item>

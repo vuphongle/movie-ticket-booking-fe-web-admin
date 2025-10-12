@@ -71,6 +71,10 @@ const cinema = {
   TOTAL_COLUMNS_REQUIRED: "Total columns is required!",
   TOTAL_ROWS_MUST_GREATER_THAN_ZERO: "Total rows must be greater than 0!",
   TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO: "Total columns must be greater than 0!",
+  TOTAL_ROWS_MUST_LESS_THAN_OR_EQUAL_TWENTY:
+    "Total rows must be less than or equal to 20!",
+  TOTAL_COLUMNS_MUST_LESS_THAN_OR_EQUAL_TWENTY:
+    "Total columns must be less than or equal to 20!",
 
   // Auditorium Table
   AUDITORIUM_NAME_COLUMN: "Auditorium Name",

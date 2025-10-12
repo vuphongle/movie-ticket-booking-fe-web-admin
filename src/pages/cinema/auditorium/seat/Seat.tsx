@@ -22,7 +22,16 @@ function Seat({ seat, isLastRow, auditorium }: SeatProps) {
   }, [i18n.language, form]);
 
   const onFinish = (values: SeatFormValues) => {
-    updateSeat({ ...seat, ...values, auditoriumId: auditorium.id })
+    const payload = {
+      id: seat.id,
+      auditoriumId: auditorium.id,
+      rowIndex: seat.rowIndex,
+      colIndex: seat.colIndex,
+      code: seat.code,
+      ...values,
+    };
+
+    updateSeat(payload)
       .unwrap()
       .then((_data) => {
         message.success(t("UPDATE_SEAT_SUCCESS"));

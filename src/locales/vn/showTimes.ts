@@ -125,6 +125,7 @@ const showtimes = {
   CAN_CREATE: "Có Thể Tạo",
   CONFLICT: "Xung Đột",
   CONFLICTED_WITH: "Xung đột với",
+  READY_FOR_CREATION: "Sẵn sàng tạo suất chiếu",
   WILL_CREATE_SHOWTIMES: "Sẽ tạo {{count}} suất chiếu hợp lệ",
   NO_VALID_DATES_REMAINING: "Không còn ngày hợp lệ để tạo suất chiếu",
 };
