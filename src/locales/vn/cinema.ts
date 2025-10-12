@@ -70,6 +70,10 @@ const cinema = {
   TOTAL_COLUMNS_REQUIRED: "Số cột không được để trống!",
   TOTAL_ROWS_MUST_GREATER_THAN_ZERO: "Số hàng phải lớn hơn 0!",
   TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO: "Số cột phải lớn hơn 0!",
+  TOTAL_ROWS_MUST_LESS_THAN_OR_EQUAL_TWENTY:
+    "Số hàng phải nhỏ hơn hoặc bằng 20!",
+  TOTAL_COLUMNS_MUST_LESS_THAN_OR_EQUAL_TWENTY:
+    "Số cột phải nhỏ hơn hoặc bằng 20!",
 
   // Auditorium Table
   AUDITORIUM_NAME_COLUMN: "Tên phòng chiếu",
