@@ -126,6 +126,7 @@ const showtimes = {
   CAN_CREATE: "Can Create",
   CONFLICT: "Conflict",
   CONFLICTED_WITH: "Conflicts with",
+  READY_FOR_CREATION: "Ready to create",
   WILL_CREATE_SHOWTIMES: "Will create {{count}} valid showtimes",
   NO_VALID_DATES_REMAINING: "No valid dates remaining for showtime creation",
 };

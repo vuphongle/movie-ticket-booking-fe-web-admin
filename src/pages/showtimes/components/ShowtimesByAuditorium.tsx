@@ -24,7 +24,7 @@ import {
   Col,
 } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetAllMoviesInScheduleQuery } from "@services/movies.service";
 import {
@@ -122,6 +122,7 @@ function ShowtimesByAuditorium({
   const [pendingBulkRequest, setPendingBulkRequest] =
     useState<BulkShowtimeApiPayload | null>(null);
   const [validCount, setValidCount] = useState(0);
+  const [requestedDates, setRequestedDates] = useState<string[]>([]);
   const [selectedDaysOfWeek, setSelectedDaysOfWeek] = useState<number[]>([]);
 
   const { data: movies, isLoading: _isFetchingMovies } =
@@ -164,6 +165,31 @@ function ShowtimesByAuditorium({
         return "";
     }
   };
+
+  const generateTargetDates = useCallback(
+    (dateFrom: string, dateTo: string, daysOfWeek: number[]) => {
+      const start = dayjs(dateFrom);
+      const end = dayjs(dateTo);
+      const results: string[] = [];
+      const dayFilters =
+        daysOfWeek && daysOfWeek.length > 0 ? new Set(daysOfWeek) : null;
+
+      let current = start;
+      while (!current.isAfter(end)) {
+        const dayOfWeek = current.day(); // 0 (Sunday) - 6 (Saturday)
+        const requestDay = dayOfWeek === 0 ? 1 : dayOfWeek + 1;
+
+        if (!dayFilters || dayFilters.has(requestDay)) {
+          results.push(current.format("YYYY-MM-DD"));
+        }
+
+        current = current.add(1, "day");
+      }
+
+      return results;
+    },
+    []
+  );
 
   useEffect(() => {
     if (!isBulkMode) {
@@ -223,7 +249,7 @@ function ShowtimesByAuditorium({
         // Calculate actual end time instead of using slot boundary
         const actualEndTime = calculateActualEndTime(
           record.startTime,
-          record.movie.duration,
+          record.movie.duration
         );
 
         return (
@@ -262,11 +288,11 @@ function ShowtimesByAuditorium({
         const now = dayjs();
         const startTime = dayjs(
           `${record.date} ${record.startTime}`,
-          "DD/MM/YYYY HH:mm",
+          "DD/MM/YYYY HH:mm"
         );
         const endTime = dayjs(
           `${record.date} ${record.endTime}`,
-          "DD/MM/YYYY HH:mm",
+          "DD/MM/YYYY HH:mm"
         );
 
         if (now.isBefore(startTime)) {
@@ -312,7 +338,7 @@ function ShowtimesByAuditorium({
     // Validate slot selection before API call
     const validation = validateSlotSelection(
       selectedMovie.duration,
-      values.slotId,
+      values.slotId
     );
     if (!validation.isValid) {
       message.error(validation.errorMessage);
@@ -357,7 +383,7 @@ function ShowtimesByAuditorium({
     // Validate slot selection
     const validation = validateSlotSelection(
       selectedMovie.duration,
-      values.slotId,
+      values.slotId
     );
     if (!validation.isValid) {
       message.error(validation.errorMessage);
@@ -417,7 +443,7 @@ function ShowtimesByAuditorium({
             t("BULK_CREATION_SUCCESS", {
               created: response.successfullyCreated,
               total: response.totalRequested,
-            }),
+            })
           );
         } else if (response.successfullyCreated > 0) {
           // Partial success - some were created, some failed/skipped
@@ -426,12 +452,16 @@ function ShowtimesByAuditorium({
               created: response.successfullyCreated,
               total: response.totalRequested,
               skipped: response.totalRequested - response.successfullyCreated,
-            }),
+            })
           );
         } else {
           // None were created
           message.error(t("BULK_CREATION_FAILED"));
         }
+
+        setRequestedDates([]);
+        setConflictDetails([]);
+        setValidCount(0);
       })
       .catch((error: any) => {
         if (error?.data?.code === "409_BULK_SHOWTIME_CONFLICT") {
@@ -439,13 +469,24 @@ function ShowtimesByAuditorium({
           const conflicts = error.data.conflicts?.conflicts || [];
           const totalRequested = error.data.conflicts?.totalRequested || 0;
           const conflictsCount = conflicts.length;
+          const targetDates = generateTargetDates(
+            bulkPayload.dateFrom,
+            bulkPayload.dateTo,
+            bulkPayload.daysOfWeek || []
+          );
+          const computedValid = Math.max(
+            (targetDates.length || totalRequested) - conflictsCount,
+            0
+          );
 
+          setRequestedDates(targetDates);
           setConflictDetails(conflicts);
-          setValidCount(totalRequested - conflictsCount);
+          setValidCount(computedValid);
           setPendingBulkRequest({ ...bulkPayload, conflictPolicy: "SKIP" });
           setConflictModalVisible(true);
         } else {
           const parsedError = parseShowtimeError(error);
+          setRequestedDates([]);
           handleShowtimeError(parsedError);
         }
       });
@@ -466,6 +507,7 @@ function ShowtimesByAuditorium({
         setPendingBulkRequest(null);
         setConflictDetails([]);
         setValidCount(0);
+        setRequestedDates([]);
 
         // Show appropriate message based on results
         if (response.successfullyCreated === 0) {
@@ -475,7 +517,7 @@ function ShowtimesByAuditorium({
             t("BULK_CREATION_SUCCESS", {
               created: response.successfullyCreated,
               total: response.totalRequested,
-            }),
+            })
           );
         } else {
           message.warning(
@@ -483,7 +525,7 @@ function ShowtimesByAuditorium({
               created: response.successfullyCreated,
               total: response.totalRequested,
               skipped: response.totalRequested - response.successfullyCreated,
-            }),
+            })
           );
         }
       })
@@ -498,6 +540,7 @@ function ShowtimesByAuditorium({
     setPendingBulkRequest(null);
     setConflictDetails([]);
     setValidCount(0);
+    setRequestedDates([]);
   };
 
   // Quick selection handlers for days of week
@@ -551,7 +594,7 @@ function ShowtimesByAuditorium({
   const getOptions = (
     movie: Movie | null,
     property: keyof Movie,
-    mapping: Record<string, string>,
+    mapping: Record<string, string>
   ) => {
     if (!movie || !movie[property]) return [];
     return (movie[property] as string[]).map((type: string) => {
@@ -942,7 +985,10 @@ function ShowtimesByAuditorium({
       <ConflictResolutionModal
         visible={conflictModalVisible}
         conflicts={conflictDetails}
-        totalRequested={conflictDetails.length + validCount}
+        requestedDates={requestedDates}
+        totalRequested={
+          requestedDates.length || conflictDetails.length + validCount
+        }
         validCount={validCount}
         onSkipConflicts={handleSkipConflicts}
         onCancel={handleCancelConflictResolution}
