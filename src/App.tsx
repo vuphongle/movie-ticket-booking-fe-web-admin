@@ -37,6 +37,8 @@ import ActorCreate from "@/pages/actor/actor-create/ActorCreate";
 import DirectorList from "@/pages/director/director-list/DirectorList";
 import DirectorDetail from "@/pages/director/director-detail/DirectorDetail";
 import DirectorCreate from "@/pages/director/director-create/DirectorCreate";
+import OrderList from "@/pages/order/order-list/OrderList";
+import OrderDetail from "./pages/order/order-detail/OrderDetail";
 
 function App() {
   return (
@@ -81,6 +83,10 @@ function App() {
                 element={<AdditionalServiceDetail />}
               />
               <Route path="create" element={<AdditionalServiceCreate />} />
+            </Route>
+            <Route path="orders">
+              <Route index element={<OrderList />} />
+              <Route path=":orderId/detail" element={<OrderDetail />} />
             </Route>
             <Route path="genres">
               <Route index element={<GenreList />} />

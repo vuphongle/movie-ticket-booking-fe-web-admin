@@ -1,5 +1,6 @@
 import { HomeOutlined } from "@ant-design/icons";
 import Breadcrumb from "antd/es/breadcrumb";
+import type { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 import styles from "./AppBreadCrumb.module.css";
@@ -14,27 +15,31 @@ interface AppBreadCrumbProps {
 }
 
 function AppBreadCrumb({ items }: AppBreadCrumbProps) {
+  const breadcrumbItems: BreadcrumbItemType[] = [
+    {
+      title: (
+        <>
+          <HomeOutlined />
+          <RouterLink to="/admin/dashboard">Dashboard</RouterLink>
+        </>
+      ),
+      key: "home",
+    },
+    ...items.map((item, index) => ({
+      title:
+        index === items.length - 1 ? (
+          <span>{item.label}</span>
+        ) : (
+          <RouterLink to={item.href ?? ""}>{item.label}</RouterLink>
+        ),
+      key: index,
+      className:
+        index === items.length - 1 ? styles.appBreadcrumbLast : undefined,
+    })),
+  ];
+
   return (
-    <Breadcrumb className={styles.appBreadcrumb}>
-      <Breadcrumb.Item key="home">
-        <HomeOutlined />
-        <RouterLink to="/admin/dashboard">Dashboard</RouterLink>
-      </Breadcrumb.Item>
-      {items.map((item, index) => (
-        <Breadcrumb.Item
-          key={index}
-          className={
-            index === items.length - 1 ? styles.appBreadcrumbLast : undefined
-          }
-        >
-          {index === items.length - 1 ? (
-            <span>{item.label}</span>
-          ) : (
-            <RouterLink to={item.href ?? ""}>{item.label}</RouterLink>
-          )}
-        </Breadcrumb.Item>
-      ))}
-    </Breadcrumb>
+    <Breadcrumb className={styles.appBreadcrumb} items={breadcrumbItems} />
   );
 }
 
