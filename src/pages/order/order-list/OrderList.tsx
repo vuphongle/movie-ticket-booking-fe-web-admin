@@ -1,7 +1,6 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
-import { Link as RouterLink } from "react-router-dom";
 import { useGetOrdersQuery } from "@/app/services/orders.service";
 import AppBreadCrumb from "../../../components/layout/AppBreadCrumb";
 import OrderTable from "./OrderTable";
@@ -12,7 +11,7 @@ const OrderList = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  const { data, isLoading: isFetchingorders } = useGetOrdersQuery();
+  const { data, isLoading: isFetchingorders, refetch } = useGetOrdersQuery();
 
   if (isFetchingorders) {
     return <Spin size="large" fullscreen />;
@@ -33,15 +32,15 @@ const OrderList = () => {
         }}
       >
         <Space style={{ marginBottom: "1rem" }}>
-          <RouterLink to="/admin/orders">
-            <Button
-              style={{ backgroundColor: "rgb(0, 192, 239)" }}
-              type="primary"
-              icon={<ReloadOutlined />}
-            >
-              Refresh
-            </Button>
-          </RouterLink>
+          <Button
+            style={{ backgroundColor: "rgb(0, 192, 239)" }}
+            type="primary"
+            icon={<ReloadOutlined />}
+            onClick={() => refetch()}
+            loading={isFetchingorders}
+          >
+            Refresh
+          </Button>
         </Space>
 
         <OrderTable data={data || []} />
