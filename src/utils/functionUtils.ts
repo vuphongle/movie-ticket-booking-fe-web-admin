@@ -1,5 +1,25 @@
-export const formatDate = (dateString: string | Date): string => {
-  const date = new Date(dateString);
+// Convert date array từ backend [year, month, day, hour, minute, second, nano] sang Date
+export const convertDateArrayToDate = (
+  dateArray: (number | undefined)[] | string | Date,
+): Date => {
+  if (typeof dateArray === "string" || dateArray instanceof Date) {
+    return new Date(dateArray);
+  }
+
+  if (Array.isArray(dateArray)) {
+    // Backend trả về [year, month, day, hour, minute, second, nano]
+    const [year, month, day, hour = 0, minute = 0, second = 0] = dateArray;
+    // Month trong JS bắt đầu từ 0, backend trả về từ 1
+    return new Date(year || 0, (month || 1) - 1, day || 1, hour, minute, second);
+  }
+
+  return new Date();
+};
+
+export const formatDate = (
+  dateString: string | Date | (number | undefined)[],
+): string => {
+  const date = convertDateArrayToDate(dateString);
   const year = date.getFullYear();
   const month = `0${date.getMonth() + 1}`.slice(-2);
   const day = `0${date.getDate()}`.slice(-2);
@@ -23,7 +43,10 @@ export const parseTimeToHHMM = (time: string | Date): string => {
   return `${hour}:${minute}`;
 };
 
-export const formatCurrency = (number: number): string => {
+export const formatCurrency = (number: number | null | undefined): string => {
+  if (number === null || number === undefined) {
+    return "0 VND";
+  }
   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND";
 };
 
