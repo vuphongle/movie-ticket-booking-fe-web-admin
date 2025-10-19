@@ -5,7 +5,7 @@ services:
     ports:
       - "80:80"
     networks:
-      - movie-booking-network
+      - movie-ticket-booking-be_movie-booking-network
     healthcheck:
       test:
         [
@@ -23,5 +23,5 @@ services:
     restart: unless-stopped
 
 networks:
-  movie-booking-network:
+  movie-ticket-booking-be_movie-booking-network:
     external: true
