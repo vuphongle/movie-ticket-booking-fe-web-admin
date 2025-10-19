@@ -5,6 +5,11 @@ pipeline {
     COMMIT     = "${env.GIT_COMMIT ?: 'local'}"
     TAG_LATEST = "${IMAGE_BASE}:latest"
     TAG_BUILD  = "${IMAGE_BASE}:${env.BUILD_NUMBER}"
+    
+    // VPS Configuration
+    VPS_HOST = "159.223.38.127"
+    VPS_USER = "root"
+    DEPLOY_PATH = "/opt/movie-ticket-booking-fe-admin"
   }
   options {
     timestamps()
@@ -17,7 +22,7 @@ pipeline {
       }
     }
 
-    stage('Build image') {
+    stage('Build Image') {
       steps {
         script {
           docker.build("${TAG_BUILD}")
@@ -25,7 +30,7 @@ pipeline {
       }
     }
 
-    stage('Tag latest') {
+    stage('Tag Latest') {
       steps {
         sh 'docker tag ${TAG_BUILD} ${TAG_LATEST}'
       }
@@ -43,16 +48,32 @@ pipeline {
         }
       }
     }
+
+    stage('Deploy to VPS') {
+      steps {
+        sshagent(credentials: ['vps-ssh-key']) {
+          sh """
+            ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
+              cd ${DEPLOY_PATH} && \
+              docker-compose pull frontend-admin && \
+              docker-compose up -d frontend-admin && \
+              docker-compose ps
+            '
+          """
+        }
+      }
+    }
   }
   
   post {
     success {
-      echo "✅ Frontend build và push Docker image thành công!"
+      echo "✅ Frontend build, push và deploy thành công!"
       echo "Image: ${TAG_BUILD}"
       echo "Latest: ${TAG_LATEST}"
+      echo "Deployed to: ${VPS_HOST}"
     }
     failure {
-      echo "❌ Frontend build thất bại!"
+      echo "❌ Frontend pipeline thất bại!"
     }
     always {
       sh 'docker system prune -f || true'
