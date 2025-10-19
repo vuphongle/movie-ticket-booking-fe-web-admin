@@ -3,7 +3,7 @@ services:
     image: vuphongle23/movie-ticket-booking-fe-admin:latest
     container_name: movie-booking-frontend-admin
     ports:
-      - "80:80"
+      - "8081:80"
     networks:
       - movie-ticket-booking-be_movie-booking-network
     healthcheck:
