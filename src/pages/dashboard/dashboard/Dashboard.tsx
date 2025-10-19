@@ -1,25 +1,52 @@
-import { HelmetProvider } from "react-helmet-async";
+import { Spin, theme } from "antd";
+import { Helmet } from "react-helmet";
+import { useGetDashboardDataQuery } from "@/app/services/dashboard.service";
+import AppBreadCrumb from "@/components/layout/AppBreadCrumb";
+import DashboardSummary from "./summary/DashboardSummary";
+import ViewChart from "./chart/ViewChart";
+import DashboardTable from "./table/DashboardTable";
 
 const Dashboard = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
+  const { data, isLoading: isFetchingDashboard } =
+    useGetDashboardDataQuery(undefined);
+
+  if (isFetchingDashboard) {
+    return <Spin size="large" fullscreen />;
+  }
+
   return (
-    <div
-      style={{
-        color: "white",
-      }}
-    >
-      <HelmetProvider>
+    <>
+      <Helmet>
         <title>Dashboard</title>
-      </HelmetProvider>
-      <h1
+      </Helmet>
+      <AppBreadCrumb items={[]} />
+      <div
         style={{
-          fontWeight: "bold",
-          textAlign: "center",
-          color: "black",
+          padding: 24,
+          minHeight: 360,
+          background: colorBgContainer,
+          borderRadius: borderRadiusLG,
         }}
       >
-        Welcome to the Dashboard
-      </h1>
-    </div>
+        <DashboardSummary
+          revenueToday={data?.revenueToday}
+          countLatestUsers={data?.countLatestUsers}
+          totalTicketsCurrentMonth={data?.totalTicketsCurrentMonth}
+          revenueCurrentMonth={data?.revenueCurrentMonth}
+        />
+        <ViewChart
+          topViewBlogs={data?.topViewBlogs}
+          revenueByMonth={data?.revenueByMonth}
+        />
+        <DashboardTable
+          movieRevenues={data?.movieRevenues}
+          cinemaRevenues={data?.cinemaRevenues}
+        />
+      </div>
+    </>
   );
 };
 

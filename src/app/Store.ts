@@ -21,6 +21,7 @@ import { priceItemApi } from "@/app/services/priceItem.service";
 import { additionalServiceApi } from "@/app/services/additionalServices.service";
 import { productApi } from "@/app/services/products.service";
 import { orderApi } from "@/app/services/orders.service";
+import { dashboardApi } from "@/app/services/dashboard.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 
@@ -48,6 +49,7 @@ export const Store = configureStore({
     [additionalServiceApi.reducerPath]: additionalServiceApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -72,6 +74,7 @@ export const Store = configureStore({
       additionalServiceApi.middleware,
       productApi.middleware,
       orderApi.middleware,
+      dashboardApi.middleware,
       checkStatusMiddleware,
       tokenMiddleware,
     ),
