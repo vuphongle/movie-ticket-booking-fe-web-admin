@@ -1,5 +1,5 @@
 import "./App.css";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import {
   Dashboard,
   Login,
@@ -47,10 +47,7 @@ function App() {
         <Route
           element={<AuthorizeRoutes requireRoles={["ADMIN", "SUPER_ADMIN"]} />}
         >
-          <Route
-            path="/"
-            element={<Navigate to="/admin/dashboard" replace />}
-          />
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="/admin" element={<AppLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="cinemas">
