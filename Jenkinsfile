@@ -57,8 +57,11 @@ pipeline {
               ssh -i \${SSH_KEY} -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
                 cd ${DEPLOY_PATH} && \
                 docker compose pull frontend-admin && \
+                docker stop movie-booking-frontend-admin || true && \
+                docker rm -f movie-booking-frontend-admin || true && \
                 docker compose up -d frontend-admin && \
-                docker compose ps
+                docker compose ps && \
+                docker image prune -f
               '
             """
           }
