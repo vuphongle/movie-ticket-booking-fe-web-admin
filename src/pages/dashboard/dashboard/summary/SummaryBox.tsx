@@ -28,7 +28,7 @@ const ReportBox = styled.div`
 `;
 
 interface SummaryBoxProps {
-  title: string;
+  title: React.ReactNode;
   content: string | number;
   className?: string;
   link: string;

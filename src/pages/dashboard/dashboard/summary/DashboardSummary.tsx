@@ -22,7 +22,12 @@ function DashboardSummary({
     <Row gutter={[16, 16]}>
       <Col span={6}>
         <SummaryBox
-          title={`Doanh thu trong ngày (${DDMMYYYY})`}
+          title={
+            <>
+              Doanh thu trong ngày
+              <br />({DDMMYYYY})
+            </>
+          }
           content={formatCurrency(revenueToday)}
           className="primary"
           link="#"
@@ -30,7 +35,11 @@ function DashboardSummary({
       </Col>
       <Col span={6}>
         <SummaryBox
-          title={`Khách hàng mới (${MMYYYY})`}
+          title={
+            <>
+              Khách hàng mới <br />({MMYYYY})
+            </>
+          }
           content={countLatestUsers?.toString() || "0"}
           className="info"
           link="/admin/users"
@@ -38,7 +47,11 @@ function DashboardSummary({
       </Col>
       <Col span={6}>
         <SummaryBox
-          title={`Tổng vé bán ra (${MMYYYY})`}
+          title={
+            <>
+              Tổng vé bán ra <br />({MMYYYY})
+            </>
+          }
           content={totalTicketsCurrentMonth?.toString() || "0"}
           className="warning"
           link="#"
@@ -46,7 +59,11 @@ function DashboardSummary({
       </Col>
       <Col span={6}>
         <SummaryBox
-          title={`Tổng doanh thu (${MMYYYY})`}
+          title={
+            <>
+              Tổng doanh thu <br />({MMYYYY})
+            </>
+          }
           content={formatCurrency(revenueCurrentMonth)}
           className="danger"
           link="#"

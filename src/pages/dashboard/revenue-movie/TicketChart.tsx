@@ -38,6 +38,23 @@ interface TicketChartProps {
 }
 
 function TicketChart({ data }: TicketChartProps) {
+  const fullMovieNames = data?.map((movie) => movie?.movieName) || [];
+
+  const chartOptionsWithTooltip: ChartOptions<"bar"> = {
+    ...chartOptions,
+    plugins: {
+      ...chartOptions.plugins,
+      tooltip: {
+        callbacks: {
+          title: (context) => {
+            const index = context[0].dataIndex;
+            return fullMovieNames[index] || "";
+          },
+        },
+      },
+    },
+  };
+
   const chartData = {
     labels: data?.map((movie) => movie?.movieName.slice(0, 10) + "...") || [],
     datasets: [
@@ -49,7 +66,7 @@ function TicketChart({ data }: TicketChartProps) {
       },
     ],
   };
-  return <Bar options={chartOptions} data={chartData} />;
+  return <Bar options={chartOptionsWithTooltip} data={chartData} />;
 }
 
 export default TicketChart;
