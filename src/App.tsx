@@ -38,7 +38,11 @@ import DirectorList from "@/pages/director/director-list/DirectorList";
 import DirectorDetail from "@/pages/director/director-detail/DirectorDetail";
 import DirectorCreate from "@/pages/director/director-create/DirectorCreate";
 import OrderList from "@/pages/order/order-list/OrderList";
-import OrderDetail from "./pages/order/order-detail/OrderDetail";
+import OrderDetail from "@/pages/order/order-detail/OrderDetail";
+import BlogList from "@/pages/blog/blog-list/BlogList";
+import OwnBlogList from "@/pages/blog/own-blog/OwnBlogList";
+import BlogDetail from "@/pages/blog/blog-detail/BlogDetail";
+import BlogCreate from "@/pages/blog/blog-create/BlogCreate";
 
 function App() {
   return (
@@ -60,6 +64,12 @@ function App() {
               <Route index element={<MovieList />} />
               <Route path=":movieId/detail" element={<MovieDetail />} />
               <Route path="create" element={<MovieCreate />} />
+            </Route>
+            <Route path="blogs">
+              <Route index element={<BlogList />} />
+              <Route path="own-blogs" element={<OwnBlogList />} />
+              <Route path=":blogId/detail" element={<BlogDetail />} />
+              <Route path="create" element={<BlogCreate />} />
             </Route>
             <Route path="revenue/cinema" element={<RevenueByCinema />} />
             <Route path="revenue/movie" element={<RevenueByMovie />} />
