@@ -43,6 +43,9 @@ import BlogList from "@/pages/blog/blog-list/BlogList";
 import OwnBlogList from "@/pages/blog/own-blog/OwnBlogList";
 import BlogDetail from "@/pages/blog/blog-detail/BlogDetail";
 import BlogCreate from "@/pages/blog/blog-create/BlogCreate";
+import UserList from "./pages/user/user-list/UserList";
+import UserDetail from "./pages/user/user-detail/UserDetail";
+import UserCreate from "./pages/user/user-create/UserCreate";
 
 function App() {
   return (
@@ -101,6 +104,11 @@ function App() {
             </Route>
             <Route path="countries">
               <Route index element={<CountryList />} />
+            </Route>
+            <Route path="users">
+              <Route index element={<UserList />} />
+              <Route path=":userId/detail" element={<UserDetail />} />
+              <Route path="create" element={<UserCreate />} />
             </Route>
             <Route path="directors">
               <Route index element={<DirectorList />} />
