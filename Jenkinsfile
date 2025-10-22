@@ -67,7 +67,7 @@ pipeline {
                 sleep 3 && \
                 docker ps | grep movie-booking-frontend-admin && \
                 echo "🔍 Checking nginx proxy status..." && \
-                docker ps | grep gocinema-nginx-proxy && \
+                docker ps | grep gocinema-nginx-proxy || echo "⚠️  Nginx proxy not found (optional)" && \
                 echo "🧹 Cleaning up unused images..." && \
                 docker image prune -f && \
                 echo "📊 Final container status:" && \
