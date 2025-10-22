@@ -103,10 +103,10 @@ const UserDetail = () => {
       .validateFields()
       .then((values) => {
         // Loại bỏ email vì backend không cho phép update email
-        // Loại bỏ role nếu user đang xem là ADMIN (không cho phép chỉnh sửa quyền của ADMIN)
+        // Loại bỏ role nếu user đang xem là ADMIN hoặc SUPER_ADMIN (không cho phép chỉnh sửa quyền)
         const { email: _email, ...updateData } = values;
 
-        if (user?.role === "ADMIN") {
+        if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") {
           const { role: _role, ...dataWithoutRole } = updateData;
           return updateUser({ id: user!.id, ...dataWithoutRole }).unwrap();
         }
@@ -277,8 +277,8 @@ const UserDetail = () => {
                       },
                     ]}
                     tooltip={
-                      user?.role === "ADMIN"
-                        ? "Không thể chỉnh sửa quyền của tài khoản ADMIN"
+                      user?.role === "ADMIN" || user?.role === "SUPER_ADMIN"
+                        ? "Không thể chỉnh sửa quyền của tài khoản ADMIN hoặc SUPER_ADMIN"
                         : undefined
                     }
                   >
@@ -287,13 +287,16 @@ const UserDetail = () => {
                       showSearch
                       placeholder="Select a role"
                       optionFilterProp="children"
-                      disabled={user?.role === "ADMIN"}
+                      disabled={
+                        user?.role === "ADMIN" || user?.role === "SUPER_ADMIN"
+                      }
                       filterOption={(input, option) =>
                         (option?.label ?? "")
                           .toLowerCase()
                           .includes(input.toLowerCase())
                       }
                       options={[
+                        { label: "SUPER_ADMIN", value: "SUPER_ADMIN" },
                         { label: "ADMIN", value: "ADMIN" },
                         { label: "USER", value: "USER" },
                       ]}

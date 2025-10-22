@@ -77,11 +77,13 @@ const UserTable = ({ data }: UserTableProps) => {
       sorter: (a: User, b: User) => a.role.localeCompare(b.role, "vi"),
       sortDirections: ["descend", "ascend"],
       render: (role: string, record: User) => {
-        return (
-          <Tag color={record.role === "ADMIN" ? "geekblue" : "volcano"}>
-            {role.toUpperCase()}
-          </Tag>
-        );
+        let color = "volcano"; // Default for USER
+        if (record.role === "SUPER_ADMIN") {
+          color = "purple";
+        } else if (record.role === "ADMIN") {
+          color = "geekblue";
+        }
+        return <Tag color={color}>{role.toUpperCase()}</Tag>;
       },
     },
     {

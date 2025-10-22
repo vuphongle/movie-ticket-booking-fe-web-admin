@@ -167,6 +167,7 @@ const UserCreate = () => {
                       .includes(input.toLowerCase())
                   }
                   options={[
+                    { label: "SUPER_ADMIN", value: "SUPER_ADMIN" },
                     { label: "ADMIN", value: "ADMIN" },
                     { label: "USER", value: "USER" },
                   ]}
