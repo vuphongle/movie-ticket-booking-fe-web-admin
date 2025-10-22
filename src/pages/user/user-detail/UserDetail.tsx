@@ -17,9 +17,10 @@ import {
   message,
   theme,
 } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import {
   useDeleteImageMutation,
   useGetImagesQuery,
@@ -33,6 +34,7 @@ import {
 } from "@app/services/users.service";
 import AppBreadCrumb from "@components/layout/AppBreadCrumb";
 import { API_DOMAIN } from "@data/constants";
+import type { RootState } from "@/app/Store";
 import OrderListByUser from "./OrderListByUser";
 
 const UserDetail = () => {
@@ -41,6 +43,8 @@ const UserDetail = () => {
   } = theme.useToken();
   const [form] = Form.useForm();
   const { userId } = useParams();
+
+  const currentUser = useSelector((state: RootState) => state.auth.auth);
 
   const { data: user, isLoading: isFetchingUser } = useGetUserByIdQuery(userId);
   const { data: orders, isLoading: isFetchingOrders } =
@@ -75,6 +79,42 @@ const UserDetail = () => {
   const endIndex = Math.min(startIndex + pageSize, totalImages);
   const imagesRendered = images.slice(startIndex, endIndex);
 
+  // Xác định quyền chỉnh sửa dựa trên role
+  const canEdit = useMemo(() => {
+    if (!currentUser || !user) return false;
+
+    // SUPER_ADMIN có quyền chỉnh sửa tất cả
+    if (currentUser.role === "SUPER_ADMIN") return true;
+
+    // ADMIN không được chỉnh sửa ADMIN hoặc SUPER_ADMIN
+    if (currentUser.role === "ADMIN") {
+      return user.role !== "ADMIN" && user.role !== "SUPER_ADMIN";
+    }
+
+    return false;
+  }, [currentUser, user]);
+
+  // Xác định có được đổi role hay không
+  const canChangeRole = useMemo(() => {
+    if (!currentUser || !user) return false;
+
+    // Chỉ SUPER_ADMIN mới được đổi role
+    return currentUser.role === "SUPER_ADMIN";
+  }, [currentUser, user]);
+
+  // Xác định role options có thể chọn
+  const roleOptions = useMemo(() => {
+    if (currentUser?.role === "SUPER_ADMIN") {
+      return [
+        { label: "SUPER ADMIN", value: "SUPER_ADMIN" },
+        { label: "ADMIN", value: "ADMIN" },
+        { label: "USER", value: "USER" },
+      ];
+    }
+    // ADMIN chỉ thấy USER
+    return [{ label: "USER", value: "USER" }];
+  }, [currentUser]);
+
   const breadcrumb = [
     { label: "Danh sách user", href: "/admin/users" },
     { label: user?.name, href: `/admin/users/${user?.id}/detail` },
@@ -102,11 +142,10 @@ const UserDetail = () => {
     form
       .validateFields()
       .then((values) => {
-        // Loại bỏ email vì backend không cho phép update email
-        // Loại bỏ role nếu user đang xem là ADMIN hoặc SUPER_ADMIN (không cho phép chỉnh sửa quyền)
         const { email: _email, ...updateData } = values;
 
-        if (user?.role === "ADMIN" || user?.role === "SUPER_ADMIN") {
+        // Nếu không có quyền đổi role, bỏ role ra khỏi request
+        if (!canChangeRole) {
           const { role: _role, ...dataWithoutRole } = updateData;
           return updateUser({ id: user!.id, ...dataWithoutRole }).unwrap();
         }
@@ -196,6 +235,7 @@ const UserDetail = () => {
                 icon={<SaveOutlined />}
                 onClick={handleUpdate}
                 loading={isLoadingUpdateUser}
+                disabled={!canEdit}
               >
                 Cập nhật
               </Button>
@@ -205,6 +245,7 @@ const UserDetail = () => {
                 icon={<RetweetOutlined />}
                 onClick={handleResetPassword}
                 loading={isLoadingResetPassword}
+                disabled={!canEdit}
               >
                 Reset mật khẩu
               </Button>
@@ -228,7 +269,7 @@ const UserDetail = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Enter name" />
+                    <Input placeholder="Enter name" disabled={!canEdit} />
                   </Form.Item>
 
                   <Form.Item
@@ -264,7 +305,7 @@ const UserDetail = () => {
                       },
                     ]}
                   >
-                    <Input placeholder="Enter phone" />
+                    <Input placeholder="Enter phone" disabled={!canEdit} />
                   </Form.Item>
 
                   <Form.Item
@@ -277,8 +318,8 @@ const UserDetail = () => {
                       },
                     ]}
                     tooltip={
-                      user?.role === "ADMIN" || user?.role === "SUPER_ADMIN"
-                        ? "Không thể chỉnh sửa quyền của tài khoản ADMIN hoặc SUPER_ADMIN"
+                      !canChangeRole
+                        ? "Bạn không có quyền thay đổi quyền của user này"
                         : undefined
                     }
                   >
@@ -287,19 +328,13 @@ const UserDetail = () => {
                       showSearch
                       placeholder="Select a role"
                       optionFilterProp="children"
-                      disabled={
-                        user?.role === "ADMIN" || user?.role === "SUPER_ADMIN"
-                      }
+                      disabled={!canChangeRole}
                       filterOption={(input, option) =>
                         (option?.label ?? "")
                           .toLowerCase()
                           .includes(input.toLowerCase())
                       }
-                      options={[
-                        { label: "SUPER_ADMIN", value: "SUPER_ADMIN" },
-                        { label: "ADMIN", value: "ADMIN" },
-                        { label: "USER", value: "USER" },
-                      ]}
+                      options={roleOptions}
                     />
                   </Form.Item>
 
@@ -318,6 +353,7 @@ const UserDetail = () => {
                       showSearch
                       placeholder="Select a enabled"
                       optionFilterProp="children"
+                      disabled={!canEdit}
                       filterOption={(input, option) =>
                         (option?.label ?? "")
                           .toLowerCase()
