@@ -108,7 +108,7 @@ const CouponDetailsTab = ({
       message.success(
         newEnabled
           ? t("COUPON_DETAIL_ENABLE_SUCCESS")
-          : t("COUPON_DETAIL_DISABLE_SUCCESS"),
+          : t("COUPON_DETAIL_DISABLE_SUCCESS")
       );
       onRefresh();
     } catch {
@@ -191,7 +191,7 @@ const CouponDetailsTab = ({
       render: (_, record) => (
         <BenefitTypeDisplay
           benefitType={record.benefitType}
-          terms={record as any} // Backend data is flattened, not nested
+          terms={record as any}
         />
       ),
     },

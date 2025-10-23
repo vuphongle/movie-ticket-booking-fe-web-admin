@@ -21,6 +21,7 @@ export interface Blog {
   type: BlogType;
   thumbnail?: string;
   user: User;
+  viewCount?: number | null;
   viewHistories?: ViewHistory[] | null;
   createdAt: string;
   updatedAt: string;
