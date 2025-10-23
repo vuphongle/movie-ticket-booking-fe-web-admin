@@ -13,7 +13,7 @@ interface User {
   role: string;
   enabled: boolean;
   avatar: string;
-  createdAt: string;
+  createdAt: string | number; // Hỗ trợ cả string và timestamp
 }
 
 interface UserTableProps {
@@ -104,11 +104,23 @@ const UserTable = ({ data }: UserTableProps) => {
       title: "Ngày tạo",
       dataIndex: "createdAt",
       key: "createdAt",
-      sorter: (a: User, b: User) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      sorter: (a: User, b: User) => {
+        const timeA =
+          typeof a.createdAt === "number"
+            ? a.createdAt
+            : new Date(a.createdAt).getTime();
+        const timeB =
+          typeof b.createdAt === "number"
+            ? b.createdAt
+            : new Date(b.createdAt).getTime();
+        return timeA - timeB;
+      },
       sortDirections: ["descend", "ascend"],
-      render: (createdAt: string) => {
-        return formatDate(createdAt);
+      render: (createdAt: string | number) => {
+        // Nếu là timestamp (số), chuyển sang Date
+        const date =
+          typeof createdAt === "number" ? new Date(createdAt) : createdAt;
+        return formatDate(date);
       },
     },
   ];

@@ -21,6 +21,12 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useNavigate, useParams } from "react-router-dom";
 import {
+  compressImage,
+  validateImageFile,
+  formatFileSize,
+  MAX_FILE_SIZE,
+} from "@/utils/imageUtils";
+import {
   useDeleteBlogMutation,
   useGetBlogByIdQuery,
   useUpdateBlogMutation,
@@ -71,6 +77,9 @@ const BlogDetail = () => {
   const [imageSelected, setImageSelected] = useState<string | null>(null);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
 
+  // State để lưu content từ CKEditor
+  const [editorContent, setEditorContent] = useState("");
+
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;
   const totalImages = images.length;
@@ -93,7 +102,12 @@ const BlogDetail = () => {
           : blog.thumbnail;
       setThumbnail(thumbnailUrl);
     }
-  }, [blog, thumbnail]);
+
+    // Set initial editor content
+    if (blog && blog.content && !editorContent) {
+      setEditorContent(blog.content);
+    }
+  }, [blog, thumbnail, editorContent]);
 
   if (isFetchingBlog) {
     return <Spin size="large" fullscreen />;
@@ -107,13 +121,18 @@ const BlogDetail = () => {
     form
       .validateFields()
       .then((values) => {
-        return updateBlog({ blogId, ...values }).unwrap();
+        // Đảm bảo content từ editor được gửi đi
+        const payload = {
+          ...values,
+          content: editorContent || values.content || "",
+        };
+        return updateBlog({ blogId, ...payload }).unwrap();
       })
       .then(() => {
         message.success("Cập nhật bài viết thành công!");
       })
       .catch((error: any) => {
-        message.error(error.data?.message || "Có lỗi xảy ra");
+        message.error(error.data?.message || "Có lỗi xảy ra khi cập nhật!");
       });
   };
 
@@ -152,20 +171,49 @@ const BlogDetail = () => {
     setImageSelected(image);
   };
 
-  const handleUploadImage = (options: any) => {
+  const handleUploadImage = async (options: any) => {
     const { file, onSuccess, onError } = options;
-    const formData = new FormData();
-    formData.append("file", file);
-    uploadImage(formData)
-      .unwrap()
-      .then(() => {
-        if (onSuccess) onSuccess(null);
-        message.success("Tải ảnh lên thành công!");
-      })
-      .catch((error: any) => {
-        if (onError) onError(error);
-        message.error(error.data?.message || "Có lỗi xảy ra");
-      });
+
+    try {
+      // Validate file
+      const validation = validateImageFile(file);
+      if (!validation.valid) {
+        message.error(validation.error);
+        if (onError) onError(new Error(validation.error || "Invalid file"));
+        return;
+      }
+
+      // Show original file size
+      const originalSize = formatFileSize(file.size);
+
+      // Compress image if needed
+      const compressedFile = await compressImage(file, MAX_FILE_SIZE);
+
+      // Show compression info
+      if (compressedFile.size < file.size) {
+        const newSize = formatFileSize(compressedFile.size);
+        message.info(`Ảnh đã được nén từ ${originalSize} xuống ${newSize}`);
+      }
+
+      const formData = new FormData();
+      formData.append("file", compressedFile);
+
+      await uploadImage(formData).unwrap();
+      if (onSuccess) onSuccess(null);
+      message.success("Tải ảnh lên thành công!");
+    } catch (error: any) {
+      if (onError) onError(error);
+      message.error(error?.data?.message || "Có lỗi xảy ra khi tải ảnh!");
+    }
+  };
+
+  const beforeUpload = (file: File) => {
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      message.error(validation.error);
+      return false;
+    }
+    return true;
   };
 
   const handleDeleteImage = () => {
@@ -261,14 +309,53 @@ const BlogDetail = () => {
                     required: true,
                     message: "Nội dung không được để trống!",
                   },
+                  {
+                    validator: (_, value) => {
+                      // Kiểm tra content từ editor state
+                      const content = editorContent || value || "";
+                      // Remove HTML tags để check nội dung thực
+                      const textContent = content
+                        .replace(/<[^>]*>/g, "")
+                        .trim();
+
+                      if (!textContent || textContent.length === 0) {
+                        return Promise.reject(
+                          new Error("Nội dung không được để trống!")
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
                 ]}
               >
                 <CKEditor
                   editor={ClassicEditor}
-                  data={blog?.content || ""}
+                  data={editorContent || blog?.content || ""}
+                  config={{
+                    placeholder: "Nhập nội dung bài viết tại đây...",
+                    toolbar: [
+                      "heading",
+                      "|",
+                      "bold",
+                      "italic",
+                      "link",
+                      "bulletedList",
+                      "numberedList",
+                      "|",
+                      "blockQuote",
+                      "insertTable",
+                      "|",
+                      "undo",
+                      "redo",
+                    ],
+                    licenseKey: "GPL",
+                  }}
                   onChange={(_event, editor) => {
                     const data = editor.getData();
+                    setEditorContent(data);
                     form.setFieldsValue({ content: data });
+                    // Trigger validation để clear error message
+                    form.validateFields(["content"]).catch(() => {});
                   }}
                 />
               </Form.Item>
@@ -379,6 +466,8 @@ const BlogDetail = () => {
             <Space direction="horizontal">
               <Upload
                 maxCount={1}
+                accept="image/*"
+                beforeUpload={beforeUpload}
                 customRequest={handleUploadImage}
                 showUploadList={false}
               >

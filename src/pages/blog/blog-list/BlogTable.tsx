@@ -3,7 +3,7 @@ import type { ColumnsType } from "antd/es/table";
 import { Link as RouterLink } from "react-router-dom";
 import useSearchTable from "@hooks/useSearchTable";
 import { formatDate } from "@utils/functionUtils";
-import type { Blog, BlogType, User, ViewHistory } from "@/types";
+import type { Blog, BlogType, User } from "@/types";
 
 interface BlogTableProps {
   data: Blog[];
@@ -65,13 +65,12 @@ const BlogTable = ({ data }: BlogTableProps) => {
     },
     {
       title: "Lượt xem",
-      dataIndex: "viewHistories",
-      key: "viewHistories",
-      sorter: (a: Blog, b: Blog) =>
-        (a.viewHistories?.length || 0) - (b.viewHistories?.length || 0),
+      dataIndex: "viewCount",
+      key: "viewCount",
+      sorter: (a: Blog, b: Blog) => (a.viewCount || 0) - (b.viewCount || 0),
       sortDirections: ["descend", "ascend"],
-      render: (viewHistories: ViewHistory[] | null | undefined) => {
-        return viewHistories?.length || 0;
+      render: (viewCount: number | null | undefined) => {
+        return viewCount || 0;
       },
     },
     {

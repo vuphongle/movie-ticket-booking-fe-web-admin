@@ -48,7 +48,9 @@ export const BenefitTypeDisplay = ({
       case BenefitType.DISCOUNT_PERCENT:
         return terms.percent ? `${terms.percent}%` : "";
       case BenefitType.DISCOUNT_AMOUNT:
-        return terms.amount ? `$${Number(terms.amount).toFixed(2)}` : "";
+        return terms.amount
+          ? `${Number(terms.amount).toLocaleString("vi-VN", { maximumFractionDigits: 0 })} VNĐ`
+          : "";
       case BenefitType.FREE_PRODUCT:
         return terms.giftQuantity ? `×${terms.giftQuantity}` : "";
       default:
