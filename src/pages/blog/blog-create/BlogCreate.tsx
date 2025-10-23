@@ -12,6 +12,7 @@ import {
   message,
   theme,
 } from "antd";
+import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useCreateBlogMutation } from "@/app/services/blogs.service";
@@ -29,11 +30,20 @@ const BlogCreate = () => {
   const [createBlog, { isLoading }] = useCreateBlogMutation();
   const navigate = useNavigate();
 
+  // State để lưu content từ CKEditor
+  const [editorContent, setEditorContent] = useState("");
+
   const handleCreate = () => {
     form
       .validateFields()
       .then((values) => {
-        return createBlog(values).unwrap();
+        // Đảm bảo content từ editor được gửi đi
+        const payload = {
+          ...values,
+          content: editorContent || values.content || "",
+        };
+
+        return createBlog(payload).unwrap();
       })
       .then((data) => {
         message.success("Tạo bài viết thành công!");
@@ -42,7 +52,9 @@ const BlogCreate = () => {
         }, 1500);
       })
       .catch((error) => {
-        message.error(error.data.message);
+        message.error(
+          error?.data?.message || "Có lỗi xảy ra khi tạo bài viết!"
+        );
       });
   };
 
@@ -106,13 +118,50 @@ const BlogCreate = () => {
                     required: true,
                     message: "Nội dung không được để trống!",
                   },
+                  {
+                    validator: (_, value) => {
+                      const content = editorContent || value || "";
+                      const textContent = content
+                        .replace(/<[^>]*>/g, "")
+                        .trim();
+
+                      if (!textContent || textContent.length === 0) {
+                        return Promise.reject(
+                          new Error("Nội dung không được để trống!")
+                        );
+                      }
+                      return Promise.resolve();
+                    },
+                  },
                 ]}
               >
                 <CKEditor
                   editor={ClassicEditor}
+                  data={editorContent}
+                  config={{
+                    placeholder: "Nhập nội dung bài viết tại đây...",
+                    toolbar: [
+                      "heading",
+                      "|",
+                      "bold",
+                      "italic",
+                      "link",
+                      "bulletedList",
+                      "numberedList",
+                      "|",
+                      "blockQuote",
+                      "insertTable",
+                      "|",
+                      "undo",
+                      "redo",
+                    ],
+                    licenseKey: "GPL",
+                  }}
                   onChange={(_event, editor) => {
                     const data = editor.getData();
+                    setEditorContent(data);
                     form.setFieldsValue({ content: data });
+                    form.validateFields(["content"]).catch(() => {});
                   }}
                 />
               </Form.Item>
