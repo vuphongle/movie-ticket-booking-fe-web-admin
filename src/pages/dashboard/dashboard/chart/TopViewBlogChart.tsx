@@ -20,24 +20,32 @@ ChartJS.register(
   Legend
 );
 
-const options: ChartOptions<"bar"> = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Top bài viết được xem nhiều nhất",
-    },
-  },
-};
-
 interface TopViewBlogChartProps {
   data: TopViewBlog[];
 }
 
 function TopViewBlogChart({ data }: TopViewBlogChartProps) {
+  const options: ChartOptions<"bar"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Top bài viết được xem nhiều nhất",
+      },
+      tooltip: {
+        callbacks: {
+          title: (context) => {
+            const index = context[0].dataIndex;
+            return data[index]?.title || "";
+          },
+        },
+      },
+    },
+  };
+
   const chartData = {
     labels: data?.map((blog) => blog?.title.slice(0, 10) + "...") || [],
     datasets: [
