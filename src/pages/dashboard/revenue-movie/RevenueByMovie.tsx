@@ -54,12 +54,20 @@ const RevenueByMovie = () => {
     exportRevenueByMovie({ startDate, endDate })
       .unwrap()
       .then((response) => {
+        const currentDate = new Date()
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, "");
+        const filename = `Revenue_Report_Movie_${currentDate}.xlsx`;
+
         const url = window.URL.createObjectURL(new Blob([response]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", "reports.xlsx");
+        link.setAttribute("download", filename);
         document.body.appendChild(link);
         link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
       })
       .catch(() => {
         message.error("Xuất báo cáo thất bại");
