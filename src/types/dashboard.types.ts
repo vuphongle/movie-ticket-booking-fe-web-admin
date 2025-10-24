@@ -40,3 +40,69 @@ export interface RevenueQueryParams {
   startDate?: string;
   endDate?: string;
 }
+
+export interface MovieCinemaRevenue {
+  movieId: number;
+  movieCode: string;
+  movieName: string;
+  cinemaId: number;
+  cinemaCode: string;
+  cinemaName: string;
+  totalTickets: number;
+  ticketRevenue: number;
+  serviceRevenue: number;
+  totalDiscount: number;
+  revenueBeforeDiscount: number;
+  totalRevenue: number;
+}
+
+export interface CinemaMovieRevenue {
+  cinemaId: number;
+  cinemaCode: string;
+  cinemaName: string;
+  movieId: number;
+  movieCode: string;
+  movieName: string;
+  totalTickets: number;
+  ticketRevenue: number;
+  serviceRevenue: number;
+  totalDiscount: number;
+  revenueBeforeDiscount: number;
+  totalRevenue: number;
+}
+
+export interface RevenueDetailQueryParams extends RevenueQueryParams {
+  id: number;
+}
+
+export interface CustomerRevenue {
+  customerId: number;
+  customerCode: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  totalOrders: number;
+  totalTickets: number;
+  ticketRevenue: number;
+  serviceRevenue: number;
+  totalDiscount: number;
+  revenueBeforeDiscount: number;
+  totalRevenue: number;
+}
+
+export interface CustomerMovieRevenue {
+  customerId: number;
+  customerCode: string;
+  customerName: string;
+  customerEmail: string;
+  movieId: number;
+  movieCode: string;
+  movieName: string;
+  totalOrders: number;
+  totalTickets: number;
+  ticketRevenue: number;
+  serviceRevenue: number;
+  totalDiscount: number;
+  revenueBeforeDiscount: number;
+  totalRevenue: number;
+}

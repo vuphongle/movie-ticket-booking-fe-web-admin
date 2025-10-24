@@ -1,8 +1,10 @@
 const menu = {
   DASHBOARD: "Bảng điều khiển",
   OVERVIEW: "Tổng quan",
+  REPORTS: "Báo cáo",
   REVENUE_BY_MOVIE: "Doanh thu theo phim",
   REVENUE_BY_CINEMA: "Doanh thu theo rạp",
+  REVENUE_BY_CUSTOMER: "Doanh thu theo khách hàng",
 
   CINEMA_MANAGEMENT: "Rạp phim",
   CINEMA_LIST: "Danh sách rạp phim",
