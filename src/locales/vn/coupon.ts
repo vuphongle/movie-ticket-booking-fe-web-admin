@@ -7,7 +7,6 @@ const coupon = {
   // Buttons
   COUPON_CREATE_BTN: "Tạo khuyến mại",
   COUPON_UPDATE_BTN: "Cập nhật",
-  COUPON_SAVE_BTN: "Lưu",
   COUPON_DELETE_BTN: "Xóa",
   COUPON_REFRESH_BTN: "Làm mới",
   COUPON_CANCEL_BTN: "Hủy",
@@ -45,24 +44,12 @@ const coupon = {
   COUPON_END_DATE_LABEL: "Ngày kết thúc",
 
   // Form placeholders
-  COUPON_CODE_PLACEHOLDER: "Nhập mã khuyến mại",
-  COUPON_NAME_PLACEHOLDER: "Nhập tên khuyến mại",
-  COUPON_DESCRIPTION_PLACEHOLDER: "Nhập mô tả khuyến mại...",
-  COUPON_DISCOUNT_PLACEHOLDER: "Nhập phần trăm giảm giá",
-  COUPON_MAX_DISCOUNT_PLACEHOLDER:
-    "Nhập số tiền giảm tối đa (để trống nếu không giới hạn)",
-  COUPON_QUANTITY_PLACEHOLDER: "Nhập số lượng",
-  COUPON_STATUS_PLACEHOLDER: "Chọn trạng thái",
   SELECT_DATE: "Chọn ngày",
   SELECT_START_DATE: "Chọn ngày bắt đầu",
   SELECT_END_DATE: "Chọn ngày kết thúc",
 
   // Table columns
   COUPON_TABLE_CODE: "Mã khuyến mại",
-  COUPON_TABLE_DISCOUNT: "Phần trăm giảm giá",
-  COUPON_TABLE_MAX_DISCOUNT: "Giảm tối đa",
-  COUPON_TABLE_QUANTITY: "Số lượng",
-  COUPON_TABLE_USED: "Đã sử dụng",
   COUPON_TABLE_STATUS: "Trạng thái",
   COUPON_TABLE_VALIDITY_PERIOD: "Thời gian áp dụng",
   COUPON_TABLE_ACTIONS: "Thao tác",
@@ -76,25 +63,8 @@ const coupon = {
   COUPON_STATUS_UPCOMING: "Sắp có hiệu lực",
   COUPON_STATUS_EXPIRED: "Hết hạn",
 
-  // Common texts
-  COUPON_UNLIMITED: "Không giới hạn",
-  COUPON_CODE_EXTRA: "Mã duy nhất để xác định khuyến mại",
-  COUPON_NAME_EXTRA: "Tên hiển thị cho khách hàng",
-  COUPON_DESCRIPTION_EXTRA: "Mô tả chi tiết về ưu đãi (tùy chọn)",
-  COUPON_STATUS_EXTRA_EDIT: "Chế độ hiển thị của coupon",
-  COUPON_STATUS_EXTRA_CREATE: "Coupon mới tạo sẽ ở trạng thái ẩn",
-  COUPON_STATUS_ACTIVE_EXTRA: "Hiển thị và có thể sử dụng",
-  COUPON_STATUS_INACTIVE_EXTRA: "Không hiển thị cho khách hàng",
-
   // Alert messages
-  NEXT_STEP: "Bước tiếp theo",
-  NEXT_STEP_EDIT_DESC:
-    "Sau khi cập nhật, bạn có thể quản lý thông tin chi tiết khuyến mại.",
-  NEXT_STEP_CREATE_DESC:
-    "Coupon mới tạo sẽ ở trạng thái ẩn. Sau khi tạo, bạn cần thêm điều kiện chi tiết trước khi có thể kích hoạt khuyến mại.",
   NOTE: "Lưu ý",
-  NOTE_CREATE_DESC:
-    "Coupon mới tạo luôn có trạng thái ẩn để đảm bảo an toàn. Bạn cần thêm ít nhất một điều kiện chi tiết trước khi có thể kích hoạt.",
   COUPON_DEACTIVATE_CONFIRM_TITLE: "Xác nhận vô hiệu hóa",
   COUPON_DEACTIVATE_CONFIRM_MESSAGE:
     "Vô hiệu hóa coupon sẽ tắt tất cả các chi tiết liên quan. Bạn có chắc chắn muốn tiếp tục?",
@@ -105,25 +75,14 @@ const coupon = {
   COUPON_CODE_MAX_LENGTH: "Mã khuyến mại không được quá 50 ký tự!",
   COUPON_CODE_PATTERN: "Mã chỉ chứa chữ hoa, số, dấu gạch dưới và gạch ngang!",
   COUPON_NAME_REQUIRED: "Tên khuyến mại không được để trống!",
-  COUPON_NAME_MIN_LENGTH: "Tên khuyến mại phải có ít nhất 3 ký tự!",
   COUPON_NAME_MAX_LENGTH: "Tên khuyến mại không được quá 200 ký tự!",
   COUPON_DESCRIPTION_MAX_LENGTH: "Mô tả không được quá 1000 ký tự!",
-  COUPON_DISCOUNT_REQUIRED: "Phần trăm giảm giá không được để trống!",
-  COUPON_DISCOUNT_RANGE_ERROR: "Phần trăm phải nằm trong khoảng 0 - 100",
-  COUPON_MAX_DISCOUNT_MIN_ERROR: "Giảm tối đa phải lớn hơn 0",
-  COUPON_QUANTITY_REQUIRED: "Số lượng không được để trống!",
-  COUPON_QUANTITY_MIN_ERROR: "Số lượng phải lớn hơn 0",
-  COUPON_STATUS_REQUIRED: "Trạng thái không được để trống!",
-  COUPON_START_DATE_REQUIRED: "Ngày bắt đầu không được để trống!",
-  COUPON_END_DATE_REQUIRED: "Ngày kết thúc không được để trống!",
-  COUPON_END_DATE_AFTER_START: "Ngày kết thúc phải sau ngày bắt đầu!",
 
   // Success messages
   COUPON_CREATE_SUCCESS: "Tạo khuyến mại thành công!",
   COUPON_UPDATE_SUCCESS: "Cập nhật khuyến mại thành công!",
   COUPON_DELETE_SUCCESS: "Xóa khuyến mại thành công!",
-  CREATE_COUPON_DETAIL_SUCCESS: "Tạo quy tắc khuyến mại thành công!",
-  UPDATE_COUPON_DETAIL_SUCCESS: "Cập nhật quy tắc khuyến mại thành công!",
+  COUPON_DEACTIVATE_SUCCESS: "Vô hiệu hóa khuyến mại thành công!",
 
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa khuyến mại này?",
@@ -136,26 +95,14 @@ const coupon = {
   COUPON_FETCH_ERROR: "Không thể tải dữ liệu coupon",
 
   // Success messages for coupon detail
-  COUPON_DETAIL_DISABLE_SUCCESS: "Đã tắt khuyến mại detail thành công",
-  COUPON_DETAIL_ENABLE_SUCCESS: "Đã bật khuyến mại detail thành công",
+  COUPON_DETAIL_DISABLE_SUCCESS: "Đã tắt chi tiết khuyến mại thành công",
+  COUPON_DETAIL_ENABLE_SUCCESS: "Đã bật chi tiết khuyến mại thành công",
   COUPON_DETAIL_DELETE_SUCCESS: "Xóa chi tiết khuyến mại thành công",
-  COUPON_DETAIL_UPDATE_SUCCESS: "Cập nhật chi tiết coupon thành công!",
-  COUPON_DETAIL_CREATE_SUCCESS: "Tạo chi tiết coupon thành công!",
+  COUPON_DETAIL_UPDATE_SUCCESS: "Cập nhật chi tiết khuyến mại thành công!",
+  COUPON_DETAIL_CREATE_SUCCESS: "Tạo chi tiết khuyến mại thành công!",
 
   // Error messages for coupon detail
   COUPON_DETAIL_ERROR: "Có lỗi xảy ra",
-
-  // Validation messages for coupon detail
-  COUPON_DETAIL_START_DATE_REQUIRED: "Vui lòng chọn ngày bắt đầu!",
-  COUPON_DETAIL_END_DATE_REQUIRED: "Vui lòng chọn ngày kết thúc!",
-  COUPON_DETAIL_START_DATE_AFTER_PARENT_START:
-    "Ngày bắt đầu không thể trước ngày bắt đầu của coupon cha",
-  COUPON_DETAIL_START_DATE_BEFORE_PARENT_END:
-    "Ngày bắt đầu không thể sau ngày kết thúc của coupon cha",
-  COUPON_DETAIL_END_DATE_AFTER_PARENT_START:
-    "Ngày kết thúc không thể trước ngày bắt đầu của coupon cha",
-  COUPON_DETAIL_END_DATE_BEFORE_PARENT_END:
-    "Ngày kết thúc không thể sau ngày kết thúc của coupon cha",
 
   // Placeholders for coupon detail
   SELECT_DETAIL_START_DATE: "Chọn ngày bắt đầu",
@@ -281,18 +228,6 @@ const coupon = {
   SEAT_TYPE_COUPLE: "Ghế đôi",
   SEAT_TYPE_DEFAULT: "Ghế loại",
 
-  // Target display texts
-  TARGET_FULL_ORDER: "Toàn đơn hàng",
-  TARGET_ALL_SEAT_TYPES: "Tất cả loại ghế",
-  TARGET_ALL_SERVICES: "Tất cả dịch vụ",
-  TARGET_SERVICE_PREFIX: "Dịch vụ",
-
-  // Benefit display texts
-  BENEFIT_DISCOUNT_TEXT: "Giảm",
-  BENEFIT_MAX_TEXT: "tối đa",
-  BENEFIT_GIFT_TEXT: "Tặng",
-  BENEFIT_PRODUCT_TEXT: "sản phẩm",
-
   // Usage statistics
   COUPON_DETAIL_USAGE_STATS_LABEL: "Thống kê sử dụng",
   COUPON_DETAIL_USAGE_TIMES_LABEL: "Số lần sử dụng",
@@ -305,7 +240,6 @@ const coupon = {
   PAGINATION_ITEMS: "mục",
 
   // Input placeholders
-  NOT_REQUIRED_FOR_ORDER: "Không cần thiết cho đơn hàng",
   ENTER_PERCENTAGE: "Nhập phần trăm",
   ENTER_AMOUNT: "Nhập số tiền",
 
@@ -321,14 +255,21 @@ const coupon = {
   COUPON_DETAIL_DUPLICATE_MENU: "Nhân bản",
   COUPON_DETAIL_DUPLICATE_SUCCESS: "Nhân bản chi tiết khuyến mại thành công",
   COUPON_DETAIL_DUPLICATE_ERROR: "Không thể nhân bản chi tiết khuyến mại",
-  // Date validation messages
-  START_DATE_BEFORE_END_DATE:
-    "Ngày bắt đầu phải trước hoặc bằng ngày kết thúc!",
-  END_DATE_AFTER_START_DATE: "Ngày kết thúc phải sau hoặc bằng ngày bắt đầu!",
 
   // Status update error
   STATUS_UPDATE_ERROR: "Lỗi khi cập nhật trạng thái",
   DELETE_DETAIL_ERROR: "Lỗi khi xóa chi tiết khuyến mại",
+  COUPON_CODE_AUTO_UPPERCASE: "Mã khuyến mại sẽ tự động chuyển thành chữ hoa",
+
+  COUPON_ACTIVATE_CONFIRM_TITLE: "Xác nhận kích hoạt",
+  COUPON_ACTIVATE_CONFIRM_MESSAGE:
+    "Kích hoạt khuyến mại sẽ bật tất cả các chi tiết liên quan. Bạn có chắc chắn muốn tiếp tục?",
+  COUPON_ACTIVATE: "Kích hoạt",
+  COUPON_ACTIVATE_ERROR: "Kích hoạt khuyến mại thất bại. Cần ít nhất một chi tiết hoạt động.",
+  COUPON_ACTIVATE_SUCCESS: "Kích hoạt khuyến mại thành công!",
+  COUPON_NAME_PLACEHOLDER: "Nhập tên khuyến mại",
+  COUPON_DESCRIPTION_PLACEHOLDER: "Nhập mô tả",
+  COUPON_CODE_PLACEHOLDER_EXAMPLE: "VD: SUMMER2024",
 };
 
 export default coupon;

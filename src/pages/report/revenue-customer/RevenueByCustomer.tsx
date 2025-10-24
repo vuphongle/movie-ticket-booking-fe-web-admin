@@ -14,6 +14,7 @@ import {
 import type { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import {
   useLazyExportRevenueByCustomerQuery,
   useLazyGetRevenueByCustomerQuery,
@@ -27,10 +28,6 @@ import CustomerMovieRevenueTable from "./CustomerMovieRevenueTable";
 import RevenueChart from "./RevenueChart";
 import TicketChart from "./TicketChart";
 
-const breadcrumb = [
-  { label: "Doanh thu theo khách hàng", href: "/admin/revenue/customer" },
-];
-
 interface FormValues {
   mode?: string;
   customerId?: number;
@@ -38,6 +35,10 @@ interface FormValues {
 }
 
 const RevenueByCustomer = () => {
+  const { t } = useTranslation();
+  const breadcrumb = [
+    { label: t("REPORT_REVENUE_BY_CUSTOMER"), href: "/admin/revenue/customer" },
+  ];
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -105,7 +106,7 @@ const RevenueByCustomer = () => {
           window.URL.revokeObjectURL(url);
         })
         .catch(() => {
-          message.error("Xuất báo cáo thất bại");
+          message.error(t("REPORT_EXPORT_FAILED"));
         });
     } else if (selectedCustomerId) {
       exportRevenueByCustomerId({ id: selectedCustomerId, startDate, endDate })
@@ -127,7 +128,7 @@ const RevenueByCustomer = () => {
           window.URL.revokeObjectURL(url);
         })
         .catch(() => {
-          message.error("Xuất báo cáo thất bại");
+          message.error(t("REPORT_EXPORT_FAILED"));
         });
     }
   };
@@ -177,7 +178,7 @@ const RevenueByCustomer = () => {
   return (
     <>
       <Helmet>
-        <title>Doanh thu theo khách hàng</title>
+        <title>{t("REPORT_REVENUE_BY_CUSTOMER")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -195,11 +196,13 @@ const RevenueByCustomer = () => {
             onFinish={onFinish}
             initialValues={{ mode: "all" }}
           >
-            <Form.Item name="mode" label="Xem theo">
+            <Form.Item name="mode" label={t("REPORT_VIEW_BY")}>
               <Select style={{ width: 200 }} onChange={handleModeChange}>
-                <Select.Option value="all">Tất cả khách hàng</Select.Option>
+                <Select.Option value="all">
+                  {t("REPORT_ALL_CUSTOMERS")}
+                </Select.Option>
                 <Select.Option value="specific">
-                  Khách hàng cụ thể
+                  {t("REPORT_SPECIFIC_CUSTOMER")}
                 </Select.Option>
               </Select>
             </Form.Item>
@@ -207,15 +210,18 @@ const RevenueByCustomer = () => {
             {mode === "specific" && (
               <Form.Item
                 name="customerId"
-                label="Chọn khách hàng"
+                label={t("REPORT_SELECT_CUSTOMER")}
                 rules={[
-                  { required: true, message: "Vui lòng chọn khách hàng" },
+                  {
+                    required: true,
+                    message: t("REPORT_PLEASE_SELECT_CUSTOMER"),
+                  },
                 ]}
               >
                 <Select
                   showSearch
                   style={{ width: 350 }}
-                  placeholder="Chọn khách hàng"
+                  placeholder={t("REPORT_SELECT_CUSTOMER")}
                   optionFilterProp="label"
                   filterOption={(input, option) =>
                     String(option?.label ?? "")
@@ -239,7 +245,7 @@ const RevenueByCustomer = () => {
                 type="primary"
                 icon={<ReloadOutlined />}
               >
-                Load dữ liệu
+                {t("REPORT_LOAD_DATA")}
               </Button>
             </Form.Item>
           </Form>
@@ -251,7 +257,7 @@ const RevenueByCustomer = () => {
             onClick={handleExportExcel}
             disabled={mode === "specific" && !selectedCustomerId}
           >
-            Xuất báo cáo
+            {t("REPORT_EXPORT_REPORT")}
           </Button>
         </Space>
 

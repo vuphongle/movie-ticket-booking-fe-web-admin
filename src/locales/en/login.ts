@@ -17,6 +17,7 @@ const login = {
     "Your account is not activated. Please check your email for the activation link.",
   INVALID_CREDENTIALS: "Invalid email or password. Please try again.",
   LOGIN_FORGOT_PASSWORD: "Forgot password?",
+  FORGOT_PASSWORD_RESENT: "A new activation link has been sent to your email.",
 };
 
 export default login;

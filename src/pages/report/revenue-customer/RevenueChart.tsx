@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import type { ChartOptions } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useTranslation } from "react-i18next";
 import type {
   CustomerRevenue,
   CustomerMovieRevenue,
@@ -23,24 +24,26 @@ ChartJS.register(
   Legend
 );
 
-const options: ChartOptions<"bar"> = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Doanh thu",
-    },
-  },
-};
-
 interface RevenueChartProps {
   data?: CustomerRevenue[] | CustomerMovieRevenue[];
 }
 
 function RevenueChart({ data }: RevenueChartProps) {
+  const { t } = useTranslation();
+
+  const options: ChartOptions<"bar"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: t("REPORT_REVENUE"),
+      },
+    },
+  };
+
   const isCustomerRevenue = (
     item: CustomerRevenue | CustomerMovieRevenue
   ): item is CustomerRevenue => {
@@ -55,7 +58,7 @@ function RevenueChart({ data }: RevenueChartProps) {
     ),
     datasets: [
       {
-        label: "Doanh thu",
+        label: t("REPORT_REVENUE"),
         data: data?.map((item) => item.totalRevenue),
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",

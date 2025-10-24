@@ -1,20 +1,19 @@
-import { Table } from "antd";
-import type { ColumnType, SortOrder } from "antd/es/table/interface";
+import { Table, type TableColumnsType } from "antd";
 import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { formatCurrency } from "@utils/functionUtils";
 import type { MovieRevenue } from "@/types/dashboard.types";
 
-interface RevenueByMovieTableProps {
-  data?: MovieRevenue[];
+interface TableMovieRevenueProps {
+  data: MovieRevenue[];
 }
 
-function RevenueByMovieTable({ data }: RevenueByMovieTableProps) {
+function TableMovieRevenue({ data }: TableMovieRevenueProps) {
   const { t } = useTranslation();
 
-  const columns: ColumnType<MovieRevenue>[] = [
+  const columns: TableColumnsType<MovieRevenue> = [
     {
-      title: t("REPORT_MOVIE_NAME"),
+      title: t("OVERVIEW_MOVIE_NAME"),
       dataIndex: "",
       key: "movie",
       width: "55%",
@@ -27,23 +26,19 @@ function RevenueByMovieTable({ data }: RevenueByMovieTableProps) {
       },
     },
     {
-      title: t("REPORT_TOTAL_TICKETS_SOLD"),
+      title: t("OVERVIEW_TOTAL_TICKETS_SOLD"),
       dataIndex: "totalTickets",
       key: "totalTickets",
       width: "20%",
-      sorter: (a, b) => a.totalTickets - b.totalTickets,
-      sortDirections: ["descend" as SortOrder, "ascend" as SortOrder],
       render: (text: number) => {
-        return text + " " + t("REPORT_TICKET_UNIT_LOWER");
+        return text?.toString() || "0";
       },
     },
     {
-      title: t("REPORT_TOTAL_REVENUE"),
+      title: t("OVERVIEW_TOTAL_REVENUE"),
       dataIndex: "totalRevenue",
       key: "totalRevenue",
       width: "25%",
-      sorter: (a, b) => a.totalRevenue - b.totalRevenue,
-      sortDirections: ["descend" as SortOrder, "ascend" as SortOrder],
       render: (text: number) => {
         return formatCurrency(text);
       },
@@ -55,9 +50,9 @@ function RevenueByMovieTable({ data }: RevenueByMovieTableProps) {
       columns={columns}
       dataSource={data}
       rowKey={(record) => record.movieId}
-      style={{ marginTop: 20 }}
+      pagination={{ pageSize: 5 }}
     />
   );
 }
 
-export default RevenueByMovieTable;
+export default TableMovieRevenue;

@@ -1,4 +1,5 @@
 import { Col, Row } from "antd";
+import { useTranslation } from "react-i18next";
 import { formatCurrency } from "@/utils/functionUtils";
 import SummaryBox from "./SummaryBox";
 
@@ -15,6 +16,7 @@ function DashboardSummary({
   totalTicketsCurrentMonth,
   revenueCurrentMonth,
 }: DashboardSummaryProps) {
+  const { t } = useTranslation();
   const now = new Date();
   const MMYYYY = `T${now.getMonth() + 1}/${now.getFullYear()}`;
   const DDMMYYYY = `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`;
@@ -24,7 +26,7 @@ function DashboardSummary({
         <SummaryBox
           title={
             <>
-              Doanh thu trong ngày
+              {t("OVERVIEW_REVENUE_TODAY")}
               <br />({DDMMYYYY})
             </>
           }
@@ -37,7 +39,7 @@ function DashboardSummary({
         <SummaryBox
           title={
             <>
-              Khách hàng mới <br />({MMYYYY})
+              {t("OVERVIEW_NEW_CUSTOMERS")} <br />({MMYYYY})
             </>
           }
           content={countLatestUsers?.toString() || "0"}
@@ -49,7 +51,7 @@ function DashboardSummary({
         <SummaryBox
           title={
             <>
-              Tổng vé bán ra <br />({MMYYYY})
+              {t("OVERVIEW_TOTAL_TICKETS_SOLD")} <br />({MMYYYY})
             </>
           }
           content={totalTicketsCurrentMonth?.toString() || "0"}
@@ -61,7 +63,7 @@ function DashboardSummary({
         <SummaryBox
           title={
             <>
-              Tổng doanh thu <br />({MMYYYY})
+              {t("OVERVIEW_TOTAL_REVENUE")} <br />({MMYYYY})
             </>
           }
           content={formatCurrency(revenueCurrentMonth)}

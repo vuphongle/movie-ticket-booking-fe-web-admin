@@ -9,6 +9,7 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useTranslation } from "react-i18next";
 import type { TopViewBlog } from "@/types/dashboard.types";
 
 ChartJS.register(
@@ -25,6 +26,8 @@ interface TopViewBlogChartProps {
 }
 
 function TopViewBlogChart({ data }: TopViewBlogChartProps) {
+  const { t } = useTranslation();
+
   const options: ChartOptions<"bar"> = {
     responsive: true,
     plugins: {
@@ -33,7 +36,7 @@ function TopViewBlogChart({ data }: TopViewBlogChartProps) {
       },
       title: {
         display: true,
-        text: "Top bài viết được xem nhiều nhất",
+        text: t("OVERVIEW_TOP_VIEWED_BLOGS"),
       },
       tooltip: {
         callbacks: {
@@ -50,7 +53,7 @@ function TopViewBlogChart({ data }: TopViewBlogChartProps) {
     labels: data?.map((blog) => blog?.title.slice(0, 10) + "...") || [],
     datasets: [
       {
-        label: "Lượt xem",
+        label: t("OVERVIEW_VIEWS"),
         data: data?.map((blog) => blog?.viewCount) || [],
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },

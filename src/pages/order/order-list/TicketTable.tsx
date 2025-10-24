@@ -1,30 +1,33 @@
 import { Table, Tag } from "antd";
+import { useTranslation } from "react-i18next";
 import { formatCurrency } from "@utils/functionUtils";
 import type { TicketItem } from "@/types/order.types";
 
 type SeatType = "NORMAL" | "VIP" | "COUPLE";
-
-const parseSeatType = (seatType: SeatType) => {
-  switch (seatType) {
-    case "NORMAL":
-      return <Tag color="default">Ghế thường</Tag>;
-    case "VIP":
-      return <Tag color="gold">Ghế VIP</Tag>;
-    case "COUPLE":
-      return <Tag color="magenta">Ghế COUPLE</Tag>;
-    default:
-      return <Tag color="default">Không xác định</Tag>;
-  }
-};
 
 interface TicketTableProps {
   ticketItems: TicketItem[];
 }
 
 function TicketTable({ ticketItems }: TicketTableProps) {
+  const { t } = useTranslation();
+
+  const parseSeatType = (seatType: SeatType) => {
+    switch (seatType) {
+      case "NORMAL":
+        return <Tag color="default">{t("TICKET_SEAT_NORMAL")}</Tag>;
+      case "VIP":
+        return <Tag color="gold">{t("TICKET_SEAT_VIP")}</Tag>;
+      case "COUPLE":
+        return <Tag color="magenta">{t("TICKET_SEAT_COUPLE")}</Tag>;
+      default:
+        return <Tag color="default">{t("ORDER_STATUS_UNKNOWN")}</Tag>;
+    }
+  };
+
   const columns = [
     {
-      title: "Thông tin ghế",
+      title: t("TICKET_SEAT_INFO"),
       dataIndex: "seat",
       key: "code",
       width: "30%",
@@ -33,7 +36,7 @@ function TicketTable({ ticketItems }: TicketTableProps) {
       },
     },
     {
-      title: "Loại ghế",
+      title: t("TICKET_SEAT_TYPE"),
       dataIndex: "seat",
       key: "type",
       width: "40%",
@@ -42,7 +45,7 @@ function TicketTable({ ticketItems }: TicketTableProps) {
       },
     },
     {
-      title: "Giá tiền",
+      title: t("TICKET_PRICE"),
       dataIndex: "price",
       key: "price",
       width: "30%",

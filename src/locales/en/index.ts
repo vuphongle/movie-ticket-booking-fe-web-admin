@@ -10,6 +10,9 @@ import movie from "./movie";
 import cinema from "./cinema";
 import priceManagement from "./priceManagement";
 import additionalService from "./additionalService";
+import overview from "./overview";
+import report from "./report";
+import order from "./order";
 
 const en = {
   ...common,
@@ -24,6 +27,9 @@ const en = {
   ...cinema,
   ...priceManagement,
   ...additionalService,
+  ...overview,
+  ...report,
+  ...order,
 };
 
 export default en;

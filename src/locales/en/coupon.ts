@@ -7,7 +7,6 @@ const coupon = {
   // Buttons
   COUPON_CREATE_BTN: "Create Coupon",
   COUPON_UPDATE_BTN: "Update",
-  COUPON_SAVE_BTN: "Save",
   COUPON_DELETE_BTN: "Delete",
   COUPON_REFRESH_BTN: "Refresh",
   COUPON_CANCEL_BTN: "Cancel",
@@ -46,27 +45,18 @@ const coupon = {
   COUPON_END_DATE_LABEL: "End Date",
 
   // Form placeholders
-  COUPON_CODE_PLACEHOLDER: "Enter coupon code",
-  COUPON_NAME_PLACEHOLDER: "Enter coupon name",
-  COUPON_DESCRIPTION_PLACEHOLDER: "Enter coupon description...",
-  COUPON_DISCOUNT_PLACEHOLDER: "Enter discount percentage",
-  COUPON_MAX_DISCOUNT_PLACEHOLDER:
-    "Enter maximum discount amount (leave blank for unlimited)",
-  COUPON_QUANTITY_PLACEHOLDER: "Enter quantity",
-  COUPON_STATUS_PLACEHOLDER: "Select a status",
   SELECT_DATE: "Select date",
   SELECT_START_DATE: "Select start date",
   SELECT_END_DATE: "Select end date",
 
   // Table columns
   COUPON_TABLE_CODE: "Coupon Code",
-  COUPON_TABLE_DISCOUNT: "Discount Percentage",
-  COUPON_TABLE_MAX_DISCOUNT: "Maximum Discount",
-  COUPON_TABLE_QUANTITY: "Quantity",
-  COUPON_TABLE_USED: "Used",
   COUPON_TABLE_STATUS: "Status",
   COUPON_TABLE_VALIDITY_PERIOD: "Validity Period",
   COUPON_TABLE_ACTIONS: "Actions",
+  COUPON_TABLE_NAME: "Coupon Name",
+  COUPON_TABLE_KIND: "Kind",
+  COUPON_KIND_DISPLAY: "Display",
 
   // Status options
   COUPON_STATUS_ACTIVE: "Active",
@@ -74,25 +64,8 @@ const coupon = {
   COUPON_STATUS_UPCOMING: "Upcoming",
   COUPON_STATUS_EXPIRED: "Expired",
 
-  // Common texts
-  COUPON_UNLIMITED: "Unlimited",
-  COUPON_CODE_EXTRA: "Unique code to identify the promotion",
-  COUPON_NAME_EXTRA: "Display name for customers",
-  COUPON_DESCRIPTION_EXTRA: "Detailed description of the offer (optional)",
-  COUPON_STATUS_EXTRA_EDIT: "Display mode of the coupon",
-  COUPON_STATUS_EXTRA_CREATE: "New coupons will be hidden",
-  COUPON_STATUS_ACTIVE_EXTRA: "Visible and can be used",
-  COUPON_STATUS_INACTIVE_EXTRA: "Not visible to customers",
-
   // Alert messages
-  NEXT_STEP: "Next Step",
-  NEXT_STEP_EDIT_DESC:
-    "After updating, you can manage detailed promotion information.",
-  NEXT_STEP_CREATE_DESC:
-    "New coupons will be hidden. After creation, you need to add detailed conditions before activating the promotion.",
   NOTE: "Note",
-  NOTE_CREATE_DESC:
-    "New coupons are always hidden for safety. You need to add at least one detailed condition before activation.",
   COUPON_DEACTIVATE_CONFIRM_TITLE: "Confirm Deactivation",
   COUPON_DEACTIVATE_CONFIRM_MESSAGE:
     "Deactivating the coupon will disable all related details. Are you sure you want to proceed?",
@@ -104,25 +77,14 @@ const coupon = {
   COUPON_CODE_PATTERN:
     "Code only contains uppercase letters, numbers, underscores and dashes!",
   COUPON_NAME_REQUIRED: "Coupon name is required!",
-  COUPON_NAME_MIN_LENGTH: "Coupon name must be at least 3 characters!",
   COUPON_NAME_MAX_LENGTH: "Coupon name must not exceed 200 characters!",
   COUPON_DESCRIPTION_MAX_LENGTH: "Description must not exceed 1000 characters!",
-  COUPON_DISCOUNT_REQUIRED: "Discount percentage is required!",
-  COUPON_DISCOUNT_RANGE_ERROR: "Discount percentage must be between 0 and 100",
-  COUPON_MAX_DISCOUNT_MIN_ERROR: "Maximum discount must be greater than 0",
-  COUPON_QUANTITY_REQUIRED: "Quantity is required!",
-  COUPON_QUANTITY_MIN_ERROR: "Quantity must be greater than 0",
-  COUPON_STATUS_REQUIRED: "Status is required!",
-  COUPON_START_DATE_REQUIRED: "Start date is required!",
-  COUPON_END_DATE_REQUIRED: "End date is required!",
-  COUPON_END_DATE_AFTER_START: "End date must be after start date!",
 
   // Success messages
   COUPON_CREATE_SUCCESS: "Coupon created successfully!",
   COUPON_UPDATE_SUCCESS: "Coupon updated successfully!",
   COUPON_DELETE_SUCCESS: "Coupon deleted successfully!",
-  CREATE_COUPON_DETAIL_SUCCESS: "Coupon detail created successfully!",
-  UPDATE_COUPON_DETAIL_SUCCESS: "Coupon detail updated successfully!",
+  COUPON_DEACTIVATE_SUCCESS: "Coupon deactivated successfully!",
 
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Are you sure you want to delete this coupon?",
@@ -143,18 +105,6 @@ const coupon = {
 
   // Error messages for coupon detail
   COUPON_DETAIL_ERROR: "An error occurred",
-
-  // Validation messages for coupon detail
-  COUPON_DETAIL_START_DATE_REQUIRED: "Please select start date!",
-  COUPON_DETAIL_END_DATE_REQUIRED: "Please select end date!",
-  COUPON_DETAIL_START_DATE_AFTER_PARENT_START:
-    "Start date cannot be before parent coupon start date",
-  COUPON_DETAIL_START_DATE_BEFORE_PARENT_END:
-    "Start date cannot be after parent coupon end date",
-  COUPON_DETAIL_END_DATE_AFTER_PARENT_START:
-    "End date cannot be before parent coupon start date",
-  COUPON_DETAIL_END_DATE_BEFORE_PARENT_END:
-    "End date cannot be after parent coupon end date",
 
   // Placeholders for coupon detail
   SELECT_DETAIL_START_DATE: "Select start date",
@@ -202,9 +152,6 @@ const coupon = {
   COUPON_DETAIL_DATE_RANGE_COLUMN: "Valid Period",
   COUPON_DETAIL_NOTES_COLUMN: "Notes",
   COUPON_DETAIL_ACTIONS_COLUMN: "Actions",
-  COUPON_TABLE_NAME: "Coupon Name",
-  COUPON_TABLE_KIND: "Kind",
-  COUPON_KIND_DISPLAY: "Display",
 
   // Menu items
   COUPON_DETAIL_EDIT_MENU: "Edit",
@@ -284,18 +231,6 @@ const coupon = {
   SEAT_TYPE_COUPLE: "Couple Seat",
   SEAT_TYPE_DEFAULT: "Seat Type",
 
-  // Target display texts
-  TARGET_FULL_ORDER: "Full Order",
-  TARGET_ALL_SEAT_TYPES: "All Seat Types",
-  TARGET_ALL_SERVICES: "All Services",
-  TARGET_SERVICE_PREFIX: "Service",
-
-  // Benefit display texts
-  BENEFIT_DISCOUNT_TEXT: "Discount",
-  BENEFIT_MAX_TEXT: "max",
-  BENEFIT_GIFT_TEXT: "Gift",
-  BENEFIT_PRODUCT_TEXT: "product",
-
   // Usage statistics
   COUPON_DETAIL_USAGE_STATS_LABEL: "Usage Statistics",
   COUPON_DETAIL_USAGE_TIMES_LABEL: "Times Used",
@@ -308,7 +243,6 @@ const coupon = {
   PAGINATION_ITEMS: "items",
 
   // Input placeholders
-  NOT_REQUIRED_FOR_ORDER: "Not required for order",
   ENTER_PERCENTAGE: "Enter percentage",
   ENTER_AMOUNT: "Enter amount",
 
@@ -324,13 +258,21 @@ const coupon = {
   COUPON_DETAIL_DUPLICATE_MENU: "Duplicate",
   COUPON_DETAIL_DUPLICATE_SUCCESS: "Coupon detail duplicated successfully",
   COUPON_DETAIL_DUPLICATE_ERROR: "Failed to duplicate coupon detail",
-  // Date validation messages
-  START_DATE_BEFORE_END_DATE: "Start date must be before or equal to end date!",
-  END_DATE_AFTER_START_DATE: "End date must be after or equal to start date!",
 
   // Status update error
   STATUS_UPDATE_ERROR: "Error updating status",
   DELETE_DETAIL_ERROR: "Error deleting coupon detail",
+  COUPON_CODE_AUTO_UPPERCASE: "Coupon code will be converted to uppercase automatically",
+
+  COUPON_ACTIVATE_CONFIRM_TITLE: "Confirm Activation",
+  COUPON_ACTIVATE_CONFIRM_MESSAGE:
+    "Activating the coupon will enable all related details. Are you sure you want to proceed?",
+  COUPON_ACTIVATE: "Activate",
+  COUPON_ACTIVATE_ERROR: "Failed to activate coupon. At least one active detail is required.",
+  COUPON_ACTIVATE_SUCCESS: "Coupon activated successfully!",
+  COUPON_NAME_PLACEHOLDER: "Enter coupon name",
+  COUPON_DESCRIPTION_PLACEHOLDER: "Enter description",
+  COUPON_CODE_PLACEHOLDER_EXAMPLE: "E.g., SUMMER2024",
 };
 
 export default coupon;
