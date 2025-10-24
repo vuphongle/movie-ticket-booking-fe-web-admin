@@ -162,8 +162,8 @@ export const priceListApi = createApi({
         name: string;
         priority?: number;
         status?: boolean;
-        validFrom?: string;
-        validTo?: string;
+        validFrom?: string | number;
+        validTo?: string | number;
       }
     >({
       query: ({ id, ...cloneData }) => ({

@@ -1,7 +1,12 @@
 // Convert date array từ backend [year, month, day, hour, minute, second, nano] sang Date
 export const convertDateArrayToDate = (
-  dateArray: (number | undefined)[] | string | Date,
+  dateArray: (number | undefined)[] | string | Date | number,
 ): Date => {
+  // Handle timestamp (number)
+  if (typeof dateArray === "number") {
+    return new Date(dateArray);
+  }
+
   if (typeof dateArray === "string" || dateArray instanceof Date) {
     return new Date(dateArray);
   }
@@ -17,7 +22,7 @@ export const convertDateArrayToDate = (
 };
 
 export const formatDate = (
-  dateString: string | Date | (number | undefined)[],
+  dateString: string | Date | (number | undefined)[] | number,
 ): string => {
   const date = convertDateArrayToDate(dateString);
   const year = date.getFullYear();

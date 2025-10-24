@@ -26,10 +26,10 @@ export interface PriceList {
   name: string;
   status: boolean;
   priority: number;
-  validFrom?: string; // ISO date string
-  validTo?: string; // ISO date string
-  createdAt: string;
-  updatedAt: string;
+  validFrom?: number; // Timestamp in milliseconds
+  validTo?: number; // Timestamp in milliseconds
+  createdAt: string | number;
+  updatedAt: string | number;
   priceItems?: PriceItem[];
   priceItemsCount?: number; // Count of price items
 }
@@ -38,8 +38,8 @@ export interface CreatePriceListRequest {
   name: string;
   status?: boolean;
   priority: number;
-  validFrom?: string;
-  validTo?: string;
+  validFrom?: string | number; // Can accept ISO string or timestamp
+  validTo?: string | number; // Can accept ISO string or timestamp
 }
 
 export interface UpdatePriceListRequest extends CreatePriceListRequest {
