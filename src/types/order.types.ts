@@ -1,5 +1,5 @@
 // Order related types
-export type OrderStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+export type OrderStatus = "PENDING" | "CONFIRMED" | "CANCELLED" | "RETURNED";
 
 export interface TicketItem {
   id: number;
@@ -61,4 +61,11 @@ export interface Order {
   updatedAt?: string | DateArray; // Backend trả về array
   qrCodePath?: string | null;
   requestSnapshot?: string;
+  returnedByUser?: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+  returnedAt?: string | DateArray | null;
+  returnedReason?: string | null;
 }

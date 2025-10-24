@@ -10,13 +10,23 @@ import {
   Tag,
   theme,
   Typography,
+  Modal,
+  message,
+  Input,
 } from "antd";
 import { Helmet } from "react-helmet";
 import { Link, Link as RouterLink, useParams } from "react-router-dom";
-import { useGetOrderByIdQuery } from "@services/orders.service";
+import {
+  useGetOrderByIdQuery,
+  useReturnOrderMutation,
+} from "@services/orders.service";
 import ErrorPage from "@/components/errors/ErrorPage";
 import AppBreadCrumb from "@components/layout/AppBreadCrumb";
-import { formatCurrency, formatDate } from "@utils/functionUtils";
+import {
+  formatCurrency,
+  formatDate,
+  convertDateArrayToDate,
+} from "@utils/functionUtils";
 import ServiceTable from "../order-list/ServiceTable";
 import TicketTable from "../order-list/TicketTable";
 import type { OrderStatus } from "@/types/order.types";
@@ -29,6 +39,8 @@ const parseOrderStatus = (status: OrderStatus) => {
       return <Tag color="success">Đã thanh toán</Tag>;
     case "CANCELLED":
       return <Tag color="error">Đã hủy</Tag>;
+    case "RETURNED":
+      return <Tag color="purple">Đã trả hàng</Tag>;
     default:
       return <Tag color="default">Không xác định</Tag>;
   }
@@ -45,6 +57,72 @@ const OrderDetail = () => {
     isError,
     error,
   } = useGetOrderByIdQuery(Number(orderId));
+
+  const [returnOrder, { isLoading: isReturning }] = useReturnOrderMutation();
+
+  // Kiểm tra xem có thể trả hàng không
+  const canReturn = () => {
+    if (!order) return false;
+    if (order.status !== "CONFIRMED") return false;
+
+    // Kiểm tra suất chiếu chưa qua
+    const showtimeDate = convertDateArrayToDate(order.showtime.date);
+    const [hours, minutes] = order.showtime.startTime.split(":");
+    const showtimeDateTime = new Date(showtimeDate);
+    showtimeDateTime.setHours(parseInt(hours), parseInt(minutes));
+
+    return showtimeDateTime > new Date();
+  };
+
+  const handleReturn = async () => {
+    let reason = "";
+
+    Modal.confirm({
+      title: "Xác nhận trả hàng",
+      width: 520,
+      centered: true,
+      content: (
+        <div style={{ marginTop: 16, marginBottom: 8 }}>
+          <Typography.Text strong style={{ display: "block", marginBottom: 8 }}>
+            Lý do trả hàng <Typography.Text type="danger">*</Typography.Text>
+          </Typography.Text>
+          <Input.TextArea
+            rows={4}
+            onChange={(e) => {
+              reason = e.target.value;
+            }}
+            placeholder="Ví dụ: Khách hàng yêu cầu hủy, lỗi hệ thống thanh toán..."
+            style={{ resize: "none", marginBottom: 4 }}
+            maxLength={500}
+            showCount
+          />
+        </div>
+      ),
+      okText: "Xác nhận trả hàng",
+      okType: "danger",
+      cancelText: "Hủy",
+      onOk: async () => {
+        if (!reason || reason.trim() === "") {
+          message.error("Vui lòng nhập lý do trả hàng.");
+          return Promise.reject();
+        }
+        try {
+          await returnOrder({
+            orderId: Number(orderId),
+            reason: reason,
+          }).unwrap();
+          message.success(
+            "Trả hàng thành công. Email thông báo đã được gửi cho khách hàng."
+          );
+        } catch (err: any) {
+          message.error(
+            err?.data?.error || "Trả hàng thất bại. Vui lòng thử lại."
+          );
+          return Promise.reject();
+        }
+      },
+    });
+  };
 
   const breadcrumb = [
     { label: "Danh sách đơn hàng", href: "/admin/orders" },
@@ -87,6 +165,16 @@ const OrderDetail = () => {
                 Quay lại
               </Button>
             </RouterLink>
+            {canReturn() && (
+              <Button
+                type="primary"
+                danger
+                onClick={handleReturn}
+                loading={isReturning}
+              >
+                Trả hàng
+              </Button>
+            )}
           </Space>
         </Flex>
 
@@ -170,6 +258,64 @@ const OrderDetail = () => {
                 </Typography.Paragraph>
               </Col>
             </Row>
+            {order.returnedByUser && (
+              <>
+                <Divider />
+                <Typography.Title level={5} type="danger">
+                  Thông tin trả hàng
+                </Typography.Title>
+                <Row>
+                  <Col span={7}>
+                    <Typography.Paragraph strong>
+                      Người xử lý:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={17}>
+                    <Typography.Paragraph>
+                      {order.returnedByUser.name}
+                    </Typography.Paragraph>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={7}>
+                    <Typography.Paragraph strong>Email:</Typography.Paragraph>
+                  </Col>
+                  <Col span={17}>
+                    <Typography.Paragraph>
+                      {order.returnedByUser.email}
+                    </Typography.Paragraph>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={7}>
+                    <Typography.Paragraph strong>
+                      Thời gian trả:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={17}>
+                    <Typography.Paragraph>
+                      <Tag color="purple">
+                        {order.returnedAt
+                          ? formatDate(order.returnedAt)
+                          : "N/A"}
+                      </Tag>
+                    </Typography.Paragraph>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={7}>
+                    <Typography.Paragraph strong>
+                      Lý do trả:
+                    </Typography.Paragraph>
+                  </Col>
+                  <Col span={17}>
+                    <Typography.Paragraph>
+                      {order.returnedReason ? order.returnedReason : "N/A"}
+                    </Typography.Paragraph>
+                  </Col>
+                </Row>
+              </>
+            )}
           </Col>
           <Col span={6}>
             <Typography.Title level={5}>Thông tin khách hàng</Typography.Title>
