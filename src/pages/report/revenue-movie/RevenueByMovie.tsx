@@ -13,6 +13,7 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import {
   useLazyExportRevenueByMovieQuery,
   useLazyGetRevenueByMovieQuery,
@@ -28,10 +29,6 @@ import TicketChart from "./TicketChart";
 import type { Dayjs } from "dayjs";
 import type { Movie } from "@/types/movie.types";
 
-const breadcrumb = [
-  { label: "Doanh thu theo phim", href: "/admin/revenue/movie" },
-];
-
 interface FormValues {
   mode?: string;
   movieId?: number;
@@ -39,6 +36,10 @@ interface FormValues {
 }
 
 const RevenueByMovie = () => {
+  const { t } = useTranslation();
+  const breadcrumb = [
+    { label: t("REPORT_REVENUE_BY_MOVIE"), href: "/admin/revenue/movie" },
+  ];
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -104,7 +105,7 @@ const RevenueByMovie = () => {
           window.URL.revokeObjectURL(url);
         })
         .catch(() => {
-          message.error("Xuất báo cáo thất bại");
+          message.error(t("REPORT_EXPORT_FAILED"));
         });
     } else if (selectedMovieId) {
       exportRevenueByMovieId({ id: selectedMovieId, startDate, endDate })
@@ -126,7 +127,7 @@ const RevenueByMovie = () => {
           window.URL.revokeObjectURL(url);
         })
         .catch(() => {
-          message.error("Xuất báo cáo thất bại");
+          message.error(t("REPORT_EXPORT_FAILED"));
         });
     }
   };
@@ -176,7 +177,7 @@ const RevenueByMovie = () => {
   return (
     <>
       <Helmet>
-        <title>Doanh thu theo phim</title>
+        <title>{t("REPORT_REVENUE_BY_MOVIE")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -194,23 +195,29 @@ const RevenueByMovie = () => {
             onFinish={onFinish}
             initialValues={{ mode: "all" }}
           >
-            <Form.Item name="mode" label="Xem theo">
+            <Form.Item name="mode" label={t("REPORT_VIEW_BY")}>
               <Select style={{ width: 180 }} onChange={handleModeChange}>
-                <Select.Option value="all">Tất cả phim</Select.Option>
-                <Select.Option value="specific">Phim cụ thể</Select.Option>
+                <Select.Option value="all">
+                  {t("REPORT_ALL_MOVIES")}
+                </Select.Option>
+                <Select.Option value="specific">
+                  {t("REPORT_SPECIFIC_MOVIE")}
+                </Select.Option>
               </Select>
             </Form.Item>
 
             {mode === "specific" && (
               <Form.Item
                 name="movieId"
-                label="Chọn phim"
-                rules={[{ required: true, message: "Vui lòng chọn phim" }]}
+                label={t("REPORT_SELECT_MOVIE")}
+                rules={[
+                  { required: true, message: t("REPORT_PLEASE_SELECT_MOVIE") },
+                ]}
               >
                 <Select
                   showSearch
                   style={{ width: 300 }}
-                  placeholder="Chọn phim"
+                  placeholder={t("REPORT_SELECT_MOVIE")}
                   optionFilterProp="label"
                   filterOption={(input, option) =>
                     String(option?.label ?? "")
@@ -234,7 +241,7 @@ const RevenueByMovie = () => {
                 type="primary"
                 icon={<ReloadOutlined />}
               >
-                Load dữ liệu
+                {t("REPORT_LOAD_DATA")}
               </Button>
             </Form.Item>
           </Form>
@@ -246,7 +253,7 @@ const RevenueByMovie = () => {
             onClick={handleExportExcel}
             disabled={mode === "specific" && !selectedMovieId}
           >
-            Xuất báo cáo
+            {t("REPORT_EXPORT_REPORT")}
           </Button>
         </Space>
 
