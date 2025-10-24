@@ -49,9 +49,9 @@ const MovieTable = ({ data }: OrderTableProps) => {
       dataIndex: "showtime",
       key: "movie",
       ...getColumnSearchProps("id"),
-      render: (text: Order["showtime"]) => {
+      render: (text: Order["showtime"], record: Order) => {
         return (
-          <RouterLink to={`/admin/orders/${text.movie.id}/detail`}>
+          <RouterLink to={`/admin/orders/${record.id}/detail`}>
             {text.movie.name}
           </RouterLink>
         );
