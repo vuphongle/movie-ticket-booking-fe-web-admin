@@ -55,6 +55,17 @@ export const orderApi = createApi({
             }),
             invalidatesTags: ["Order"],
         }),
+        returnOrder: builder.mutation<{ message: string }, { orderId: number; reason: string }>({
+            query: ({ orderId, reason }) => ({
+                url: `orders/${orderId}/return`,
+                method: "PUT",
+                body: { reason },
+            }),
+            invalidatesTags: (_result, _error, { orderId }) => [
+                { type: "Order", id: orderId },
+                "Order",
+            ],
+        }),
     }),
 });
 
@@ -66,4 +77,5 @@ export const {
     useCreateOrderMutation,
     useUpdateOrderMutation,
     useDeleteOrderMutation,
+    useReturnOrderMutation,
 } = orderApi;
