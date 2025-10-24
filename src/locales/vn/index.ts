@@ -10,6 +10,7 @@ import movie from "./movie";
 import cinema from "./cinema";
 import priceManagement from "./priceManagement";
 import additionalService from "./additionalService";
+import overview from "./overview";
 
 const vn = {
   ...common,
@@ -24,6 +25,7 @@ const vn = {
   ...cinema,
   ...priceManagement,
   ...additionalService,
+  ...overview,
 };
 
 export default vn;

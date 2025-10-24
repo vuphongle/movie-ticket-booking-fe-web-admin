@@ -10,6 +10,7 @@ import {
   type ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { useTranslation } from "react-i18next";
 import type { RevenueByMonth } from "@/types/dashboard.types";
 
 ChartJS.register(
@@ -22,29 +23,31 @@ ChartJS.register(
   Legend
 );
 
-const options: ChartOptions<"line"> = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top" as const,
-    },
-    title: {
-      display: true,
-      text: "Doanh thu theo tháng",
-    },
-  },
-};
-
 interface RevenueMonthChartProps {
   data: RevenueByMonth[];
 }
 
 function RevenueMonthChart({ data }: RevenueMonthChartProps) {
+  const { t } = useTranslation();
+
+  const options: ChartOptions<"line"> = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: t("OVERVIEW_REVENUE_BY_MONTH"),
+      },
+    },
+  };
+
   const chartData = {
     labels: data?.map((v) => `${v?.month}/${v?.year}`) || [],
     datasets: [
       {
-        label: "Doanh thu",
+        label: t("OVERVIEW_REVENUE"),
         data: data?.map((v) => v?.revenue) || [],
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
