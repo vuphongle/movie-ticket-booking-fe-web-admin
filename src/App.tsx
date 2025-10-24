@@ -5,6 +5,7 @@ import {
   Login,
   RevenueByCinema,
   RevenueByMovie,
+  RevenueByCustomer,
   ForgotPassword,
   ChangePassword,
   ProductList,
@@ -76,6 +77,7 @@ function App() {
             </Route>
             <Route path="revenue/cinema" element={<RevenueByCinema />} />
             <Route path="revenue/movie" element={<RevenueByMovie />} />
+            <Route path="revenue/customer" element={<RevenueByCustomer />} />
             <Route path="price-lists">
               <Route index element={<PriceListPage />} />
               <Route path=":priceListId/detail" element={<PriceListDetail />} />

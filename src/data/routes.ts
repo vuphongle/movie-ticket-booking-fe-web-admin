@@ -40,6 +40,11 @@ export const getMenuData = (t: (key: string) => string) => [
         label: t("REVENUE_BY_CINEMA"),
         url: "/admin/revenue/cinema",
       },
+      {
+        id: 23,
+        label: t("REVENUE_BY_CUSTOMER"),
+        url: "/admin/revenue/customer",
+      },
     ],
   },
   {

@@ -74,3 +74,35 @@ export interface CinemaMovieRevenue {
 export interface RevenueDetailQueryParams extends RevenueQueryParams {
   id: number;
 }
+
+export interface CustomerRevenue {
+  customerId: number;
+  customerCode: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  totalOrders: number;
+  totalTickets: number;
+  ticketRevenue: number;
+  serviceRevenue: number;
+  totalDiscount: number;
+  revenueBeforeDiscount: number;
+  totalRevenue: number;
+}
+
+export interface CustomerMovieRevenue {
+  customerId: number;
+  customerCode: string;
+  customerName: string;
+  customerEmail: string;
+  movieId: number;
+  movieCode: string;
+  movieName: string;
+  totalOrders: number;
+  totalTickets: number;
+  ticketRevenue: number;
+  serviceRevenue: number;
+  totalDiscount: number;
+  revenueBeforeDiscount: number;
+  totalRevenue: number;
+}

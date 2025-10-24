@@ -9,6 +9,8 @@ import type {
   MovieCinemaRevenue,
   CinemaMovieRevenue,
   RevenueDetailQueryParams,
+  CustomerRevenue,
+  CustomerMovieRevenue,
 } from "@/types/dashboard.types";
 
 // Define a service using a base URL and expected endpoints
@@ -163,6 +165,65 @@ export const dashboardApi = createApi({
         };
       },
     }),
+    // Thống kê theo khách hàng
+    getRevenueByCustomer: builder.query<CustomerRevenue[], RevenueQueryParams>({
+      query: ({ startDate, endDate }) => {
+        const params: Record<string, string> = {};
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        return {
+          url: `revenue/customer`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["Revenue"],
+    }),
+    // Export theo khách hàng
+    exportRevenueByCustomer: builder.query<Blob, RevenueQueryParams>({
+      query: ({ startDate, endDate }) => {
+        const params: Record<string, string> = {};
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        return {
+          url: `revenue/customer/export`,
+          method: "GET",
+          params,
+          responseHandler: (response: Response) => response.blob(),
+        };
+      },
+    }),
+    // Thống kê theo 1 khách hàng cụ thể
+    getRevenueByCustomerId: builder.query<
+      CustomerMovieRevenue[],
+      RevenueDetailQueryParams
+    >({
+      query: ({ id, startDate, endDate }) => {
+        const params: Record<string, string> = {};
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        return {
+          url: `revenue/customer/${id}`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["Revenue"],
+    }),
+    // Export theo 1 khách hàng cụ thể
+    exportRevenueByCustomerId: builder.query<Blob, RevenueDetailQueryParams>({
+      query: ({ id, startDate, endDate }) => {
+        const params: Record<string, string> = {};
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        return {
+          url: `revenue/customer/${id}/export`,
+          method: "GET",
+          params,
+          responseHandler: (response: Response) => response.blob(),
+        };
+      },
+    }),
   }),
 });
 
@@ -180,4 +241,8 @@ export const {
   useLazyExportRevenueByMovieIdQuery,
   useLazyGetRevenueByCinemaIdQuery,
   useLazyExportRevenueByCinemaIdQuery,
+  useLazyGetRevenueByCustomerQuery,
+  useLazyExportRevenueByCustomerQuery,
+  useLazyGetRevenueByCustomerIdQuery,
+  useLazyExportRevenueByCustomerIdQuery,
 } = dashboardApi;
