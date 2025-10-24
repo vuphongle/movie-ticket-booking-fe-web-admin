@@ -1,6 +1,7 @@
 const menu = {
   DASHBOARD: "Dashboard",
   OVERVIEW: "Overview",
+  REPORTS: "Reports",
   REVENUE_BY_MOVIE: "Revenue by Movie",
   REVENUE_BY_CINEMA: "Revenue by Cinema",
 
