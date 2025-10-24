@@ -82,6 +82,7 @@ const coupon = {
   COUPON_CREATE_SUCCESS: "Tạo khuyến mại thành công!",
   COUPON_UPDATE_SUCCESS: "Cập nhật khuyến mại thành công!",
   COUPON_DELETE_SUCCESS: "Xóa khuyến mại thành công!",
+  COUPON_DEACTIVATE_SUCCESS: "Vô hiệu hóa khuyến mại thành công!",
 
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa khuyến mại này?",
@@ -94,11 +95,11 @@ const coupon = {
   COUPON_FETCH_ERROR: "Không thể tải dữ liệu coupon",
 
   // Success messages for coupon detail
-  COUPON_DETAIL_DISABLE_SUCCESS: "Đã tắt khuyến mại detail thành công",
-  COUPON_DETAIL_ENABLE_SUCCESS: "Đã bật khuyến mại detail thành công",
+  COUPON_DETAIL_DISABLE_SUCCESS: "Đã tắt chi tiết khuyến mại thành công",
+  COUPON_DETAIL_ENABLE_SUCCESS: "Đã bật chi tiết khuyến mại thành công",
   COUPON_DETAIL_DELETE_SUCCESS: "Xóa chi tiết khuyến mại thành công",
-  COUPON_DETAIL_UPDATE_SUCCESS: "Cập nhật chi tiết coupon thành công!",
-  COUPON_DETAIL_CREATE_SUCCESS: "Tạo chi tiết coupon thành công!",
+  COUPON_DETAIL_UPDATE_SUCCESS: "Cập nhật chi tiết khuyến mại thành công!",
+  COUPON_DETAIL_CREATE_SUCCESS: "Tạo chi tiết khuyến mại thành công!",
 
   // Error messages for coupon detail
   COUPON_DETAIL_ERROR: "Có lỗi xảy ra",
@@ -259,6 +260,16 @@ const coupon = {
   STATUS_UPDATE_ERROR: "Lỗi khi cập nhật trạng thái",
   DELETE_DETAIL_ERROR: "Lỗi khi xóa chi tiết khuyến mại",
   COUPON_CODE_AUTO_UPPERCASE: "Mã khuyến mại sẽ tự động chuyển thành chữ hoa",
+
+  COUPON_ACTIVATE_CONFIRM_TITLE: "Xác nhận kích hoạt",
+  COUPON_ACTIVATE_CONFIRM_MESSAGE:
+    "Kích hoạt khuyến mại sẽ bật tất cả các chi tiết liên quan. Bạn có chắc chắn muốn tiếp tục?",
+  COUPON_ACTIVATE: "Kích hoạt",
+  COUPON_ACTIVATE_ERROR: "Kích hoạt khuyến mại thất bại. Cần ít nhất một chi tiết hoạt động.",
+  COUPON_ACTIVATE_SUCCESS: "Kích hoạt khuyến mại thành công!",
+  COUPON_NAME_PLACEHOLDER: "Nhập tên khuyến mại",
+  COUPON_DESCRIPTION_PLACEHOLDER: "Nhập mô tả",
+  COUPON_CODE_PLACEHOLDER_EXAMPLE: "VD: SUMMER2024",
 };
 
 export default coupon;

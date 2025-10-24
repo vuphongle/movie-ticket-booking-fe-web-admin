@@ -84,6 +84,7 @@ const coupon = {
   COUPON_CREATE_SUCCESS: "Coupon created successfully!",
   COUPON_UPDATE_SUCCESS: "Coupon updated successfully!",
   COUPON_DELETE_SUCCESS: "Coupon deleted successfully!",
+  COUPON_DEACTIVATE_SUCCESS: "Coupon deactivated successfully!",
 
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Are you sure you want to delete this coupon?",
@@ -262,6 +263,16 @@ const coupon = {
   STATUS_UPDATE_ERROR: "Error updating status",
   DELETE_DETAIL_ERROR: "Error deleting coupon detail",
   COUPON_CODE_AUTO_UPPERCASE: "Coupon code will be converted to uppercase automatically",
+
+  COUPON_ACTIVATE_CONFIRM_TITLE: "Confirm Activation",
+  COUPON_ACTIVATE_CONFIRM_MESSAGE:
+    "Activating the coupon will enable all related details. Are you sure you want to proceed?",
+  COUPON_ACTIVATE: "Activate",
+  COUPON_ACTIVATE_ERROR: "Failed to activate coupon. At least one active detail is required.",
+  COUPON_ACTIVATE_SUCCESS: "Coupon activated successfully!",
+  COUPON_NAME_PLACEHOLDER: "Enter coupon name",
+  COUPON_DESCRIPTION_PLACEHOLDER: "Enter description",
+  COUPON_CODE_PLACEHOLDER_EXAMPLE: "E.g., SUMMER2024",
 };
 
 export default coupon;
