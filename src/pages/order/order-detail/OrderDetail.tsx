@@ -16,6 +16,7 @@ import {
 } from "antd";
 import { Helmet } from "react-helmet";
 import { Link, Link as RouterLink, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   useGetOrderByIdQuery,
   useReturnOrderMutation,
@@ -31,21 +32,23 @@ import ServiceTable from "../order-list/ServiceTable";
 import TicketTable from "../order-list/TicketTable";
 import type { OrderStatus } from "@/types/order.types";
 
-const parseOrderStatus = (status: OrderStatus) => {
-  switch (status) {
-    case "PENDING":
-      return <Tag color="default">Chờ xác nhận</Tag>;
-    case "CONFIRMED":
-      return <Tag color="success">Đã thanh toán</Tag>;
-    case "CANCELLED":
-      return <Tag color="error">Đã hủy</Tag>;
-    case "RETURNED":
-      return <Tag color="purple">Đã trả hàng</Tag>;
-    default:
-      return <Tag color="default">Không xác định</Tag>;
-  }
-};
 const OrderDetail = () => {
+  const { t } = useTranslation();
+
+  const parseOrderStatus = (status: OrderStatus) => {
+    switch (status) {
+      case "PENDING":
+        return <Tag color="default">{t("ORDER_STATUS_PENDING")}</Tag>;
+      case "CONFIRMED":
+        return <Tag color="success">{t("ORDER_STATUS_CONFIRMED")}</Tag>;
+      case "CANCELLED":
+        return <Tag color="error">{t("ORDER_STATUS_CANCELLED")}</Tag>;
+      case "RETURNED":
+        return <Tag color="purple">{t("ORDER_STATUS_RETURNED")}</Tag>;
+      default:
+        return <Tag color="default">{t("ORDER_STATUS_UNKNOWN")}</Tag>;
+    }
+  };
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -78,32 +81,33 @@ const OrderDetail = () => {
     let reason = "";
 
     Modal.confirm({
-      title: "Xác nhận trả hàng",
+      title: t("ORDER_RETURN_CONFIRM"),
       width: 520,
       centered: true,
       content: (
         <div style={{ marginTop: 16, marginBottom: 8 }}>
           <Typography.Text strong style={{ display: "block", marginBottom: 8 }}>
-            Lý do trả hàng <Typography.Text type="danger">*</Typography.Text>
+            {t("ORDER_RETURN_REASON")}{" "}
+            <Typography.Text type="danger">*</Typography.Text>
           </Typography.Text>
           <Input.TextArea
             rows={4}
             onChange={(e) => {
               reason = e.target.value;
             }}
-            placeholder="Ví dụ: Khách hàng yêu cầu hủy, lỗi hệ thống thanh toán..."
+            placeholder={t("ORDER_RETURN_REASON_PLACEHOLDER")}
             style={{ resize: "none", marginBottom: 4 }}
             maxLength={500}
             showCount
           />
         </div>
       ),
-      okText: "Xác nhận trả hàng",
+      okText: t("ORDER_RETURN_CONFIRM_BTN"),
       okType: "danger",
-      cancelText: "Hủy",
+      cancelText: t("ORDER_RETURN_CANCEL_BTN"),
       onOk: async () => {
         if (!reason || reason.trim() === "") {
-          message.error("Vui lòng nhập lý do trả hàng.");
+          message.error(t("ORDER_RETURN_REASON_REQUIRED"));
           return Promise.reject();
         }
         try {
@@ -111,13 +115,9 @@ const OrderDetail = () => {
             orderId: Number(orderId),
             reason: reason,
           }).unwrap();
-          message.success(
-            "Trả hàng thành công. Email thông báo đã được gửi cho khách hàng."
-          );
+          message.success(t("ORDER_RETURN_SUCCESS"));
         } catch (err: any) {
-          message.error(
-            err?.data?.error || "Trả hàng thất bại. Vui lòng thử lại."
-          );
+          message.error(err?.data?.error || t("ORDER_RETURN_FAILED"));
           return Promise.reject();
         }
       },
@@ -125,9 +125,9 @@ const OrderDetail = () => {
   };
 
   const breadcrumb = [
-    { label: "Danh sách đơn hàng", href: "/admin/orders" },
+    { label: t("ORDER_LIST"), href: "/admin/orders" },
     {
-      label: `Đơn hàng ${order?.id}`,
+      label: `${t("ORDER_DETAIL")} ${order?.id}`,
       href: `/admin/orders/${order?.id}/detail`,
     },
   ];
@@ -143,7 +143,7 @@ const OrderDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{`Đơn hàng ${order?.id}`}</title>
+        <title>{`${t("ORDER_DETAIL")} ${order?.id}`}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -162,7 +162,7 @@ const OrderDetail = () => {
           <Space>
             <RouterLink to="/admin/orders">
               <Button type="default" icon={<LeftOutlined />}>
-                Quay lại
+                {t("ORDER_BACK")}
               </Button>
             </RouterLink>
             {canReturn() && (
@@ -172,7 +172,7 @@ const OrderDetail = () => {
                 onClick={handleReturn}
                 loading={isReturning}
               >
-                Trả hàng
+                {t("ORDER_RETURN")}
               </Button>
             )}
           </Space>
@@ -180,11 +180,13 @@ const OrderDetail = () => {
 
         <Row gutter={16}>
           <Col span={6}>
-            <Typography.Title level={5}>Thông tin đơn hàng</Typography.Title>
+            <Typography.Title level={5}>{t("ORDER_INFO")}</Typography.Title>
             <Divider />
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Mã đơn hàng:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_CODE")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>{order?.id}</Typography.Paragraph>
@@ -192,7 +194,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Phim:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_MOVIE")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -204,7 +208,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Giờ chiếu:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_SHOWTIME_TIME")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -216,7 +222,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Ngày chiếu:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_SHOWTIME_DATE")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -226,7 +234,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Phòng chiếu:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_AUDITORIUM")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -236,7 +246,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Rạp chiếu:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_CINEMA")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -250,7 +262,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Ngày đặt:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_CREATED_DATE")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -262,12 +276,12 @@ const OrderDetail = () => {
               <>
                 <Divider />
                 <Typography.Title level={5} type="danger">
-                  Thông tin trả hàng
+                  {t("ORDER_RETURN_INFO")}
                 </Typography.Title>
                 <Row>
                   <Col span={7}>
                     <Typography.Paragraph strong>
-                      Người xử lý:
+                      {t("ORDER_RETURN_HANDLER")}:
                     </Typography.Paragraph>
                   </Col>
                   <Col span={17}>
@@ -278,7 +292,9 @@ const OrderDetail = () => {
                 </Row>
                 <Row>
                   <Col span={7}>
-                    <Typography.Paragraph strong>Email:</Typography.Paragraph>
+                    <Typography.Paragraph strong>
+                      {t("ORDER_EMAIL")}:
+                    </Typography.Paragraph>
                   </Col>
                   <Col span={17}>
                     <Typography.Paragraph>
@@ -289,7 +305,7 @@ const OrderDetail = () => {
                 <Row>
                   <Col span={7}>
                     <Typography.Paragraph strong>
-                      Thời gian trả:
+                      {t("ORDER_RETURN_TIME")}:
                     </Typography.Paragraph>
                   </Col>
                   <Col span={17}>
@@ -305,7 +321,7 @@ const OrderDetail = () => {
                 <Row>
                   <Col span={7}>
                     <Typography.Paragraph strong>
-                      Lý do trả:
+                      {t("ORDER_RETURN_REASON_LABEL")}:
                     </Typography.Paragraph>
                   </Col>
                   <Col span={17}>
@@ -318,11 +334,15 @@ const OrderDetail = () => {
             )}
           </Col>
           <Col span={6}>
-            <Typography.Title level={5}>Thông tin khách hàng</Typography.Title>
+            <Typography.Title level={5}>
+              {t("ORDER_CUSTOMER_INFO")}
+            </Typography.Title>
             <Divider />
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Khách hàng:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_CUSTOMER")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -334,7 +354,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Điện thoại:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_PHONE")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>{order?.user.phone}</Typography.Paragraph>
@@ -342,7 +364,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Email:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_EMAIL")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>{order?.user.email}</Typography.Paragraph>
@@ -350,7 +374,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Trạng thái:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_STATUS")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -360,7 +386,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Thành tiền:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_SUBTOTAL")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -371,7 +399,8 @@ const OrderDetail = () => {
             <Row>
               <Col span={7}>
                 <Typography.Paragraph strong>
-                  Giảm giá {order.discount ? `(${order.discount})` : ""}:
+                  {t("ORDER_DISCOUNT")}{" "}
+                  {order.discount ? `(${order.discount})` : ""}:
                 </Typography.Paragraph>
               </Col>
               <Col span={17}>
@@ -384,7 +413,9 @@ const OrderDetail = () => {
             </Row>
             <Row>
               <Col span={7}>
-                <Typography.Paragraph strong>Tổng tiền:</Typography.Paragraph>
+                <Typography.Paragraph strong>
+                  {t("ORDER_TOTAL")}:
+                </Typography.Paragraph>
               </Col>
               <Col span={17}>
                 <Typography.Paragraph>
@@ -397,13 +428,17 @@ const OrderDetail = () => {
           </Col>
 
           <Col span={12}>
-            <Typography.Title level={5}>Ghế & Dịch vụ</Typography.Title>
+            <Typography.Title level={5}>
+              {t("ORDER_SEATS_SERVICES")}
+            </Typography.Title>
             <Divider />
 
             {order.ticketItems && order.ticketItems.length > 0 ? (
               <TicketTable ticketItems={order.ticketItems} />
             ) : (
-              <Typography.Text type="secondary">Chưa có vé</Typography.Text>
+              <Typography.Text type="secondary">
+                {t("TICKET_NO_TICKETS")}
+              </Typography.Text>
             )}
 
             {order.serviceItems && order.serviceItems.length > 0 && (

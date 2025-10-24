@@ -1,4 +1,5 @@
 import { Table } from "antd";
+import { useTranslation } from "react-i18next";
 import { formatCurrency } from "@utils/functionUtils";
 import { Link } from "react-router-dom";
 import type { ServiceItem } from "@/types/order.types";
@@ -8,9 +9,11 @@ interface ServiceTableProps {
 }
 
 function ServiceTable({ serviceItems }: ServiceTableProps) {
+  const { t } = useTranslation();
+
   const columns = [
     {
-      title: "Tên dịch vụ",
+      title: t("SERVICE_NAME"),
       dataIndex: "additionalService",
       key: "name",
       width: "30%",
@@ -25,7 +28,7 @@ function ServiceTable({ serviceItems }: ServiceTableProps) {
       },
     },
     {
-      title: "Số lượng",
+      title: t("SERVICE_QUANTITY"),
       dataIndex: "quantity",
       key: "quantity",
       width: "20%",
@@ -34,7 +37,7 @@ function ServiceTable({ serviceItems }: ServiceTableProps) {
       },
     },
     {
-      title: "Đơn giá",
+      title: t("SERVICE_UNIT_PRICE"),
       dataIndex: "price",
       key: "price",
       width: "20%",
@@ -43,7 +46,7 @@ function ServiceTable({ serviceItems }: ServiceTableProps) {
       },
     },
     {
-      title: "Tổng tiền",
+      title: t("SERVICE_TOTAL_PRICE"),
       dataIndex: "",
       key: "totalPrice",
       width: "30%",

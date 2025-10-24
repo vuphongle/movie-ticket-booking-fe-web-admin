@@ -12,6 +12,7 @@ import priceManagement from "./priceManagement";
 import additionalService from "./additionalService";
 import overview from "./overview";
 import report from "./report";
+import order from "./order";
 
 const en = {
   ...common,
@@ -28,6 +29,7 @@ const en = {
   ...additionalService,
   ...overview,
   ...report,
+  ...order,
 };
 
 export default en;

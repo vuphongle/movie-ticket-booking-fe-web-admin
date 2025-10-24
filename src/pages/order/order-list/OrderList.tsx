@@ -1,12 +1,15 @@
 import { ReloadOutlined } from "@ant-design/icons";
 import { Button, Space, Spin, theme } from "antd";
 import { Helmet } from "react-helmet";
+import { useTranslation } from "react-i18next";
 import { useGetOrdersQuery } from "@/app/services/orders.service";
 import AppBreadCrumb from "../../../components/layout/AppBreadCrumb";
 import OrderTable from "./OrderTable";
 
-const breadcrumb = [{ label: "Danh sách đơn hàng", href: "/admin/orders" }];
 const OrderList = () => {
+  const { t } = useTranslation();
+  const breadcrumb = [{ label: t("ORDER_LIST"), href: "/admin/orders" }];
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -20,7 +23,7 @@ const OrderList = () => {
   return (
     <>
       <Helmet>
-        <title>Danh sách đơn hàng</title>
+        <title>{t("ORDER_LIST")}</title>
       </Helmet>
       <AppBreadCrumb items={breadcrumb} />
       <div
@@ -39,7 +42,7 @@ const OrderList = () => {
             onClick={() => refetch()}
             loading={isFetchingorders}
           >
-            Refresh
+            {t("ORDER_REFRESH")}
           </Button>
         </Space>
 
