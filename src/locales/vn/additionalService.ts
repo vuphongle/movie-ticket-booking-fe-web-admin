@@ -72,6 +72,7 @@ const additionalService = {
   ENTER_DEFAULT_QUANTITY: "Nhập số lượng mặc định",
   WARNING_DUPLICATE_PRODUCT:
     "⚠️ Sản phẩm trùng lặp sẽ được gộp số lượng khi lưu",
+  PRICING_INFORMATION: "Thông tin giá cả",
 };
 
 export default additionalService;

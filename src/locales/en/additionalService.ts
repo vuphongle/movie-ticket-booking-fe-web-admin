@@ -68,6 +68,7 @@ const additionalService = {
   ENTER_DEFAULT_QUANTITY: "Enter default quantity",
   WARNING_DUPLICATE_PRODUCT:
     "⚠️ Duplicate products will have their quantities merged upon saving",
+  PRICING_INFORMATION: "Pricing Information",
 };
 
 export default additionalService;
