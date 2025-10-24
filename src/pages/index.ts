@@ -1,7 +1,7 @@
-export { default as Dashboard } from "./dashboard/dashboard/Dashboard";
+export { default as Dashboard } from "./dashboard/Dashboard";
 export { default as Login } from "./login/Login";
-export { default as RevenueByCinema } from "./dashboard/revenue-cinema/RevenueByCinema";
-export { default as RevenueByMovie } from "./dashboard/revenue-movie/RevenueByMovie";
+export { default as RevenueByCinema } from "./report/revenue-cinema/RevenueByCinema";
+export { default as RevenueByMovie } from "./report/revenue-movie/RevenueByMovie";
 
 // Product pages
 export { default as ProductList } from "./product/product-list/ProductList";
