@@ -12,6 +12,7 @@ import {
 import { DownloadOutlined, HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import dayjs, { Dayjs } from "dayjs";
+import { useTranslation } from "react-i18next";
 import CouponStatisticsCards from "./CouponStatisticsCards";
 import CouponPerformanceTable from "./CouponPerformanceTable";
 import {
@@ -24,6 +25,7 @@ const { RangePicker } = DatePicker;
 const { Title } = Typography;
 
 const CouponStatistics = () => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -81,10 +83,12 @@ const CouponStatistics = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
 
-      message.success("Xuất báo cáo thành công!");
+      message.success(t("COUPON_STATISTICS_EXPORT_SUCCESS"));
     } catch (error: any) {
       console.error("Export error:", error);
-      message.error(error?.data?.message || "Xuất báo cáo thất bại!");
+      message.error(
+        error?.data?.message || t("COUPON_STATISTICS_EXPORT_ERROR")
+      );
     }
   };
 
@@ -107,10 +111,10 @@ const CouponStatistics = () => {
             ),
           },
           {
-            title: "Báo cáo",
+            title: t("COUPON_STATISTICS_BREADCRUMB_REPORT"),
           },
           {
-            title: "Thống kê khuyến mại",
+            title: t("COUPON_STATISTICS_BREADCRUMB_TITLE"),
           },
         ]}
       />
@@ -134,7 +138,7 @@ const CouponStatistics = () => {
           }}
         >
           <Title level={3} style={{ margin: 0 }}>
-            Thống kê hiệu suất khuyến mại
+            {t("COUPON_STATISTICS_TITLE")}
           </Title>
 
           <Space wrap>
@@ -142,7 +146,10 @@ const CouponStatistics = () => {
               value={dateRange}
               onChange={handleDateChange}
               format="DD/MM/YYYY"
-              placeholder={["Từ ngày", "Đến ngày"]}
+              placeholder={[
+                t("COUPON_STATISTICS_DATE_FROM"),
+                t("COUPON_STATISTICS_DATE_TO"),
+              ]}
               style={{ width: 280 }}
             />
             <Button
@@ -151,7 +158,7 @@ const CouponStatistics = () => {
               onClick={handleExport}
               loading={isExporting}
             >
-              Xuất báo cáo
+              {t("COUPON_STATISTICS_EXPORT_BUTTON")}
             </Button>
           </Space>
         </div>
@@ -167,7 +174,7 @@ const CouponStatistics = () => {
 
       {/* Performance Table */}
       <Card
-        title="Chi tiết hiệu suất khuyến mại"
+        title={t("COUPON_STATISTICS_DETAIL_TITLE")}
         style={{
           background: colorBgContainer,
           borderRadius: borderRadiusLG,

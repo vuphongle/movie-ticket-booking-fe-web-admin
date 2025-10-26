@@ -7,6 +7,7 @@ import {
   PercentageOutlined,
   RiseOutlined,
 } from "@ant-design/icons";
+import { useTranslation } from "react-i18next";
 import type { CouponStatistics } from "@/types";
 import { formatCurrency } from "@/utils/functionUtils";
 
@@ -19,6 +20,7 @@ const CouponStatisticsCards = ({
   statistics,
   loading,
 }: CouponStatisticsCardsProps) => {
+  const { t } = useTranslation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -31,7 +33,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={6}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Tổng số khuyến mại"
+            title={t("COUPON_STATISTICS_TOTAL_COUPONS")}
             value={statistics.totalCoupons}
             prefix={<GiftOutlined />}
             valueStyle={{ color: "#3f8600" }}
@@ -41,7 +43,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={6}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Đang kích hoạt"
+            title={t("COUPON_STATISTICS_ACTIVE_COUPONS")}
             value={statistics.activeCoupons}
             prefix={<GiftOutlined />}
             valueStyle={{ color: "#52c41a" }}
@@ -51,7 +53,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={6}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Sắp diễn ra"
+            title={t("COUPON_STATISTICS_UPCOMING_COUPONS")}
             value={statistics.upcomingCoupons}
             prefix={<GiftOutlined />}
             valueStyle={{ color: "#1890ff" }}
@@ -61,7 +63,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={6}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Đã hết hạn"
+            title={t("COUPON_STATISTICS_EXPIRED_COUPONS")}
             value={statistics.expiredCoupons}
             prefix={<GiftOutlined />}
             valueStyle={{ color: "#faad14" }}
@@ -73,7 +75,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Tổng lượt sử dụng"
+            title={t("COUPON_STATISTICS_TOTAL_REDEMPTIONS")}
             value={statistics.totalRedemptions}
             prefix={<ShoppingCartOutlined />}
           />
@@ -82,7 +84,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Khách hàng duy nhất"
+            title={t("COUPON_STATISTICS_UNIQUE_CUSTOMERS")}
             value={statistics.uniqueCustomers}
             prefix={<UserOutlined />}
           />
@@ -91,7 +93,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Đơn có khuyến mại"
+            title={t("COUPON_STATISTICS_ORDERS_WITH_COUPONS")}
             value={statistics.ordersWithCoupons}
             suffix={`/ ${statistics.ordersWithCoupons + statistics.ordersWithoutCoupons}`}
             prefix={<ShoppingCartOutlined />}
@@ -103,7 +105,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Tổng giá trị giảm giá"
+            title={t("COUPON_STATISTICS_TOTAL_DISCOUNT_AMOUNT")}
             value={statistics.totalDiscountAmount}
             prefix={<DollarOutlined />}
             formatter={(value) => formatCurrency(Number(value))}
@@ -114,7 +116,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="DT trước giảm giá"
+            title={t("COUPON_STATISTICS_REVENUE_BEFORE_DISCOUNT")}
             value={statistics.totalRevenueBeforeDiscount}
             prefix={<DollarOutlined />}
             formatter={(value) => formatCurrency(Number(value))}
@@ -124,7 +126,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="DT sau giảm giá"
+            title={t("COUPON_STATISTICS_REVENUE_AFTER_DISCOUNT")}
             value={statistics.totalRevenueAfterDiscount}
             prefix={<DollarOutlined />}
             formatter={(value) => formatCurrency(Number(value))}
@@ -137,7 +139,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Tỷ lệ sử dụng khuyến mại"
+            title={t("COUPON_STATISTICS_COUPON_USAGE_RATE")}
             value={statistics.couponUsageRate}
             precision={2}
             suffix="%"
@@ -149,7 +151,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Tỷ lệ đơn hàng có KM"
+            title={t("COUPON_STATISTICS_ORDER_CONVERSION_RATE")}
             value={statistics.orderConversionRate}
             precision={2}
             suffix="%"
@@ -161,7 +163,7 @@ const CouponStatisticsCards = ({
       <Col xs={24} sm={12} lg={8}>
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
-            title="Giảm giá TB/đơn"
+            title={t("COUPON_STATISTICS_AVERAGE_DISCOUNT_PER_ORDER")}
             value={statistics.averageDiscountPerOrder}
             prefix={<DollarOutlined />}
             formatter={(value) => formatCurrency(Number(value))}

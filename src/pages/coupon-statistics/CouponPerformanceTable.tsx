@@ -1,5 +1,6 @@
 import { Table, Tag, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { useTranslation } from "react-i18next";
 import type { CouponPerformance } from "@/types";
 import { formatCurrency } from "@/utils/functionUtils";
 import dayjs from "dayjs";
@@ -13,16 +14,18 @@ const CouponPerformanceTable = ({
   data,
   loading,
 }: CouponPerformanceTableProps) => {
+  const { t } = useTranslation();
+
   const columns: ColumnsType<CouponPerformance> = [
     {
-      title: "STT",
+      title: t("COUPON_STATISTICS_TABLE_STT"),
       key: "stt",
       width: 60,
       align: "center",
       render: (_: any, __: any, index: number) => index + 1,
     },
     {
-      title: "Mã KM",
+      title: t("COUPON_STATISTICS_TABLE_CODE"),
       dataIndex: "couponCode",
       key: "couponCode",
       width: 120,
@@ -34,7 +37,7 @@ const CouponPerformanceTable = ({
       ),
     },
     {
-      title: "Tên khuyến mại",
+      title: t("COUPON_STATISTICS_TABLE_NAME"),
       dataIndex: "couponName",
       key: "couponName",
       width: 200,
@@ -46,7 +49,7 @@ const CouponPerformanceTable = ({
       ),
     },
     {
-      title: "Loại",
+      title: t("COUPON_STATISTICS_TABLE_KIND"),
       dataIndex: "kind",
       key: "kind",
       width: 100,
@@ -56,7 +59,7 @@ const CouponPerformanceTable = ({
       ),
     },
     {
-      title: "Thời gian HĐ",
+      title: t("COUPON_STATISTICS_TABLE_VALIDITY"),
       key: "validity",
       width: 180,
       render: (_: any, record: CouponPerformance) => {
@@ -72,7 +75,7 @@ const CouponPerformanceTable = ({
       },
     },
     {
-      title: "Số lần SD",
+      title: t("COUPON_STATISTICS_TABLE_USAGE_COUNT"),
       dataIndex: "usageCount",
       key: "usageCount",
       width: 100,
@@ -80,7 +83,7 @@ const CouponPerformanceTable = ({
       sorter: (a, b) => a.usageCount - b.usageCount,
     },
     {
-      title: "Số KH",
+      title: t("COUPON_STATISTICS_TABLE_UNIQUE_CUSTOMERS"),
       dataIndex: "uniqueCustomers",
       key: "uniqueCustomers",
       width: 90,
@@ -88,7 +91,7 @@ const CouponPerformanceTable = ({
       sorter: (a, b) => a.uniqueCustomers - b.uniqueCustomers,
     },
     {
-      title: "Tổng giảm giá",
+      title: t("COUPON_STATISTICS_TABLE_TOTAL_DISCOUNT"),
       dataIndex: "totalDiscountValue",
       key: "totalDiscountValue",
       width: 130,
@@ -97,7 +100,7 @@ const CouponPerformanceTable = ({
       render: (value: number) => formatCurrency(value),
     },
     {
-      title: "DT trước CK",
+      title: t("COUPON_STATISTICS_TABLE_REVENUE_BEFORE"),
       dataIndex: "revenueBeforeDiscount",
       key: "revenueBeforeDiscount",
       width: 130,
@@ -106,7 +109,7 @@ const CouponPerformanceTable = ({
       render: (value: number) => formatCurrency(value),
     },
     {
-      title: "DT sau CK",
+      title: t("COUPON_STATISTICS_TABLE_REVENUE_AFTER"),
       dataIndex: "revenueWithCoupon",
       key: "revenueWithCoupon",
       width: 130,
@@ -115,7 +118,7 @@ const CouponPerformanceTable = ({
       render: (value: number) => formatCurrency(value),
     },
     {
-      title: "Tỷ lệ giảm",
+      title: t("COUPON_STATISTICS_TABLE_DISCOUNT_PERCENTAGE"),
       dataIndex: "discountPercentage",
       key: "discountPercentage",
       width: 100,
@@ -124,23 +127,37 @@ const CouponPerformanceTable = ({
       render: (value: number) => `${value.toFixed(2)}%`,
     },
     {
-      title: "Trạng thái",
+      title: t("COUPON_STATISTICS_TABLE_STATUS"),
       dataIndex: "statusLabel",
       key: "statusLabel",
       width: 130,
       align: "center",
       filters: [
-        { text: "Kích hoạt", value: "Kích hoạt" },
-        { text: "Ẩn", value: "Ẩn" },
-        { text: "Sắp có hiệu lực", value: "Sắp có hiệu lực" },
-        { text: "Hết hạn", value: "Hết hạn" },
+        {
+          text: t("COUPON_STATISTICS_FILTER_ACTIVE"),
+          value: t("COUPON_STATISTICS_FILTER_ACTIVE"),
+        },
+        {
+          text: t("COUPON_STATISTICS_FILTER_INACTIVE"),
+          value: t("COUPON_STATISTICS_FILTER_INACTIVE"),
+        },
+        {
+          text: t("COUPON_STATISTICS_FILTER_UPCOMING"),
+          value: t("COUPON_STATISTICS_FILTER_UPCOMING"),
+        },
+        {
+          text: t("COUPON_STATISTICS_FILTER_EXPIRED"),
+          value: t("COUPON_STATISTICS_FILTER_EXPIRED"),
+        },
       ],
       onFilter: (value, record) => record.statusLabel === value,
       render: (status: string) => {
         let color = "default";
-        if (status === "Kích hoạt") color = "success";
-        else if (status === "Sắp có hiệu lực") color = "processing";
-        else if (status === "Hết hạn") color = "warning";
+        if (status === t("COUPON_STATISTICS_FILTER_ACTIVE")) color = "success";
+        else if (status === t("COUPON_STATISTICS_FILTER_UPCOMING"))
+          color = "processing";
+        else if (status === t("COUPON_STATISTICS_FILTER_EXPIRED"))
+          color = "warning";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -157,7 +174,7 @@ const CouponPerformanceTable = ({
       pagination={{
         showSizeChanger: true,
         showQuickJumper: true,
-        showTotal: (total) => `Tổng ${total} khuyến mại`,
+        showTotal: (total) => t("COUPON_STATISTICS_TABLE_TOTAL", { total }),
         defaultPageSize: 10,
         pageSizeOptions: ["10", "20", "50", "100"],
       }}
