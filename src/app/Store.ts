@@ -56,7 +56,16 @@ export const Store = configureStore({
     [blogApi.reducerPath]: blogApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [
+          "couponStatisticsApi/executeMutation/pending",
+          "couponStatisticsApi/executeMutation/fulfilled",
+          "couponStatisticsApi/executeMutation/rejected",
+        ],
+        ignoredPaths: ["couponStatisticsApi.mutations"],
+      },
+    }).concat(
       authApi.middleware,
       userApi.middleware,
       cinemaApi.middleware,
