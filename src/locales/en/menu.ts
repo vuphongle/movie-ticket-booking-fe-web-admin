@@ -5,6 +5,7 @@ const menu = {
   REVENUE_BY_MOVIE: "Revenue by Movie",
   REVENUE_BY_CINEMA: "Revenue by Cinema",
   REVENUE_BY_CUSTOMER: "Revenue by Customer",
+  COUPON_STATISTICS: "Coupon Statistics",
 
   CINEMA_MANAGEMENT: "Cinema",
   CINEMA_LIST: "Cinema List",
