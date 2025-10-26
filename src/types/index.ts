@@ -14,3 +14,4 @@ export * from "./product.types";
 export * from "./order.types";
 export * from "./dashboard.types";
 export * from "./blog.types";
+export * from "./couponStatistics.types";

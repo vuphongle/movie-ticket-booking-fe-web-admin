@@ -23,6 +23,7 @@ import { productApi } from "@/app/services/products.service";
 import { orderApi } from "@/app/services/orders.service";
 import { dashboardApi } from "@/app/services/dashboard.service";
 import { blogApi } from "@/app/services/blogs.service";
+import { couponStatisticsApi } from "@/app/services/couponStatistics.service";
 import { checkStatusMiddleware } from "@app/middlewares/middlewares";
 import { tokenMiddleware } from "@app/middlewares/tokenMiddleware";
 
@@ -37,6 +38,7 @@ export const Store = configureStore({
     [movieApi.reducerPath]: movieApi.reducer,
     [scheduleApi.reducerPath]: scheduleApi.reducer,
     [couponApi.reducerPath]: couponApi.reducer,
+    [couponStatisticsApi.reducerPath]: couponStatisticsApi.reducer,
     [genreApi.reducerPath]: genreApi.reducer,
     [directorApi.reducerPath]: directorApi.reducer,
     [actorApi.reducerPath]: actorApi.reducer,
@@ -78,6 +80,7 @@ export const Store = configureStore({
       orderApi.middleware,
       dashboardApi.middleware,
       blogApi.middleware,
+      couponStatisticsApi.middleware,
       checkStatusMiddleware,
       tokenMiddleware,
     ),

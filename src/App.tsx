@@ -47,6 +47,7 @@ import BlogCreate from "@/pages/blog/blog-create/BlogCreate";
 import UserList from "./pages/user/user-list/UserList";
 import UserDetail from "./pages/user/user-detail/UserDetail";
 import UserCreate from "./pages/user/user-create/UserCreate";
+import CouponStatistics from "./pages/coupon-statistics";
 
 function App() {
   return (
@@ -78,6 +79,7 @@ function App() {
             <Route path="revenue/cinema" element={<RevenueByCinema />} />
             <Route path="revenue/movie" element={<RevenueByMovie />} />
             <Route path="revenue/customer" element={<RevenueByCustomer />} />
+            <Route path="coupon-statistics" element={<CouponStatistics />} />
             <Route path="price-lists">
               <Route index element={<PriceListPage />} />
               <Route path=":priceListId/detail" element={<PriceListDetail />} />
