@@ -12,7 +12,6 @@ import {
   Space,
   Switch,
   Table,
-  Tag,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { MenuProps } from "antd/es/menu";
@@ -76,7 +75,6 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
         const cloneData = {
           id: priceList.id,
           name: `${priceList.name} (Copy)`,
-          priority: priceList.priority + 1, // Slightly lower priority
           status: false, // Start as inactive
           validFrom: priceList.validFrom,
           validTo: priceList.validTo,
@@ -199,22 +197,6 @@ const PriceListTable = ({ data, loading }: PriceListTableProps) => {
             <strong style={{ color: "#1890ff" }}>{text}</strong>
           </RouterLink>
         </Space>
-      ),
-    },
-    {
-      title: t("PRIORITY"),
-      dataIndex: "priority",
-      key: "priority",
-      width: 100,
-      align: "center",
-      sorter: (a, b) => a.priority - b.priority,
-      sortDirections: ["ascend", "descend"],
-      render: (priority: number) => (
-        <Tag
-          color={priority >= 100 ? "red" : priority >= 50 ? "orange" : "blue"}
-        >
-          {priority}
-        </Tag>
       ),
     },
     {
