@@ -13,7 +13,6 @@ import {
   Switch,
   theme,
   DatePicker,
-  InputNumber,
 } from "antd";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
@@ -61,7 +60,6 @@ const PriceListDetail = () => {
 
         form.setFieldsValue({
           name: priceList.name || "",
-          priority: priceList.priority || 1,
           status: Boolean(priceList.status),
           validityPeriod: validityPeriod.length === 2 ? validityPeriod : null,
         });
@@ -69,7 +67,6 @@ const PriceListDetail = () => {
         // Handle date parsing errors gracefully
         form.setFieldsValue({
           name: priceList.name || "",
-          priority: priceList.priority || 1,
           status: Boolean(priceList.status),
           validityPeriod: null,
         });
@@ -105,7 +102,6 @@ const PriceListDetail = () => {
   const handleUpdate = (values: any) => {
     const payload: any = {
       name: values.name,
-      priority: values.priority,
       status: values.status ?? true,
     };
 
@@ -239,29 +235,14 @@ const PriceListDetail = () => {
               >
                 <Input placeholder={t("ENTER_PRICE_LIST_NAME")} />
               </Form.Item>
-
               <Form.Item
-                label={t("PRIORITY")}
-                name="priority"
-                rules={[
-                  {
-                    required: true,
-                    message: t("PRIORITY_REQUIRED"),
-                  },
-                  {
-                    type: "number",
-                    min: 1,
-                    max: 999,
-                    message: t("PRIORITY_RANGE"),
-                  },
-                ]}
-                tooltip={t("PRIORITY_TOOLTIP")}
+                label={t("STATUS")}
+                name="status"
+                valuePropName="checked"
               >
-                <InputNumber
-                  placeholder={t("ENTER_PRIORITY")}
-                  style={{ width: "100%" }}
-                  min={1}
-                  max={999}
+                <Switch
+                  checkedChildren={t("ACTIVE")}
+                  unCheckedChildren={t("INACTIVE")}
                 />
               </Form.Item>
             </Col>
@@ -276,17 +257,6 @@ const PriceListDetail = () => {
                   style={{ width: "100%" }}
                   placeholder={[t("VALID_FROM"), t("VALID_TO")]}
                   format="DD/MM/YYYY"
-                />
-              </Form.Item>
-
-              <Form.Item
-                label={t("STATUS")}
-                name="status"
-                valuePropName="checked"
-              >
-                <Switch
-                  checkedChildren={t("ACTIVE")}
-                  unCheckedChildren={t("INACTIVE")}
                 />
               </Form.Item>
             </Col>

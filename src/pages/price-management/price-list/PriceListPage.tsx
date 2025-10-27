@@ -7,7 +7,6 @@ import {
   Space,
   Spin,
   DatePicker,
-  InputNumber,
   Switch,
   message,
   theme,
@@ -58,38 +57,48 @@ const PriceListPage = () => {
     );
   }
 
-  const handleCreate = (values: any) => {
-    const payload: CreatePriceListRequest = {
-      name: values.name,
-      priority: values.priority,
-      status: values.status ?? true,
-    };
-
-    // Handle validity dates
-    if (values.validityPeriod && values.validityPeriod.length === 2) {
-      // Set start date to 00:00:00
-      const validFrom = values.validityPeriod[0].clone();
-      validFrom.hour(0).minute(0).second(0).millisecond(0);
-
-      // Set end date to 23:59:59
-      const validTo = values.validityPeriod[1].clone();
-      validTo.hour(23).minute(59).second(59).millisecond(999);
-
-      payload.validFrom = validFrom.toISOString();
-      payload.validTo = validTo.toISOString();
-    }
-
-    createPriceList(payload)
-      .unwrap()
-      .then(() => {
-        form.resetFields();
-        setOpen(false);
-        message.success(t("CREATE_SUCCESS"));
-      })
-      .catch((error: any) => {
-        message.error(error.data?.message || t("CREATE_ERROR"));
-      });
+const handleCreate = (values: any) => {
+  const payload: CreatePriceListRequest = {
+    name: values.name,
+    status: values.status ?? true,
   };
+
+  if (values.validityPeriod && values.validityPeriod.length === 2) {
+    const validFrom = values.validityPeriod[0].clone().startOf("day");
+    const validTo = values.validityPeriod[1].clone().endOf("day");
+
+    payload.validFrom = validFrom.toISOString();
+    payload.validTo = validTo.toISOString();
+
+    const isOverlap = data?.some((item: any) => {
+      if (!item.validFrom || !item.validTo) return false;
+      const existingFrom = new Date(item.validFrom);
+      const existingTo = new Date(item.validTo);
+
+      return (
+        validFrom.toDate() <= existingTo &&
+        validTo.toDate() >= existingFrom
+      );
+    });
+
+    if (isOverlap) {
+      message.error(t("VALIDITY_PERIOD_OVERLAP_ERROR") || "Khoảng thời gian đã bị trùng với danh sách giá khác!");
+      return;
+    }
+  }
+
+  createPriceList(payload)
+    .unwrap()
+    .then(() => {
+      form.resetFields();
+      setOpen(false);
+      message.success(t("CREATE_SUCCESS"));
+    })
+    .catch((error: any) => {
+      message.error(error.data?.message || t("CREATE_ERROR"));
+    });
+};
+
 
   const handleRefresh = () => {
     refetch();
@@ -160,31 +169,6 @@ const PriceListPage = () => {
             ]}
           >
             <Input placeholder={t("ENTER_PRICE_LIST_NAME")} />
-          </Form.Item>
-
-          <Form.Item
-            label={t("PRIORITY")}
-            name="priority"
-            rules={[
-              {
-                required: true,
-                message: t("PRIORITY_REQUIRED"),
-              },
-              {
-                type: "number",
-                min: 1,
-                max: 999,
-                message: t("PRIORITY_RANGE"),
-              },
-            ]}
-            tooltip={t("PRIORITY_TOOLTIP")}
-          >
-            <InputNumber
-              placeholder={t("ENTER_PRIORITY")}
-              style={{ width: "100%" }}
-              min={1}
-              max={999}
-            />
           </Form.Item>
 
           <Form.Item

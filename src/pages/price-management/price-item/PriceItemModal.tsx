@@ -57,7 +57,6 @@ const PriceItemModal = ({
           targetType: editingItem.targetType,
           targetId: editingItem.targetId,
           price: editingItem.price,
-          priority: editingItem.priority,
           status: editingItem.status,
           seatType: editingItem.seatType,
           graphicsType: editingItem.graphicsType,
@@ -70,7 +69,6 @@ const PriceItemModal = ({
         form.resetFields();
         form.setFieldsValue({
           targetType: "TICKET",
-          priority: 1,
           status: true,
         });
       }
@@ -87,7 +85,6 @@ const PriceItemModal = ({
         targetType: values.targetType,
         targetId: values.targetId || null,
         price: values.price,
-        priority: values.priority,
         status: values.status ?? true,
         seatType: values.seatType || null,
         graphicsType: values.graphicsType || null,
@@ -110,12 +107,63 @@ const PriceItemModal = ({
       onCancel();
       form.resetFields();
     } catch (error: any) {
-      console.error("❌ [DEBUG] Form submission error:", error);
-      message.error(
-        error.data?.message ||
-          (isEditing ? t("UPDATE_ERROR") : t("CREATE_ERROR")),
-      );
-    }
+  console.error("❌ [DEBUG] Form submission error:", error);
+
+  const backendMessage =
+    error?.data?.message ||
+    error?.error ||
+    (isEditing ? t("UPDATE_ERROR") : t("CREATE_ERROR"));
+
+  if (
+    backendMessage.includes(
+      "A TICKET PriceItem with the same conditions already exists"
+    ) || backendMessage.includes("A TICKET PriceItem with the same conditions already exists and is active in this PriceList.")
+  ) {
+    message.warning(
+      t(
+        "PRICE_ITEM_DUPLICATE_TICKET",
+        "Đã tồn tại bảng giá vé có cùng điều kiện trong PriceList này!"
+      )
+    );
+  }
+  else if(
+    backendMessage.includes("A PRODUCT PriceItem with the same target already exists and is active in this PriceList.")
+    || backendMessage.includes("Another active PRODUCT PriceItem with the same target already exists in this PriceList.")
+  ){
+    message.warning(
+      t(
+        "PRICE_ITEM_DUPLICATE_PRODUCT",
+        "Đã tồn tại giá của sản phẩm này trong PriceList này!"
+      )
+    );
+  } 
+  else if(
+    backendMessage.includes("A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList.")
+    || backendMessage.includes("A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList.")
+  ){
+    message.warning(
+      t(
+        "PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE",
+        "Đã tồn tại giá của dịch vụ bổ sung này trong PriceList này!"
+      )
+    );
+  }
+  else if(
+    backendMessage.includes("Cannot edit PriceItem that has been used in orders.")
+    || backendMessage.includes("Cannot delete PriceItem that has been used in orders.")
+  ){
+    message.warning(
+        t(
+          "PRICE_ITEM_USED_IN_ORDERS",
+          "Không thể chỉnh sửa hoặc xóa mục giá đã được sử dụng trong các đơn hàng!"
+        )
+    );
+}
+  else {
+    message.error(backendMessage);
+  }
+}
+
   };
 
   const handleCancel = () => {
@@ -229,7 +277,6 @@ const PriceItemModal = ({
         layout="vertical"
         initialValues={{
           targetType: "TICKET",
-          priority: 1,
           status: true,
         }}
       >
@@ -402,32 +449,6 @@ const PriceItemModal = ({
                 formatter={(value) =>
                   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                 }
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label={t("PRIORITY")}
-              name="priority"
-              rules={[
-                {
-                  required: true,
-                  message: t("PRIORITY_REQUIRED"),
-                },
-                {
-                  type: "number",
-                  min: 1,
-                  max: 999,
-                  message: t("PRIORITY_RANGE"),
-                },
-              ]}
-              tooltip={t("PRIORITY_TOOLTIP")}
-            >
-              <InputNumber
-                placeholder={t("ENTER_PRIORITY")}
-                style={{ width: "100%" }}
-                min={1}
-                max={999}
               />
             </Form.Item>
           </Col>

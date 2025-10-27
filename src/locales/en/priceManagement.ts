@@ -166,6 +166,12 @@ const priceManagement = {
   TICKET_PRICES: "Ticket Prices",
   PRODUCT_PRICES: "Product Prices",
   ADDITIONAL_SERVICE_PRICES: "Additional Service Prices",
+
+  VALIDITY_PERIOD_OVERLAP_ERROR: "Validity period overlaps with another price list!",
+  PRICE_ITEM_DUPLICATE_TICKET: "A ticket price item with the same conditions already exists!",
+  PRICE_ITEM_DUPLICATE_PRODUCT: "A product price item for this product already exists in the price list!",
+  PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE: "An additional service price item for this service already exists in the price list!",
+    PRICE_ITEM_USED_IN_ORDERS: "This price item has been used in orders and cannot be modified!",
 };
 
 export default priceManagement;

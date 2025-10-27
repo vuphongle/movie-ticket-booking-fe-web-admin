@@ -25,7 +25,6 @@ export interface PriceList {
   id: number;
   name: string;
   status: boolean;
-  priority: number;
   validFrom?: number; // Timestamp in milliseconds
   validTo?: number; // Timestamp in milliseconds
   createdAt: string | number;
@@ -37,7 +36,6 @@ export interface PriceList {
 export interface CreatePriceListRequest {
   name: string;
   status?: boolean;
-  priority: number;
   validFrom?: string | number; // Can accept ISO string or timestamp
   validTo?: string | number; // Can accept ISO string or timestamp
 }
@@ -61,8 +59,7 @@ export interface PriceItem {
   auditoriumType?: AuditoriumType; // nullable, null = wildcard
 
   price: number; // Applied price
-  minQty?: number; // Minimum quantity to apply this price
-  priority: number; // Higher number = higher priority
+  minQty?: number; // Minimum quantity to apply this price // Higher number = higher priority
   status: boolean; // Active status
 
   // Populated fields
@@ -85,7 +82,6 @@ export interface CreatePriceItemRequest {
 
   price: number;
   minQty?: number;
-  priority: number;
   status?: boolean;
 }
 

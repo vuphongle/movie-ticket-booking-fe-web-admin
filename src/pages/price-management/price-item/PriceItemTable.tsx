@@ -379,22 +379,6 @@ const PriceItemTable = ({
         ]
       : []),
 
-    {
-      title: t("PRIORITY"),
-      dataIndex: "priority",
-      key: "priority",
-      width: 75,
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.priority - b.priority,
-      ...getColumnSearchProps("priority"),
-      render: (priority: number) => (
-        <Tag
-          color={priority >= 100 ? "red" : priority >= 50 ? "orange" : "blue"}
-        >
-          {priority}
-        </Tag>
-      ),
-    },
     // Ticket Conditions column - conditionally rendered
     ...(!hideTicketConditions
       ? [
