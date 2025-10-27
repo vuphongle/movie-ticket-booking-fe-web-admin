@@ -117,7 +117,7 @@ const PriceItemModal = ({
   if (
     backendMessage.includes(
       "A TICKET PriceItem with the same conditions already exists"
-    ) || backendMessage.includes("A TICKET PriceItem with the same conditions already exists and is active in this PriceList.")
+    ) || backendMessage.includes("Another active TICKET PriceItem with the same conditions already exists in this PriceList.")
   ) {
     message.warning(
       t(
@@ -138,7 +138,7 @@ const PriceItemModal = ({
     );
   } 
   else if(
-    backendMessage.includes("A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList.")
+    backendMessage.includes("Another active ADDITIONAL_SERVICE PriceItem with the same target already exists in this PriceList.")
     || backendMessage.includes("A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList.")
   ){
     message.warning(
