@@ -27,6 +27,7 @@ import { formatCurrency } from "@/utils/functionUtils";
 import type { PriceItem, PriceTargetType } from "@/types";
 import { usePriceItemActions } from "./PriceItemActionsContext";
 import useSearchTable from "@/hooks/useSearchTable";
+import React from "react";
 
 interface PriceItemTableProps {
   data: PriceItem[];
@@ -77,7 +78,7 @@ const PriceItemTable = ({
         return priceItem.additionalService.name;
       }
       const service = additionalServices.find(
-        (s) => Number(s.id) === priceItem.targetId,
+        (s) => Number(s.id) === priceItem.targetId
       );
       return service?.name ? service.name : `Service ID: ${priceItem.targetId}`;
     }
@@ -97,8 +98,32 @@ const PriceItemTable = ({
       okText: t("DELETE"),
       cancelText: t("CANCEL"),
       okType: "danger",
-      onOk: () => {
-        deletePriceItem(priceItem.id);
+      onOk: async () => {
+        try {
+          await deletePriceItem(priceItem.id).unwrap();
+          message.success(t("DELETE_SUCCESS", "Xóa thành công"));
+        } catch (error: any) {
+          console.error("❌ [DEBUG] Delete error:", error);
+          const backendMessage = error?.data?.message || error?.error;
+          if (
+            backendMessage.includes(
+              "Cannot delete PriceItem that has been used in orders."
+            )
+          ) {
+            message.warning(
+              t(
+                "PRICE_ITEM_USED_IN_ORDERS",
+                "Không thể xóa mục giá đã được sử dụng trong các đơn hàng!"
+              )
+            );
+          } else if (backendMessage.includes("PriceItem not found with id")) {
+            message.warning(
+              t("PRICE_ITEM_NOT_FOUND", "Mục giá không tồn tại hoặc đã bị xóa!")
+            );
+          } else {
+            message.error(backendMessage);
+          }
+        }
       },
     });
   };
@@ -167,7 +192,7 @@ const PriceItemTable = ({
   // Render dimension value with "Any" for null and proper translations
   const renderDimension = (
     value: string | null | undefined,
-    type: "seat" | "graphics" | "time" | "day" | "room",
+    type: "seat" | "graphics" | "time" | "day" | "room"
   ) => {
     const getLabel = (type: string) => {
       switch (type) {
@@ -288,6 +313,50 @@ const PriceItemTable = ({
     );
   };
 
+  const [selectedConditions, setSelectedConditions] = React.useState<string[]>(
+    []
+  );
+
+  const filterLabelMap: Record<string, string> = {
+    NORMAL: "SEAT_TYPE_NORMAL",
+    VIP: "SEAT_TYPE_VIP",
+    COUPLE: "SEAT_TYPE_COUPLE",
+    _2D: "GRAPHICS_TYPE_2D",
+    _3D: "GRAPHICS_TYPE_3D",
+    SUAT_CHIEU_SOM: "SCREENING_TIME_EARLY",
+    SUAT_CHIEU_THEO_LICH: "SCREENING_TIME_REGULAR",
+    WEEKDAY: "DAY_TYPE_WEEKDAY",
+    WEEKEND: "DAY_TYPE_WEEKEND",
+    HOLIDAY: "DAY_TYPE_HOLIDAY",
+    STANDARD: "AUDITORIUM_TYPE_STANDARD",
+    IMAX: "AUDITORIUM_TYPE_IMAX",
+    GOLDCLASS: "AUDITORIUM_TYPE_GOLDCLASS",
+  };
+
+  const [filteredData, setFilteredData] = React.useState<PriceItem[]>(data);
+
+  const handleTableChange = (_pagination: any, filters: any) => {
+    const selected = filters.ticketConditions as string[] | null;
+    setSelectedConditions(selected || []);
+
+    if (selected && selected.length > 0) {
+      const filteredData = data.filter((record) => {
+        if (record.targetType !== "TICKET") return false;
+        const conditions = [
+          record.seatType,
+          record.graphicsType,
+          record.screeningTimeType,
+          record.dayType,
+          record.auditoriumType,
+        ];
+        return selected.every((v) => conditions.includes(v as any));
+      });
+      setFilteredData(filteredData);
+    } else {
+      setFilteredData(data);
+    }
+  };
+
   const columns: ColumnsType<PriceItem> = [
     // Status column - moved to first position
     {
@@ -383,22 +452,63 @@ const PriceItemTable = ({
     ...(!hideTicketConditions
       ? [
           {
-            title: t("TICKET_CONDITIONS"),
+            title: () => (
+              <Space wrap>
+                <span>{t("TICKET_CONDITIONS")}</span>
+                {selectedConditions.length > 0 && (
+                  <Space wrap>
+                    {selectedConditions.map((cond) => (
+                      <Tag key={cond} color="blue" style={{ fontSize: "11px" }}>
+                        {t(filterLabelMap[cond] || cond)}
+                      </Tag>
+                    ))}
+                  </Space>
+                )}
+              </Space>
+            ),
             key: "ticketConditions",
-            width: 280,
-            ...getColumnSearchProps("ticketConditions"),
-            onFilter: (value: any, record: any) => {
-              if (record.targetType !== "TICKET") return false;
-              const conditions = [
-                // record.seatType,
-                record.graphicsType,
-                record.screeningTimeType,
-                record.dayType,
-                record.auditoriumType,
-              ]
-                .filter(Boolean)
-                .join(" ");
-              return conditions.toLowerCase().includes(value.toLowerCase());
+            width: 320,
+            filters: [
+              // Seat Type
+              { text: t("SEAT_TYPE_NORMAL"), value: "NORMAL" },
+              { text: t("SEAT_TYPE_VIP"), value: "VIP" },
+              { text: t("SEAT_TYPE_COUPLE"), value: "COUPLE" },
+
+              // Graphics Type
+              { text: t("GRAPHICS_TYPE_2D"), value: "_2D" },
+              { text: t("GRAPHICS_TYPE_3D"), value: "_3D" },
+
+              // Screening Time Type
+              { text: t("SCREENING_TIME_EARLY"), value: "SUAT_CHIEU_SOM" },
+              {
+                text: t("SCREENING_TIME_REGULAR"),
+                value: "SUAT_CHIEU_THEO_LICH",
+              },
+
+              // Day Type
+              { text: t("DAY_TYPE_WEEKDAY"), value: "WEEKDAY" },
+              { text: t("DAY_TYPE_WEEKEND"), value: "WEEKEND" },
+              { text: t("DAY_TYPE_HOLIDAY"), value: "HOLIDAY" },
+
+              // Room Type
+              { text: t("AUDITORIUM_TYPE_STANDARD"), value: "STANDARD" },
+              { text: t("AUDITORIUM_TYPE_IMAX"), value: "IMAX" },
+              { text: t("AUDITORIUM_TYPE_GOLDCLASS"), value: "GOLDCLASS" },
+            ],
+            filteredValue: selectedConditions || null,
+            //   onFilter: (value: any, record: PriceItem) => {
+            //     if (record.targetType !== "TICKET") return false;
+            //     const conditions = [
+            //       record.seatType,
+            //       record.graphicsType,
+            //       record.screeningTimeType,
+            //       record.dayType,
+            //       record.auditoriumType,
+            //     ];
+            //     return conditions.includes(value);
+            //   },
+            onFilterDropdownVisibleChange: (visible: boolean) => {
+              if (!visible) return;
             },
             render: (_: any, record: PriceItem) => {
               if (record.targetType !== "TICKET") {
@@ -422,6 +532,7 @@ const PriceItemTable = ({
           },
         ]
       : []),
+
     {
       title: t("PRICE"),
       dataIndex: "price",
@@ -456,7 +567,7 @@ const PriceItemTable = ({
   return (
     <Table
       columns={columns}
-      dataSource={data}
+      dataSource={filteredData}
       rowKey="id"
       loading={loading || isDeleting}
       scroll={{ x: 1000, y: 600 }}
@@ -470,6 +581,7 @@ const PriceItemTable = ({
         defaultPageSize: 20,
         pageSizeOptions: ["10", "20", "50", "100"],
       }}
+      onChange={handleTableChange}
     />
   );
 };

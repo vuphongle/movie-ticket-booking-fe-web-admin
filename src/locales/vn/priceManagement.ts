@@ -170,6 +170,8 @@ const priceManagement = {
   PRICE_ITEM_DUPLICATE_PRODUCT: "Đã tồn tại mục giá của sản phẩm này trong priceList!",
   PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE: "Đã tồn tại mục giá của dịch vụ này trong priceList!",
   PRICE_ITEM_USED_IN_ORDERS: "Mục giá này đã được sử dụng trong các đơn hàng và không thể chỉnh sửa hoặc xóa!",
+  PRICE_ITEM_TICKET_REQUIRE_CONDITION: "Vui lòng chọn ít nhất một điều kiện (loại ghế, hình thức chiều, loại suất chiếu, loại ngày hoặc loại phòng chiếu)!",
+
 };
 
 export default priceManagement;
