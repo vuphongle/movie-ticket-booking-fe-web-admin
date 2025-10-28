@@ -79,7 +79,28 @@ const PriceItemModal = ({
     try {
       const values = await form.validateFields();
 
-      // Remove effective period handling since it's now controlled by PriceList
+      if (values.targetType === "TICKET") {
+        const conditionFields = [
+          values.seatType,
+          values.graphicsType,
+          values.screeningTimeType,
+          values.dayType,
+          values.auditoriumType,
+        ];
+
+        const hasAtLeastOneCondition = conditionFields.some((field) => field);
+
+        if (!hasAtLeastOneCondition) {
+          message.warning(
+            t(
+              "PRICE_ITEM_TICKET_REQUIRE_CONDITION",
+              "Vui lòng chọn ít nhất một điều kiện (loại ghế, hình thức chiều, loại suất chiếu, loại ngày hoặc loại phòng chiếu)!"
+            )
+          );
+          return;
+        }
+      }
+
       const payload: any = {
         priceListId: priceList.id,
         targetType: values.targetType,
@@ -107,63 +128,73 @@ const PriceItemModal = ({
       onCancel();
       form.resetFields();
     } catch (error: any) {
-  console.error("❌ [DEBUG] Form submission error:", error);
+      console.error("❌ [DEBUG] Form submission error:", error);
 
-  const backendMessage =
-    error?.data?.message ||
-    error?.error ||
-    (isEditing ? t("UPDATE_ERROR") : t("CREATE_ERROR"));
+      const backendMessage =
+        error?.data?.message ||
+        error?.error ||
+        (isEditing ? t("UPDATE_ERROR") : t("CREATE_ERROR"));
 
-  if (
-    backendMessage.includes(
-      "A TICKET PriceItem with the same conditions already exists"
-    ) || backendMessage.includes("Another active TICKET PriceItem with the same conditions already exists in this PriceList.")
-  ) {
-    message.warning(
-      t(
-        "PRICE_ITEM_DUPLICATE_TICKET",
-        "Đã tồn tại bảng giá vé có cùng điều kiện trong PriceList này!"
-      )
-    );
-  }
-  else if(
-    backendMessage.includes("A PRODUCT PriceItem with the same target already exists and is active in this PriceList.")
-    || backendMessage.includes("Another active PRODUCT PriceItem with the same target already exists in this PriceList.")
-  ){
-    message.warning(
-      t(
-        "PRICE_ITEM_DUPLICATE_PRODUCT",
-        "Đã tồn tại giá của sản phẩm này trong PriceList này!"
-      )
-    );
-  } 
-  else if(
-    backendMessage.includes("Another active ADDITIONAL_SERVICE PriceItem with the same target already exists in this PriceList.")
-    || backendMessage.includes("A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList.")
-  ){
-    message.warning(
-      t(
-        "PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE",
-        "Đã tồn tại giá của dịch vụ bổ sung này trong PriceList này!"
-      )
-    );
-  }
-  else if(
-    backendMessage.includes("Cannot edit PriceItem that has been used in orders.")
-    || backendMessage.includes("Cannot delete PriceItem that has been used in orders.")
-  ){
-    message.warning(
-        t(
-          "PRICE_ITEM_USED_IN_ORDERS",
-          "Không thể chỉnh sửa hoặc xóa mục giá đã được sử dụng trong các đơn hàng!"
+      if (
+        backendMessage.includes(
+          "A TICKET PriceItem with the same conditions already exists"
+        ) ||
+        backendMessage.includes(
+          "Another active TICKET PriceItem with the same conditions already exists in this PriceList."
         )
-    );
-}
-  else {
-    message.error(backendMessage);
-  }
-}
-
+      ) {
+        message.warning(
+          t(
+            "PRICE_ITEM_DUPLICATE_TICKET",
+            "Đã tồn tại bảng giá vé có cùng điều kiện trong PriceList này!"
+          )
+        );
+      } else if (
+        backendMessage.includes(
+          "A PRODUCT PriceItem with the same target already exists and is active in this PriceList."
+        ) ||
+        backendMessage.includes(
+          "Another active PRODUCT PriceItem with the same target already exists in this PriceList."
+        )
+      ) {
+        message.warning(
+          t(
+            "PRICE_ITEM_DUPLICATE_PRODUCT",
+            "Đã tồn tại giá của sản phẩm này trong PriceList này!"
+          )
+        );
+      } else if (
+        backendMessage.includes(
+          "Another active ADDITIONAL_SERVICE PriceItem with the same target already exists in this PriceList."
+        ) ||
+        backendMessage.includes(
+          "A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList."
+        )
+      ) {
+        message.warning(
+          t(
+            "PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE",
+            "Đã tồn tại giá của dịch vụ bổ sung này trong PriceList này!"
+          )
+        );
+      } else if (
+        backendMessage.includes(
+          "Cannot edit PriceItem that has been used in orders."
+        ) ||
+        backendMessage.includes(
+          "Cannot delete PriceItem that has been used in orders."
+        )
+      ) {
+        message.warning(
+          t(
+            "PRICE_ITEM_USED_IN_ORDERS",
+            "Không thể chỉnh sửa hoặc xóa mục giá đã được sử dụng trong các đơn hàng!"
+          )
+        );
+      } else {
+        message.error(backendMessage);
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -367,7 +398,7 @@ const PriceItemModal = ({
                           onChange={() => {
                             setTimeout(
                               () => form.validateFields(["targetId"]),
-                              100,
+                              100
                             );
                           }}
                         >
@@ -404,7 +435,7 @@ const PriceItemModal = ({
                           onChange={() => {
                             setTimeout(
                               () => form.validateFields(["targetId"]),
-                              100,
+                              100
                             );
                           }}
                         >
