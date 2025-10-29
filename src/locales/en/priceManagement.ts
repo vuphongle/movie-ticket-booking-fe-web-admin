@@ -160,6 +160,7 @@ const priceManagement = {
 
   TARGET: "Target",
   TARGET_REQUIRED: "Target is required!",
+  EDIT_PRICE_ITEM: "Edit price item",
 
   //Tab
   ALL_PRICE_ITEMS: "All Price Items",

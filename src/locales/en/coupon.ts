@@ -89,6 +89,7 @@ const coupon = {
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Are you sure you want to delete this coupon?",
   COUPON_DELETE_CONFIRM_CONTENT: "This action cannot be undone!",
+  COUPON_DELETE_CONFIRM_WITH_NAME: "Are you sure you want to delete the coupon '{{name}}'?",
 
   // Error messages
   COUPON_CREATE_ERROR: "Failed to create coupon",

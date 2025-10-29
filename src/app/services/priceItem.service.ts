@@ -105,10 +105,7 @@ export const priceItemApi = createApi({
         method: "POST",
         body: newPriceItem,
       }),
-      invalidatesTags: (_result, _error, { priceListId }) => [
-        "PriceItem",
-        { type: "PriceItem", id: `LIST_${priceListId}` },
-      ],
+      invalidatesTags: ["PriceItem"],
     }),
 
     // Update price item
@@ -118,11 +115,7 @@ export const priceItemApi = createApi({
         method: "PUT",
         body: updatedPriceItem,
       }),
-      invalidatesTags: (_result, _error, { id, priceListId }) => [
-        { type: "PriceItem", id },
-        { type: "PriceItem", id: `LIST_${priceListId}` },
-        "PriceItem",
-      ],
+      invalidatesTags: ["PriceItem"],
     }),
 
     // Delete price item
@@ -131,10 +124,7 @@ export const priceItemApi = createApi({
         url: `${API_BASE_ADMIN}price-items/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: "PriceItem", id },
-        "PriceItem",
-      ],
+      invalidatesTags: ["PriceItem"],
     }),
 
     // Toggle price item status
@@ -143,10 +133,7 @@ export const priceItemApi = createApi({
         url: `${API_BASE_ADMIN}price-items/${id}/toggle-status`,
         method: "PATCH",
       }),
-      invalidatesTags: (_result, _error, id) => [
-        { type: "PriceItem", id },
-        "PriceItem",
-      ],
+      invalidatesTags: ["PriceItem"],
     }),
 
     // Calculate price for ticket

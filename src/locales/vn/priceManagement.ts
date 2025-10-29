@@ -158,6 +158,7 @@ const priceManagement = {
 
   TARGET: "Đối tượng",
   TARGET_REQUIRED: "Đối tượng không được để trống!",
+  EDIT_PRICE_ITEM: "Chỉnh sửa mục giá",
 
   //Tab
   ALL_PRICE_ITEMS: "Tất cả mục giá",

@@ -26,7 +26,6 @@ import { useGetAdditionalServicesQuery } from "@/app/services/additionalServices
 import { formatCurrency } from "@/utils/functionUtils";
 import type { PriceItem, PriceTargetType } from "@/types";
 import { usePriceItemActions } from "./PriceItemActionsContext";
-import useSearchTable from "@/hooks/useSearchTable";
 import React from "react";
 
 interface PriceItemTableProps {
@@ -46,7 +45,6 @@ const PriceItemTable = ({
 }: PriceItemTableProps) => {
   const { t } = useTranslation();
   const { onEdit } = usePriceItemActions();
-  const { getColumnSearchProps } = useSearchTable();
 
   // Fetch products and additional services for name lookup
   const { data: products = [] } = useGetProductsQuery(undefined);
@@ -78,7 +76,7 @@ const PriceItemTable = ({
         return priceItem.additionalService.name;
       }
       const service = additionalServices.find(
-        (s) => Number(s.id) === priceItem.targetId,
+        (s) => Number(s.id) === priceItem.targetId
       );
       return service?.name ? service.name : `Service ID: ${priceItem.targetId}`;
     }
@@ -107,21 +105,18 @@ const PriceItemTable = ({
           const backendMessage = error?.data?.message || error?.error;
           if (
             backendMessage.includes(
-              "Cannot delete PriceItem that has been used in orders.",
+              "Cannot delete PriceItem that has been used in orders."
             )
           ) {
             message.warning(
               t(
                 "PRICE_ITEM_USED_IN_ORDERS",
-                "Không thể xóa mục giá đã được sử dụng trong các đơn hàng!",
-              ),
+                "Không thể xóa mục giá đã được sử dụng trong các đơn hàng!"
+              )
             );
           } else if (backendMessage.includes("PriceItem not found with id")) {
             message.warning(
-              t(
-                "PRICE_ITEM_NOT_FOUND",
-                "Mục giá không tồn tại hoặc đã bị xóa!",
-              ),
+              t("PRICE_ITEM_NOT_FOUND", "Mục giá không tồn tại hoặc đã bị xóa!")
             );
           } else {
             message.error(backendMessage);
@@ -195,7 +190,7 @@ const PriceItemTable = ({
   // Render dimension value with "Any" for null and proper translations
   const renderDimension = (
     value: string | null | undefined,
-    type: "seat" | "graphics" | "time" | "day" | "room",
+    type: "seat" | "graphics" | "time" | "day" | "room"
   ) => {
     const getLabel = (type: string) => {
       switch (type) {
@@ -316,9 +311,9 @@ const PriceItemTable = ({
     );
   };
 
-  const [selectedConditions, setSelectedConditions] = React.useState<string[]>(
-    [],
-  );
+  const [selectedConditions, setSelectedConditions] = React.useState<
+    string[] | null
+  >(null);
 
   const filterLabelMap: Record<string, string> = {
     NORMAL: "SEAT_TYPE_NORMAL",
@@ -336,28 +331,9 @@ const PriceItemTable = ({
     GOLDCLASS: "AUDITORIUM_TYPE_GOLDCLASS",
   };
 
-  const [filteredData, setFilteredData] = React.useState<PriceItem[]>(data);
-
   const handleTableChange = (_pagination: any, filters: any) => {
     const selected = filters.ticketConditions as string[] | null;
-    setSelectedConditions(selected || []);
-
-    if (selected && selected.length > 0) {
-      const filteredData = data.filter((record) => {
-        if (record.targetType !== "TICKET") return false;
-        const conditions = [
-          record.seatType,
-          record.graphicsType,
-          record.screeningTimeType,
-          record.dayType,
-          record.auditoriumType,
-        ];
-        return selected.every((v) => conditions.includes(v as any));
-      });
-      setFilteredData(filteredData);
-    } else {
-      setFilteredData(data);
-    }
+    setSelectedConditions(selected);
   };
 
   const columns: ColumnsType<PriceItem> = [
@@ -372,6 +348,7 @@ const PriceItemTable = ({
         { text: t("ACTIVE"), value: true },
         { text: t("INACTIVE"), value: false },
       ],
+      filteredValue: null,
       onFilter: (value: any, record: any) => record.status === value,
       render: (status: boolean, record: PriceItem) => (
         <Switch
@@ -398,6 +375,7 @@ const PriceItemTable = ({
                 value: "ADDITIONAL_SERVICE",
               },
             ],
+            filteredValue: null,
             onFilter: (value: any, record: any) => record.targetType === value,
             render: (targetType: PriceTargetType) =>
               getTargetTypeTag(targetType),
@@ -415,16 +393,7 @@ const PriceItemTable = ({
             ellipsis: {
               showTitle: false,
             },
-            ...getColumnSearchProps("targetName"),
-            onFilter: (value: any, record: any) => {
-              const targetName = getTargetName(record);
-              return (
-                targetName &&
-                targetName !== "-" &&
-                targetName !== "N/A" &&
-                targetName.toLowerCase().includes(value.toLowerCase())
-              );
-            },
+            filteredValue: null,
             render: (_: any, record: PriceItem) => {
               const targetName = getTargetName(record);
               if (targetName === "-") {
@@ -458,7 +427,7 @@ const PriceItemTable = ({
             title: () => (
               <Space wrap>
                 <span>{t("TICKET_CONDITIONS")}</span>
-                {selectedConditions.length > 0 && (
+                {selectedConditions && selectedConditions.length > 0 && (
                   <Space wrap>
                     {selectedConditions.map((cond) => (
                       <Tag key={cond} color="blue" style={{ fontSize: "11px" }}>
@@ -499,20 +468,6 @@ const PriceItemTable = ({
               { text: t("AUDITORIUM_TYPE_GOLDCLASS"), value: "GOLDCLASS" },
             ],
             filteredValue: selectedConditions || null,
-            //   onFilter: (value: any, record: PriceItem) => {
-            //     if (record.targetType !== "TICKET") return false;
-            //     const conditions = [
-            //       record.seatType,
-            //       record.graphicsType,
-            //       record.screeningTimeType,
-            //       record.dayType,
-            //       record.auditoriumType,
-            //     ];
-            //     return conditions.includes(value);
-            //   },
-            onFilterDropdownVisibleChange: (visible: boolean) => {
-              if (!visible) return;
-            },
             render: (_: any, record: PriceItem) => {
               if (record.targetType !== "TICKET") {
                 return <span style={{ color: "#999" }}>-</span>;
@@ -543,7 +498,7 @@ const PriceItemTable = ({
       width: 80,
       align: "right" as const,
       sorter: (a: any, b: any) => a.price - b.price,
-      ...getColumnSearchProps("price"),
+      filteredValue: null,
       render: (price: number) => formatCurrency(price),
     },
     {
@@ -552,6 +507,7 @@ const PriceItemTable = ({
       width: 80,
       align: "center" as const,
       fixed: "right" as const,
+      filteredValue: null,
       render: (_: any, record: PriceItem) => (
         <Dropdown
           menu={{
@@ -570,7 +526,7 @@ const PriceItemTable = ({
   return (
     <Table
       columns={columns}
-      dataSource={filteredData}
+      dataSource={data}
       rowKey="id"
       loading={loading || isDeleting}
       scroll={{ x: 1000, y: 600 }}

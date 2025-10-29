@@ -87,6 +87,7 @@ const coupon = {
   // Confirmation messages
   COUPON_DELETE_CONFIRM_TITLE: "Bạn có chắc chắn muốn xóa khuyến mại này?",
   COUPON_DELETE_CONFIRM_CONTENT: "Hành động này không thể hoàn tác!",
+  COUPON_DELETE_CONFIRM_WITH_NAME: "Bạn có chắc chắn muốn xóa khuyến mại '{{name}}'?",
 
   // Error messages
   COUPON_CREATE_ERROR: "Tạo khuyến mại thất bại",
