@@ -165,13 +165,17 @@ const priceManagement = {
   PRODUCT_PRICES: "Giá sản phẩm",
   ADDITIONAL_SERVICE_PRICES: "Giá dịch vụ bổ sung",
 
-  VALIDITY_PERIOD_OVERLAP_ERROR:"Khoảng thời gian đã bị trùng với danh sách giá khác!",
+  VALIDITY_PERIOD_OVERLAP_ERROR:
+    "Khoảng thời gian đã bị trùng với danh sách giá khác!",
   PRICE_ITEM_DUPLICATE_TICKET: "Đã tồn tại mục giá vé với cùng các điều kiện!",
-  PRICE_ITEM_DUPLICATE_PRODUCT: "Đã tồn tại mục giá của sản phẩm này trong priceList!",
-  PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE: "Đã tồn tại mục giá của dịch vụ này trong priceList!",
-  PRICE_ITEM_USED_IN_ORDERS: "Mục giá này đã được sử dụng trong các đơn hàng và không thể chỉnh sửa hoặc xóa!",
-  PRICE_ITEM_TICKET_REQUIRE_CONDITION: "Vui lòng chọn ít nhất một điều kiện (loại ghế, hình thức chiều, loại suất chiếu, loại ngày hoặc loại phòng chiếu)!",
-
+  PRICE_ITEM_DUPLICATE_PRODUCT:
+    "Đã tồn tại mục giá của sản phẩm này trong priceList!",
+  PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE:
+    "Đã tồn tại mục giá của dịch vụ này trong priceList!",
+  PRICE_ITEM_USED_IN_ORDERS:
+    "Mục giá này đã được sử dụng trong các đơn hàng và không thể chỉnh sửa hoặc xóa!",
+  PRICE_ITEM_TICKET_REQUIRE_CONDITION:
+    "Vui lòng chọn ít nhất một điều kiện (loại ghế, hình thức chiều, loại suất chiếu, loại ngày hoặc loại phòng chiếu)!",
 };
 
 export default priceManagement;

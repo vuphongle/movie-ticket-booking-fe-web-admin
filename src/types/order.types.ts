@@ -22,7 +22,15 @@ export interface ServiceItem {
 }
 
 // Backend có thể trả về date dạng array [year, month, day, hour, minute, second, nano]
-export type DateArray = [number, number, number, number?, number?, number?, number?];
+export type DateArray = [
+  number,
+  number,
+  number,
+  number?,
+  number?,
+  number?,
+  number?,
+];
 
 export interface Order {
   id: number;

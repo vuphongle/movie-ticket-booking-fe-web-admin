@@ -76,7 +76,7 @@ const CouponStatistics = () => {
       link.href = url;
       link.setAttribute(
         "download",
-        `Thong_ke_khuyen_mai_${dayjs().format("YYYYMMDD_HHmmss")}.xlsx`
+        `Thong_ke_khuyen_mai_${dayjs().format("YYYYMMDD_HHmmss")}.xlsx`,
       );
       document.body.appendChild(link);
       link.click();
@@ -87,7 +87,7 @@ const CouponStatistics = () => {
     } catch (error: any) {
       console.error("Export error:", error);
       message.error(
-        error?.data?.message || t("COUPON_STATISTICS_EXPORT_ERROR")
+        error?.data?.message || t("COUPON_STATISTICS_EXPORT_ERROR"),
       );
     }
   };

@@ -57,48 +57,49 @@ const PriceListPage = () => {
     );
   }
 
-const handleCreate = (values: any) => {
-  const payload: CreatePriceListRequest = {
-    name: values.name,
-    status: values.status ?? true,
-  };
+  const handleCreate = (values: any) => {
+    const payload: CreatePriceListRequest = {
+      name: values.name,
+      status: values.status ?? true,
+    };
 
-  if (values.validityPeriod && values.validityPeriod.length === 2) {
-    const validFrom = values.validityPeriod[0].clone().startOf("day");
-    const validTo = values.validityPeriod[1].clone().endOf("day");
+    if (values.validityPeriod && values.validityPeriod.length === 2) {
+      const validFrom = values.validityPeriod[0].clone().startOf("day");
+      const validTo = values.validityPeriod[1].clone().endOf("day");
 
-    payload.validFrom = validFrom.toISOString();
-    payload.validTo = validTo.toISOString();
+      payload.validFrom = validFrom.toISOString();
+      payload.validTo = validTo.toISOString();
 
-    const isOverlap = data?.some((item: any) => {
-      if (!item.validFrom || !item.validTo) return false;
-      const existingFrom = new Date(item.validFrom);
-      const existingTo = new Date(item.validTo);
+      const isOverlap = data?.some((item: any) => {
+        if (!item.validFrom || !item.validTo) return false;
+        const existingFrom = new Date(item.validFrom);
+        const existingTo = new Date(item.validTo);
 
-      return (
-        validFrom.toDate() <= existingTo &&
-        validTo.toDate() >= existingFrom
-      );
-    });
+        return (
+          validFrom.toDate() <= existingTo && validTo.toDate() >= existingFrom
+        );
+      });
 
-    if (isOverlap) {
-      message.error(t("VALIDITY_PERIOD_OVERLAP_ERROR") || "Khoảng thời gian đã bị trùng với danh sách giá khác!");
-      return;
+      if (isOverlap) {
+        message.error(
+          t("VALIDITY_PERIOD_OVERLAP_ERROR") ||
+            "Khoảng thời gian đã bị trùng với danh sách giá khác!",
+        );
+        return;
+      }
     }
-  }
 
-  createPriceList(payload)
-    .unwrap()
-    .then(() => {
-      form.resetFields();
-      setOpen(false);
-      message.success(t("CREATE_SUCCESS"));
-    })
-    .catch((error: any) => {
-      message.error(error.data?.message || t("CREATE_ERROR"));
-    });
-};
-
+    createPriceList(payload)
+      .unwrap()
+      .then(() => {
+        form.resetFields();
+        setOpen(false);
+        message.success(t("CREATE_SUCCESS"));
+      })
+      .catch((error: any) => {
+        message.error(error.data?.message || t("CREATE_ERROR"));
+      });
+  };
 
   const handleRefresh = () => {
     refetch();

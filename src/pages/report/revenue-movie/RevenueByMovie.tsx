@@ -48,7 +48,7 @@ const RevenueByMovie = () => {
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [selectedMovieId, setSelectedMovieId] = useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const [getRevenueByMovie, { data: allMoviesData, isLoading, isFetching }] =

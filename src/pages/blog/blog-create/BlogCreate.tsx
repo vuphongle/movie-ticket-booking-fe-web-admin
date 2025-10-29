@@ -53,7 +53,7 @@ const BlogCreate = () => {
       })
       .catch((error) => {
         message.error(
-          error?.data?.message || "Có lỗi xảy ra khi tạo bài viết!"
+          error?.data?.message || "Có lỗi xảy ra khi tạo bài viết!",
         );
       });
   };
@@ -127,7 +127,7 @@ const BlogCreate = () => {
 
                       if (!textContent || textContent.length === 0) {
                         return Promise.reject(
-                          new Error("Nội dung không được để trống!")
+                          new Error("Nội dung không được để trống!"),
                         );
                       }
                       return Promise.resolve();

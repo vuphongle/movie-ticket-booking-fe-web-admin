@@ -94,8 +94,8 @@ const PriceItemModal = ({
           message.warning(
             t(
               "PRICE_ITEM_TICKET_REQUIRE_CONDITION",
-              "Vui lòng chọn ít nhất một điều kiện (loại ghế, hình thức chiều, loại suất chiếu, loại ngày hoặc loại phòng chiếu)!"
-            )
+              "Vui lòng chọn ít nhất một điều kiện (loại ghế, hình thức chiều, loại suất chiếu, loại ngày hoặc loại phòng chiếu)!",
+            ),
           );
           return;
         }
@@ -137,59 +137,59 @@ const PriceItemModal = ({
 
       if (
         backendMessage.includes(
-          "A TICKET PriceItem with the same conditions already exists"
+          "A TICKET PriceItem with the same conditions already exists",
         ) ||
         backendMessage.includes(
-          "Another active TICKET PriceItem with the same conditions already exists in this PriceList."
+          "Another active TICKET PriceItem with the same conditions already exists in this PriceList.",
         )
       ) {
         message.warning(
           t(
             "PRICE_ITEM_DUPLICATE_TICKET",
-            "Đã tồn tại bảng giá vé có cùng điều kiện trong PriceList này!"
-          )
+            "Đã tồn tại bảng giá vé có cùng điều kiện trong PriceList này!",
+          ),
         );
       } else if (
         backendMessage.includes(
-          "A PRODUCT PriceItem with the same target already exists and is active in this PriceList."
+          "A PRODUCT PriceItem with the same target already exists and is active in this PriceList.",
         ) ||
         backendMessage.includes(
-          "Another active PRODUCT PriceItem with the same target already exists in this PriceList."
+          "Another active PRODUCT PriceItem with the same target already exists in this PriceList.",
         )
       ) {
         message.warning(
           t(
             "PRICE_ITEM_DUPLICATE_PRODUCT",
-            "Đã tồn tại giá của sản phẩm này trong PriceList này!"
-          )
+            "Đã tồn tại giá của sản phẩm này trong PriceList này!",
+          ),
         );
       } else if (
         backendMessage.includes(
-          "Another active ADDITIONAL_SERVICE PriceItem with the same target already exists in this PriceList."
+          "Another active ADDITIONAL_SERVICE PriceItem with the same target already exists in this PriceList.",
         ) ||
         backendMessage.includes(
-          "A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList."
+          "A ADDITIONAL_SERVICE PriceItem with the same target already exists and is active in this PriceList.",
         )
       ) {
         message.warning(
           t(
             "PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE",
-            "Đã tồn tại giá của dịch vụ bổ sung này trong PriceList này!"
-          )
+            "Đã tồn tại giá của dịch vụ bổ sung này trong PriceList này!",
+          ),
         );
       } else if (
         backendMessage.includes(
-          "Cannot edit PriceItem that has been used in orders."
+          "Cannot edit PriceItem that has been used in orders.",
         ) ||
         backendMessage.includes(
-          "Cannot delete PriceItem that has been used in orders."
+          "Cannot delete PriceItem that has been used in orders.",
         )
       ) {
         message.warning(
           t(
             "PRICE_ITEM_USED_IN_ORDERS",
-            "Không thể chỉnh sửa hoặc xóa mục giá đã được sử dụng trong các đơn hàng!"
-          )
+            "Không thể chỉnh sửa hoặc xóa mục giá đã được sử dụng trong các đơn hàng!",
+          ),
         );
       } else {
         message.error(backendMessage);
@@ -398,7 +398,7 @@ const PriceItemModal = ({
                           onChange={() => {
                             setTimeout(
                               () => form.validateFields(["targetId"]),
-                              100
+                              100,
                             );
                           }}
                         >
@@ -435,7 +435,7 @@ const PriceItemModal = ({
                           onChange={() => {
                             setTimeout(
                               () => form.validateFields(["targetId"]),
-                              100
+                              100,
                             );
                           }}
                         >

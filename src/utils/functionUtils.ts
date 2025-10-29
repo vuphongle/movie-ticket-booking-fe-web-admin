@@ -15,7 +15,14 @@ export const convertDateArrayToDate = (
     // Backend trả về [year, month, day, hour, minute, second, nano]
     const [year, month, day, hour = 0, minute = 0, second = 0] = dateArray;
     // Month trong JS bắt đầu từ 0, backend trả về từ 1
-    return new Date(year || 0, (month || 1) - 1, day || 1, hour, minute, second);
+    return new Date(
+      year || 0,
+      (month || 1) - 1,
+      day || 1,
+      hour,
+      minute,
+      second,
+    );
   }
 
   return new Date();

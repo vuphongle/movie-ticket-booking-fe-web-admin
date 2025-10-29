@@ -166,8 +166,8 @@ const ScheduleList = () => {
                     return Promise.reject(
                       new Error(
                         t("START_DATE_CANNOT_BE_PAST") ||
-                          "Ngày bắt đầu không được ở quá khứ"
-                      )
+                          "Ngày bắt đầu không được ở quá khứ",
+                      ),
                     );
                   }
                   return Promise.resolve();
@@ -202,8 +202,8 @@ const ScheduleList = () => {
                     return Promise.reject(
                       new Error(
                         t("END_DATE_MUST_BE_AFTER_START_DATE") ||
-                          "Ngày kết thúc phải lớn hơn ngày bắt đầu"
-                      )
+                          "Ngày kết thúc phải lớn hơn ngày bắt đầu",
+                      ),
                     );
                   }
                   return Promise.resolve();

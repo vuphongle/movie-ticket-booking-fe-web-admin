@@ -6,7 +6,7 @@ import type { MenuProps } from "antd";
 import styles from "./AppMenu.module.css";
 
 function mapMenuToItems(
-  menu: ReturnType<typeof getMenuData>
+  menu: ReturnType<typeof getMenuData>,
 ): MenuProps["items"] {
   return menu.map((item) => ({
     key: item.id.toString(),
@@ -69,7 +69,7 @@ function AppMenu() {
     .find(
       (item) =>
         item.subs?.some((sub) => sub.url === pathname) ||
-        pathname.includes(item.url)
+        pathname.includes(item.url),
     )
     ?.id?.toString();
 

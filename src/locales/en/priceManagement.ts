@@ -167,12 +167,18 @@ const priceManagement = {
   PRODUCT_PRICES: "Product Prices",
   ADDITIONAL_SERVICE_PRICES: "Additional Service Prices",
 
-  VALIDITY_PERIOD_OVERLAP_ERROR: "Validity period overlaps with another price list!",
-  PRICE_ITEM_DUPLICATE_TICKET: "A ticket price item with the same conditions already exists!",
-  PRICE_ITEM_DUPLICATE_PRODUCT: "A product price item for this product already exists in the price list!",
-  PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE: "An additional service price item for this service already exists in the price list!",
-  PRICE_ITEM_USED_IN_ORDERS: "This price item has been used in orders and cannot be modified!",
-  PRICE_ITEM_TICKET_REQUIRE_CONDITION: "Please select at least one condition (seat type, graphics type, screening time type, day type, or auditorium type)!",
+  VALIDITY_PERIOD_OVERLAP_ERROR:
+    "Validity period overlaps with another price list!",
+  PRICE_ITEM_DUPLICATE_TICKET:
+    "A ticket price item with the same conditions already exists!",
+  PRICE_ITEM_DUPLICATE_PRODUCT:
+    "A product price item for this product already exists in the price list!",
+  PRICE_ITEM_DUPLICATE_ADDITIONAL_SERVICE:
+    "An additional service price item for this service already exists in the price list!",
+  PRICE_ITEM_USED_IN_ORDERS:
+    "This price item has been used in orders and cannot be modified!",
+  PRICE_ITEM_TICKET_REQUIRE_CONDITION:
+    "Please select at least one condition (seat type, graphics type, screening time type, day type, or auditorium type)!",
 };
 
 export default priceManagement;

@@ -56,13 +56,13 @@ const ConflictResolutionModal: React.FC<ConflictResolutionModalProps> = ({
         raw: date,
         normalized: dayjs(date).format("YYYY-MM-DD"),
       })),
-    [requestedDates]
+    [requestedDates],
   );
 
   const validDateItems = useMemo(
     () =>
       requestedDateItems.filter((item) => !conflictByDate.has(item.normalized)),
-    [requestedDateItems, conflictByDate]
+    [requestedDateItems, conflictByDate],
   );
 
   const totalRequestedCount = requestedDateItems.length || totalRequested;
@@ -153,7 +153,7 @@ const ConflictResolutionModal: React.FC<ConflictResolutionModalProps> = ({
         disabled: validCountValue === 0,
       },
     ],
-    [t, totalRequestedCount, conflictCount, validCountValue]
+    [t, totalRequestedCount, conflictCount, validCountValue],
   );
 
   return (

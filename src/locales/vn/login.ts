@@ -17,7 +17,8 @@ const login = {
     "Tài khoản của bạn chưa được kích hoạt. Vui lòng kiểm tra email để nhận liên kết kích hoạt.",
   INVALID_CREDENTIALS: "Email hoặc mật khẩu không hợp lệ. Vui lòng thử lại.",
   LOGIN_FORGOT_PASSWORD: "Quên mật khẩu?",
-  FORGOT_PASSWORD_RESENT: "Liên kết kích hoạt mới đã được gửi đến email của bạn.",
+  FORGOT_PASSWORD_RESENT:
+    "Liên kết kích hoạt mới đã được gửi đến email của bạn.",
 };
 
 export default login;

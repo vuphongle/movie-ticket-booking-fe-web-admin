@@ -188,7 +188,7 @@ function ShowtimesByAuditorium({
 
       return results;
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -249,7 +249,7 @@ function ShowtimesByAuditorium({
         // Calculate actual end time instead of using slot boundary
         const actualEndTime = calculateActualEndTime(
           record.startTime,
-          record.movie.duration
+          record.movie.duration,
         );
 
         return (
@@ -288,11 +288,11 @@ function ShowtimesByAuditorium({
         const now = dayjs();
         const startTime = dayjs(
           `${record.date} ${record.startTime}`,
-          "DD/MM/YYYY HH:mm"
+          "DD/MM/YYYY HH:mm",
         );
         const endTime = dayjs(
           `${record.date} ${record.endTime}`,
-          "DD/MM/YYYY HH:mm"
+          "DD/MM/YYYY HH:mm",
         );
 
         if (now.isBefore(startTime)) {
@@ -338,7 +338,7 @@ function ShowtimesByAuditorium({
     // Validate slot selection before API call
     const validation = validateSlotSelection(
       selectedMovie.duration,
-      values.slotId
+      values.slotId,
     );
     if (!validation.isValid) {
       message.error(validation.errorMessage);
@@ -383,7 +383,7 @@ function ShowtimesByAuditorium({
     // Validate slot selection
     const validation = validateSlotSelection(
       selectedMovie.duration,
-      values.slotId
+      values.slotId,
     );
     if (!validation.isValid) {
       message.error(validation.errorMessage);
@@ -443,7 +443,7 @@ function ShowtimesByAuditorium({
             t("BULK_CREATION_SUCCESS", {
               created: response.successfullyCreated,
               total: response.totalRequested,
-            })
+            }),
           );
         } else if (response.successfullyCreated > 0) {
           // Partial success - some were created, some failed/skipped
@@ -452,7 +452,7 @@ function ShowtimesByAuditorium({
               created: response.successfullyCreated,
               total: response.totalRequested,
               skipped: response.totalRequested - response.successfullyCreated,
-            })
+            }),
           );
         } else {
           // None were created
@@ -472,11 +472,11 @@ function ShowtimesByAuditorium({
           const targetDates = generateTargetDates(
             bulkPayload.dateFrom,
             bulkPayload.dateTo,
-            bulkPayload.daysOfWeek || []
+            bulkPayload.daysOfWeek || [],
           );
           const computedValid = Math.max(
             (targetDates.length || totalRequested) - conflictsCount,
-            0
+            0,
           );
 
           setRequestedDates(targetDates);
@@ -517,7 +517,7 @@ function ShowtimesByAuditorium({
             t("BULK_CREATION_SUCCESS", {
               created: response.successfullyCreated,
               total: response.totalRequested,
-            })
+            }),
           );
         } else {
           message.warning(
@@ -525,7 +525,7 @@ function ShowtimesByAuditorium({
               created: response.successfullyCreated,
               total: response.totalRequested,
               skipped: response.totalRequested - response.successfullyCreated,
-            })
+            }),
           );
         }
       })
@@ -594,7 +594,7 @@ function ShowtimesByAuditorium({
   const getOptions = (
     movie: Movie | null,
     property: keyof Movie,
-    mapping: Record<string, string>
+    mapping: Record<string, string>,
   ) => {
     if (!movie || !movie[property]) return [];
     return (movie[property] as string[]).map((type: string) => {

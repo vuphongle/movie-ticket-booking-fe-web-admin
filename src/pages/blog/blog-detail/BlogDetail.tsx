@@ -320,7 +320,7 @@ const BlogDetail = () => {
 
                       if (!textContent || textContent.length === 0) {
                         return Promise.reject(
-                          new Error("Nội dung không được để trống!")
+                          new Error("Nội dung không được để trống!"),
                         );
                       }
                       return Promise.resolve();

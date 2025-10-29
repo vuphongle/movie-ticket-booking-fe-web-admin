@@ -4,15 +4,7 @@ import {
   SettingOutlined,
   CopyOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Dropdown,
-  message,
-  Modal,
-  Space,
-  Switch,
-  Table,
-} from "antd";
+import { Button, Dropdown, message, Modal, Space, Switch, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { MenuProps } from "antd/es/menu";
 import { useTranslation } from "react-i18next";

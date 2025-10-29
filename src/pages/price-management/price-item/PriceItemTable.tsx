@@ -78,7 +78,7 @@ const PriceItemTable = ({
         return priceItem.additionalService.name;
       }
       const service = additionalServices.find(
-        (s) => Number(s.id) === priceItem.targetId
+        (s) => Number(s.id) === priceItem.targetId,
       );
       return service?.name ? service.name : `Service ID: ${priceItem.targetId}`;
     }
@@ -107,18 +107,21 @@ const PriceItemTable = ({
           const backendMessage = error?.data?.message || error?.error;
           if (
             backendMessage.includes(
-              "Cannot delete PriceItem that has been used in orders."
+              "Cannot delete PriceItem that has been used in orders.",
             )
           ) {
             message.warning(
               t(
                 "PRICE_ITEM_USED_IN_ORDERS",
-                "Không thể xóa mục giá đã được sử dụng trong các đơn hàng!"
-              )
+                "Không thể xóa mục giá đã được sử dụng trong các đơn hàng!",
+              ),
             );
           } else if (backendMessage.includes("PriceItem not found with id")) {
             message.warning(
-              t("PRICE_ITEM_NOT_FOUND", "Mục giá không tồn tại hoặc đã bị xóa!")
+              t(
+                "PRICE_ITEM_NOT_FOUND",
+                "Mục giá không tồn tại hoặc đã bị xóa!",
+              ),
             );
           } else {
             message.error(backendMessage);
@@ -192,7 +195,7 @@ const PriceItemTable = ({
   // Render dimension value with "Any" for null and proper translations
   const renderDimension = (
     value: string | null | undefined,
-    type: "seat" | "graphics" | "time" | "day" | "room"
+    type: "seat" | "graphics" | "time" | "day" | "room",
   ) => {
     const getLabel = (type: string) => {
       switch (type) {
@@ -314,7 +317,7 @@ const PriceItemTable = ({
   };
 
   const [selectedConditions, setSelectedConditions] = React.useState<string[]>(
-    []
+    [],
   );
 
   const filterLabelMap: Record<string, string> = {

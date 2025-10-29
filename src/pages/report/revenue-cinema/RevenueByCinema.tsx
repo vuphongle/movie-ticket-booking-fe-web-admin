@@ -47,7 +47,7 @@ const RevenueByCinema = () => {
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
   const [selectedCinemaId, setSelectedCinemaId] = useState<number | undefined>(
-    undefined
+    undefined,
   );
 
   const [getRevenueByCinema, { data: allCinemasData, isLoading, isFetching }] =

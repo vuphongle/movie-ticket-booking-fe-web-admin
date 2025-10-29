@@ -125,7 +125,7 @@ const UserDetail = () => {
       setAvatar(
         user?.avatar.startsWith("/api")
           ? `${API_DOMAIN}${user?.avatar}`
-          : user?.avatar
+          : user?.avatar,
       );
     }
   }, [user, avatar]);
@@ -299,7 +299,7 @@ const UserDetail = () => {
                       },
                       {
                         pattern: new RegExp(
-                          /^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/
+                          /^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})$/,
                         ),
                         message: "Số điện thoại di động không hợp lệ!",
                       },

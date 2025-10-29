@@ -163,13 +163,13 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
 
                   if (value <= 0) {
                     return Promise.reject(
-                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO")
+                      t("TOTAL_ROWS_MUST_GREATER_THAN_ZERO"),
                     );
                   }
 
                   if (value > 20) {
                     return Promise.reject(
-                      t("TOTAL_ROWS_MUST_LESS_THAN_OR_EQUAL_TWENTY")
+                      t("TOTAL_ROWS_MUST_LESS_THAN_OR_EQUAL_TWENTY"),
                     );
                   }
                   return Promise.resolve();
@@ -200,13 +200,13 @@ const AuditoriumList = ({ cinemaId }: AuditoriumListProps) => {
 
                   if (value <= 0) {
                     return Promise.reject(
-                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO")
+                      t("TOTAL_COLUMNS_MUST_GREATER_THAN_ZERO"),
                     );
                   }
 
                   if (value > 20) {
                     return Promise.reject(
-                      t("TOTAL_COLUMNS_MUST_LESS_THAN_OR_EQUAL_TWENTY")
+                      t("TOTAL_COLUMNS_MUST_LESS_THAN_OR_EQUAL_TWENTY"),
                     );
                   }
                   return Promise.resolve();

@@ -265,7 +265,8 @@ const coupon = {
   COUPON_ACTIVATE_CONFIRM_MESSAGE:
     "Kích hoạt khuyến mại sẽ bật tất cả các chi tiết liên quan. Bạn có chắc chắn muốn tiếp tục?",
   COUPON_ACTIVATE: "Kích hoạt",
-  COUPON_ACTIVATE_ERROR: "Kích hoạt khuyến mại thất bại. Cần ít nhất một chi tiết hoạt động.",
+  COUPON_ACTIVATE_ERROR:
+    "Kích hoạt khuyến mại thất bại. Cần ít nhất một chi tiết hoạt động.",
   COUPON_ACTIVATE_SUCCESS: "Kích hoạt khuyến mại thành công!",
   COUPON_NAME_PLACEHOLDER: "Nhập tên khuyến mại",
   COUPON_DESCRIPTION_PLACEHOLDER: "Nhập mô tả",

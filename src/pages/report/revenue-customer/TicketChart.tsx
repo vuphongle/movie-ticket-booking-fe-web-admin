@@ -21,7 +21,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface TicketChartProps {
@@ -45,7 +45,7 @@ function TicketChart({ data }: TicketChartProps) {
   };
 
   const isCustomerRevenue = (
-    item: CustomerRevenue | CustomerMovieRevenue
+    item: CustomerRevenue | CustomerMovieRevenue,
   ): item is CustomerRevenue => {
     return "customerPhone" in item;
   };
@@ -54,7 +54,7 @@ function TicketChart({ data }: TicketChartProps) {
     labels: data?.map((item) =>
       isCustomerRevenue(item)
         ? item.customerName
-        : `${item.customerName} - ${item.movieName}`
+        : `${item.customerName} - ${item.movieName}`,
     ),
     datasets: [
       {

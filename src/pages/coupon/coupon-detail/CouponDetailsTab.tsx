@@ -108,7 +108,7 @@ const CouponDetailsTab = ({
       message.success(
         newEnabled
           ? t("COUPON_DETAIL_ENABLE_SUCCESS")
-          : t("COUPON_DETAIL_DISABLE_SUCCESS")
+          : t("COUPON_DETAIL_DISABLE_SUCCESS"),
       );
       onRefresh();
     } catch {

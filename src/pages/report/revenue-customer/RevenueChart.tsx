@@ -21,7 +21,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 interface RevenueChartProps {
@@ -45,7 +45,7 @@ function RevenueChart({ data }: RevenueChartProps) {
   };
 
   const isCustomerRevenue = (
-    item: CustomerRevenue | CustomerMovieRevenue
+    item: CustomerRevenue | CustomerMovieRevenue,
   ): item is CustomerRevenue => {
     return "customerPhone" in item;
   };
@@ -54,7 +54,7 @@ function RevenueChart({ data }: RevenueChartProps) {
     labels: data?.map((item) =>
       isCustomerRevenue(item)
         ? item.customerName
-        : `${item.customerName} - ${item.movieName}`
+        : `${item.customerName} - ${item.movieName}`,
     ),
     datasets: [
       {
