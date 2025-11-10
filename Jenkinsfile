@@ -52,9 +52,9 @@ pipeline {
     stage('Deploy to VPS') {
       steps {
         script {
-          withCredentials([sshUserPrivateKey(credentialsId: 'vps-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+          withCredentials([usernamePassword(credentialsId: 'vps-ssh-password', usernameVariable: 'VPS_SSH_USER', passwordVariable: 'VPS_SSH_PASS')]) {
             sh """
-              ssh -i \${SSH_KEY} -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
+              sshpass -p "\${VPS_SSH_PASS}" ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
                 cd ${DEPLOY_PATH} && \
                 echo "📦 Pulling latest admin image..." && \
                 docker compose pull frontend-admin && \
@@ -82,13 +82,13 @@ pipeline {
     stage('Health Check') {
       steps {
         script {
-          withCredentials([sshUserPrivateKey(credentialsId: 'vps-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+          withCredentials([usernamePassword(credentialsId: 'vps-ssh-password', usernameVariable: 'VPS_SSH_USER', passwordVariable: 'VPS_SSH_PASS')]) {
             sh """
               echo "📤 Uploading health check script to VPS..."
-              scp -i \${SSH_KEY} -o StrictHostKeyChecking=no scripts/post-deploy-check.sh ${VPS_USER}@${VPS_HOST}:/tmp/post-deploy-check.sh
+              sshpass -p "\${VPS_SSH_PASS}" scp -o StrictHostKeyChecking=no scripts/post-deploy-check.sh ${VPS_USER}@${VPS_HOST}:/tmp/post-deploy-check.sh
               
               echo "🏥 Running health check on VPS..."
-              ssh -i \${SSH_KEY} -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
+              sshpass -p "\${VPS_SSH_PASS}" ssh -o StrictHostKeyChecking=no ${VPS_USER}@${VPS_HOST} '
                 chmod +x /tmp/post-deploy-check.sh && \
                 /tmp/post-deploy-check.sh && \
                 rm -f /tmp/post-deploy-check.sh
