@@ -5,7 +5,7 @@
 Domain `gocinema.io.vn` đang trỏ đến **2 IP addresses**:
 
 - `112.213.89.150` ← **IP CŨ** (hosting/server cũ, trả về trang PHP landing page)
-- `159.223.38.127` ← **IP MỚI** (VPS DigitalOcean, ứng dụng React)
+- `104.248.157.211` ← **IP MỚI** (VPS DigitalOcean, ứng dụng React)
 
 Do DNS Round Robin, trình duyệt có thể kết nối đến IP cũ, dẫn đến hiển thị sai nội dung.
 
@@ -38,21 +38,21 @@ Value: 112.213.89.150  ← XÓA CÁI NÀY (nếu có)
 ```
 Type: A
 Name: @
-Value: 159.223.38.127
+Value: 104.248.157.211
 TTL: 600 (hoặc Auto)
 ```
 
 ```
 Type: A
 Name: www
-Value: 159.223.38.127
+Value: 104.248.157.211
 TTL: 600 (hoặc Auto)
 ```
 
 ```
 Type: A
 Name: admin
-Value: 159.223.38.127
+Value: 104.248.157.211
 TTL: 600 (hoặc Auto)
 ```
 
@@ -93,7 +93,7 @@ nslookup gocinema.io.vn 8.8.8.8  # Google DNS
 nslookup gocinema.io.vn 1.1.1.1  # Cloudflare DNS
 ```
 
-**Kết quả mong đợi:** CHỈ thấy `159.223.38.127`
+**Kết quả mong đợi:** CHỈ thấy `104.248.157.211`
 
 ### Bước 6: Test domain
 
@@ -129,7 +129,7 @@ curl -v http://gocinema.io.vn 2>&1 | grep "Connected to"
 ```
 
 Nếu thấy `Connected to gocinema.io.vn (112.213.89.150)` → Vẫn đang dùng IP cũ  
-Nếu thấy `Connected to gocinema.io.vn (159.223.38.127)` → ✅ Đã dùng IP mới
+Nếu thấy `Connected to gocinema.io.vn (104.248.157.211)` → ✅ Đã dùng IP mới
 
 ## 📞 Support
 

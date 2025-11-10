@@ -116,7 +116,7 @@ Pipeline tự động chạy khi:
 
 ### Monitor Pipeline
 
-1. Truy cập Jenkins: http://159.223.38.127:8090
+1. Truy cập Jenkins: http://104.248.157.211:8090
 2. Chọn job: `movie-booking-admin`
 3. Xem Console Output để theo dõi
 
@@ -142,7 +142,7 @@ cd /Users/vuphong/DATN/Code/movie-ticket-booking-fe-web-admin
 
 ```bash
 # SSH vào VPS
-ssh root@159.223.38.127
+ssh root@104.248.157.211
 
 # Run health check manually
 bash /tmp/post-deploy-check.sh
@@ -153,7 +153,7 @@ bash /tmp/post-deploy-check.sh
 ### Container Status
 
 ```bash
-ssh root@159.223.38.127 "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+ssh root@104.248.157.211 "docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
 ```
 
 ### Logs
@@ -190,7 +190,7 @@ docker logs gocinema-nginx-proxy --tail 50
 ### Admin container không start?
 
 ```bash
-ssh root@159.223.38.127
+ssh root@104.248.157.211
 cd /opt/movie-ticket-booking-fe-admin
 docker compose logs frontend-admin
 docker compose up -d --force-recreate frontend-admin
