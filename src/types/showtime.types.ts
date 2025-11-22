@@ -102,7 +102,7 @@ export interface Showtime {
     graphics: string[];
     translations: string[];
   };
-  date: string;
+  date: string | number[]; // Can be string or array [year, month, day]
   startTime: string;
   endTime: string;
   graphicsType: string;

@@ -79,7 +79,7 @@ interface Auditorium {
 interface Showtime {
   id: string;
   movie: Movie;
-  date: string;
+  date: string | number[]; // Can be string or array [year, month, day]
   startTime: string;
   endTime: string;
   graphicsType: string;
@@ -188,7 +188,7 @@ function ShowtimesByAuditorium({
 
       return results;
     },
-    [],
+    []
   );
 
   useEffect(() => {
@@ -249,7 +249,7 @@ function ShowtimesByAuditorium({
         // Calculate actual end time instead of using slot boundary
         const actualEndTime = calculateActualEndTime(
           record.startTime,
-          record.movie.duration,
+          record.movie.duration
         );
 
         return (
@@ -286,13 +286,23 @@ function ShowtimesByAuditorium({
       render: (_text: string, record: Showtime, _index: number) => {
         // Use dayjs for better timezone handling
         const now = dayjs();
+
+        // Parse date from array [year, month, day] format
+        const dateArray = Array.isArray(record.date)
+          ? record.date
+          : JSON.parse(record.date as string);
+        const [year, month, day] = dateArray;
+
+        // Create date string in YYYY-MM-DD format
+        const dateStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
         const startTime = dayjs(
-          `${record.date} ${record.startTime}`,
-          "DD/MM/YYYY HH:mm",
+          `${dateStr} ${record.startTime}`,
+          "YYYY-MM-DD HH:mm"
         );
         const endTime = dayjs(
-          `${record.date} ${record.endTime}`,
-          "DD/MM/YYYY HH:mm",
+          `${dateStr} ${record.endTime}`,
+          "YYYY-MM-DD HH:mm"
         );
 
         if (now.isBefore(startTime)) {
@@ -338,7 +348,7 @@ function ShowtimesByAuditorium({
     // Validate slot selection before API call
     const validation = validateSlotSelection(
       selectedMovie.duration,
-      values.slotId,
+      values.slotId
     );
     if (!validation.isValid) {
       message.error(validation.errorMessage);
@@ -383,7 +393,7 @@ function ShowtimesByAuditorium({
     // Validate slot selection
     const validation = validateSlotSelection(
       selectedMovie.duration,
-      values.slotId,
+      values.slotId
     );
     if (!validation.isValid) {
       message.error(validation.errorMessage);
@@ -443,7 +453,7 @@ function ShowtimesByAuditorium({
             t("BULK_CREATION_SUCCESS", {
               created: response.successfullyCreated,
               total: response.totalRequested,
-            }),
+            })
           );
         } else if (response.successfullyCreated > 0) {
           // Partial success - some were created, some failed/skipped
@@ -452,7 +462,7 @@ function ShowtimesByAuditorium({
               created: response.successfullyCreated,
               total: response.totalRequested,
               skipped: response.totalRequested - response.successfullyCreated,
-            }),
+            })
           );
         } else {
           // None were created
@@ -472,11 +482,11 @@ function ShowtimesByAuditorium({
           const targetDates = generateTargetDates(
             bulkPayload.dateFrom,
             bulkPayload.dateTo,
-            bulkPayload.daysOfWeek || [],
+            bulkPayload.daysOfWeek || []
           );
           const computedValid = Math.max(
             (targetDates.length || totalRequested) - conflictsCount,
-            0,
+            0
           );
 
           setRequestedDates(targetDates);
@@ -517,7 +527,7 @@ function ShowtimesByAuditorium({
             t("BULK_CREATION_SUCCESS", {
               created: response.successfullyCreated,
               total: response.totalRequested,
-            }),
+            })
           );
         } else {
           message.warning(
@@ -525,7 +535,7 @@ function ShowtimesByAuditorium({
               created: response.successfullyCreated,
               total: response.totalRequested,
               skipped: response.totalRequested - response.successfullyCreated,
-            }),
+            })
           );
         }
       })
@@ -594,7 +604,7 @@ function ShowtimesByAuditorium({
   const getOptions = (
     movie: Movie | null,
     property: keyof Movie,
-    mapping: Record<string, string>,
+    mapping: Record<string, string>
   ) => {
     if (!movie || !movie[property]) return [];
     return (movie[property] as string[]).map((type: string) => {
