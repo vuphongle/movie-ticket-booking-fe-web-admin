@@ -20,7 +20,6 @@ const common = {
   BACK_TO_HOME: "Back to Home",
   SEARCH_PLACEHOLDER: "Search...",
 
-  PROFILE: "Profile",
   CHANGE_PASSWORD: "Change Password",
 
   USER_NOT_FOUND: "User not found.",

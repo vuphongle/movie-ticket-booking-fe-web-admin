@@ -20,7 +20,6 @@ const common = {
   BACK_TO_HOME: "Quay lại trang chủ",
   SEARCH_PLACEHOLDER: "Tìm kiếm...",
 
-  PROFILE: "Hồ sơ",
   CHANGE_PASSWORD: "Đổi mật khẩu",
 
   USER_NOT_FOUND: "Người dùng không tồn tại.",

@@ -7,12 +7,7 @@ import type { RootState } from "@app/Store";
 import { logout } from "@app/slices/auth.slice";
 import { flags } from "@assets/index";
 import styles from "./AppLayoutHeader.module.css";
-import {
-  UserOutlined,
-  LockOutlined,
-  HomeOutlined,
-  LogoutOutlined,
-} from "@ant-design/icons";
+import { LockOutlined, HomeOutlined, LogoutOutlined } from "@ant-design/icons";
 
 function AppLayoutHeader() {
   const { auth } = useSelector((state: RootState) => state.auth);
@@ -32,21 +27,16 @@ function AppLayoutHeader() {
   const items = [
     {
       key: "1",
-      icon: <UserOutlined />,
-      label: <a href="/">{t("PROFILE")}</a>,
-    },
-    {
-      key: "2",
       icon: <LockOutlined />,
       label: <a href="/admin/change-password">{t("CHANGE_PASSWORD")}</a>,
     },
     {
-      key: "3",
+      key: "2",
       icon: <HomeOutlined />,
       label: <a href="/">{t("BACK_TO_HOME")}</a>,
     },
     {
-      key: "4",
+      key: "3",
       icon: <LogoutOutlined />,
       label: t("LOGOUT"),
       onClick: handleLogout,
