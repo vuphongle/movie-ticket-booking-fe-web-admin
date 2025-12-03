@@ -164,10 +164,9 @@ const CouponStatisticsCards = ({
         <Card loading={loading} style={{ background: colorBgContainer }}>
           <Statistic
             title={t("COUPON_STATISTICS_AVERAGE_DISCOUNT_PER_ORDER")}
-            value={statistics.averageDiscountPerOrder}
+            value={Number(statistics.averageDiscountPerOrder.toFixed(2))}
             prefix={<DollarOutlined />}
             formatter={(value) => formatCurrency(Number(value))}
-            precision={0}
           />
         </Card>
       </Col>
