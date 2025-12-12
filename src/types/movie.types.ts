@@ -11,9 +11,10 @@ export interface Director {
   id: string | number;
   name: string;
   bio?: string;
+  description?: string;
   nationality?: string;
-  birthday?: string | number; // Backend trả về timestamp number
-  birthDate?: string; // For backward compatibility
+  birthday?: string | number;
+  birthDate?: string;
   avatar?: string;
   createdAt?: string | number;
   updatedAt?: string | number;
@@ -23,10 +24,10 @@ export interface Actor {
   id: string | number;
   name: string;
   description?: string;
-  bio?: string; // For backward compatibility
+  bio?: string;
   nationality?: string;
-  birthday?: string | number; // Backend trả về timestamp number
-  birthDate?: string; // For backward compatibility
+  birthday?: string | number;
+  birthDate?: string;
   avatar?: string;
   createdAt?: string | number;
   updatedAt?: string | number;
