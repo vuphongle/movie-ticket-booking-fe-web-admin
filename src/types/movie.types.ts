@@ -12,10 +12,11 @@ export interface Director {
   name: string;
   bio?: string;
   nationality?: string;
-  birthDate?: string;
+  birthday?: string | number; // Backend trả về timestamp number
+  birthDate?: string; // For backward compatibility
   avatar?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: string | number;
+  updatedAt?: string | number;
 }
 
 export interface Actor {

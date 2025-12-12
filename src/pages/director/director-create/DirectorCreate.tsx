@@ -80,7 +80,18 @@ const DirectorCreate = () => {
     form
       .validateFields()
       .then((values) => {
-        return createDirector(values).unwrap();
+        // Chuyển birthDate thành birthday timestamp
+        const payload = { ...values };
+        if (payload.birthDate) {
+          payload.birthday = dayjs(payload.birthDate).valueOf();
+          delete payload.birthDate;
+        }
+        // Chuyển bio thành description
+        if (payload.bio) {
+          payload.description = payload.bio;
+          delete payload.bio;
+        }
+        return createDirector(payload).unwrap();
       })
       .then((data) => {
         message.success(t("DIRECTOR_CREATED_SUCCESS"));
@@ -229,7 +240,7 @@ const DirectorCreate = () => {
 
                       if (dayjs(value).isAfter(dayjs(), "day")) {
                         return Promise.reject(
-                          new Error(t("BIRTH_DATE_FUTURE_ERROR")),
+                          new Error(t("BIRTH_DATE_FUTURE_ERROR"))
                         );
                       }
 
