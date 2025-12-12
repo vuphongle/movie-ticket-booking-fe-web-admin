@@ -101,7 +101,7 @@ const DirectorDetail = () => {
             ? avatarUrl.startsWith("http")
               ? avatarUrl
               : `${API_DOMAIN}${avatarUrl}`
-            : avatarUrl,
+            : avatarUrl
         );
       }
     }
@@ -123,7 +123,18 @@ const DirectorDetail = () => {
     form
       .validateFields()
       .then((values) => {
-        return updateDirector({ directorId: directorId!, ...values }).unwrap();
+        // Chuyển birthDate thành birthday timestamp
+        const payload = { ...values };
+        if (payload.birthDate) {
+          payload.birthday = dayjs(payload.birthDate).valueOf();
+          delete payload.birthDate;
+        }
+        // Chuyển bio thành description
+        if (payload.bio) {
+          payload.description = payload.bio;
+          delete payload.bio;
+        }
+        return updateDirector({ directorId: directorId!, ...payload }).unwrap();
       })
       .then(() => {
         message.success(t("DIRECTOR_UPDATED_SUCCESS"));
@@ -276,9 +287,12 @@ const DirectorDetail = () => {
           autoComplete="off"
           initialValues={{
             ...director,
-            birthDate: director.birthDate
-              ? dayjs(formatDate(director.birthDate), "DD/MM/YYYY")
-              : null,
+            bio: director.description || director.bio,
+            birthDate: director.birthday
+              ? dayjs(director.birthday)
+              : director.birthDate
+                ? dayjs(formatDate(director.birthDate), "DD/MM/YYYY")
+                : null,
           }}
         >
           <Row>
@@ -312,7 +326,7 @@ const DirectorDetail = () => {
 
                       if (dayjs(value).isAfter(dayjs(), "day")) {
                         return Promise.reject(
-                          new Error(t("BIRTH_DATE_FUTURE_ERROR")),
+                          new Error(t("BIRTH_DATE_FUTURE_ERROR"))
                         );
                       }
 
