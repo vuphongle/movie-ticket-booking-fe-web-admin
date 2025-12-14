@@ -63,6 +63,13 @@ export const showtimesApi = createApi({
       }),
       invalidatesTags: ["Showtimes"],
     }),
+    deleteShowtime: builder.mutation<void, number | string>({
+      query: (id) => ({
+        url: `showtimes/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Showtimes"],
+    }),
   }),
 });
 
@@ -70,4 +77,5 @@ export const {
   useLazySearchShowtimesQuery,
   useCreateShowtimesMutation,
   useCreateBulkShowtimesMutation,
+  useDeleteShowtimeMutation,
 } = showtimesApi;

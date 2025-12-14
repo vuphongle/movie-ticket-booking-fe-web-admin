@@ -20,6 +20,8 @@ const schedule = {
   MOVIE_REQUIRED: "Movie cannot be empty!",
   START_DATE_REQUIRED: "Start date cannot be empty!",
   END_DATE_REQUIRED: "End date cannot be empty!",
+  START_DATE_CANNOT_BE_PAST: "Start date cannot be in the past",
+  END_DATE_MUST_BE_AFTER_START_DATE: "End date must be after start date",
 
   // Status
   UPCOMING: "Upcoming",

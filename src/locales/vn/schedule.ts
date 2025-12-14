@@ -20,6 +20,8 @@ const schedule = {
   MOVIE_REQUIRED: "Phim chiếu không được để trống!",
   START_DATE_REQUIRED: "Ngày bắt đầu không được để trống!",
   END_DATE_REQUIRED: "Ngày kết thúc không được để trống!",
+  START_DATE_CANNOT_BE_PAST: "Ngày bắt đầu không được ở quá khứ",
+  END_DATE_MUST_BE_AFTER_START_DATE: "Ngày kết thúc phải lớn hơn ngày bắt đầu",
 
   // Status
   UPCOMING: "Sắp chiếu",

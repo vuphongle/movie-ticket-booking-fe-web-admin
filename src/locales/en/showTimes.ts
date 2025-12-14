@@ -129,6 +129,13 @@ const showtimes = {
   READY_FOR_CREATION: "Ready to create",
   WILL_CREATE_SHOWTIMES: "Will create {{count}} valid showtimes",
   NO_VALID_DATES_REMAINING: "No valid dates remaining for showtime creation",
+
+  // Delete showtime
+  DELETE_SHOWTIME: "Delete showtime",
+  CONFIRM_DELETE_SHOWTIME: "Are you sure you want to delete this showtime?",
+  CONFIRM_DELETE_SHOWTIME_MESSAGE:
+    "This action cannot be undone. Showtime will be removed if it has no bookings.",
+  DELETE_SHOWTIME_SUCCESS: "Showtime deleted successfully!",
 };
 
 export default showtimes;
