@@ -128,6 +128,13 @@ const showtimes = {
   READY_FOR_CREATION: "Sẵn sàng tạo suất chiếu",
   WILL_CREATE_SHOWTIMES: "Sẽ tạo {{count}} suất chiếu hợp lệ",
   NO_VALID_DATES_REMAINING: "Không còn ngày hợp lệ để tạo suất chiếu",
+
+  // Delete showtime
+  DELETE_SHOWTIME: "Xóa suất chiếu",
+  CONFIRM_DELETE_SHOWTIME: "Bạn có chắc muốn xóa suất chiếu này?",
+  CONFIRM_DELETE_SHOWTIME_MESSAGE:
+    "Thao tác không thể hoàn tác. Suất chiếu chỉ được xóa khi chưa có đặt vé.",
+  DELETE_SHOWTIME_SUCCESS: "Xóa suất chiếu thành công!",
 };
 
 export default showtimes;

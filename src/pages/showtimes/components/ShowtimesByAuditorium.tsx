@@ -1,14 +1,8 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { DndContext } from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-import {
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { MenuOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
   DatePicker,
+  Dropdown,
   Form,
   message,
   Modal,
@@ -23,6 +17,7 @@ import {
   Row as AntRow,
   Col,
 } from "antd";
+import type { MenuProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
@@ -30,9 +25,9 @@ import { useGetAllMoviesInScheduleQuery } from "@services/movies.service";
 import {
   useCreateShowtimesMutation,
   useCreateBulkShowtimesMutation,
+  useDeleteShowtimeMutation,
 } from "@services/showtimes.service";
 import { isSameDay } from "@utils/functionUtils";
-import Row from "./Row";
 import { useTranslation } from "react-i18next";
 import ConflictResolutionModal from "@/components/conflicts/ConflictResolutionModal";
 import {
@@ -131,7 +126,10 @@ function ShowtimesByAuditorium({
     useCreateShowtimesMutation();
   const [createBulkShowtimes, { isLoading: isLoadingCreateBulkShowtimes }] =
     useCreateBulkShowtimesMutation();
+  const [deleteShowtime, { isLoading: isDeletingShowtime }] =
+    useDeleteShowtimeMutation();
   const { t } = useTranslation();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   // Days of week options
   const daysOfWeekOptions = [
@@ -208,9 +206,57 @@ function ShowtimesByAuditorium({
     setShowtimes(data.showtimes);
   }, [data]);
 
+  const actionMenuItems = (record: Showtime): MenuProps["items"] => [
+    {
+      key: "delete",
+      label: (
+        <Space>
+          <Tag color="red" bordered={false}>
+            {t("DELETE_SHOWTIME")}
+          </Tag>
+        </Space>
+      ),
+      onClick: () => confirmDelete(record),
+    },
+  ];
+
+  const confirmDelete = (record: Showtime) => {
+    Modal.confirm({
+      title: t("CONFIRM_DELETE_SHOWTIME"),
+      content: t("CONFIRM_DELETE_SHOWTIME_MESSAGE"),
+      okText: t("DELETE"),
+      okType: "danger",
+      cancelText: t("CANCEL"),
+      okButtonProps: { loading: deletingId === record.id && isDeletingShowtime },
+      onOk: () => {
+        setDeletingId(record.id);
+        return deleteShowtime(record.id)
+          .unwrap()
+          .then(() => {
+            setShowtimes((prev) => prev.filter((item) => item.id !== record.id));
+            message.success(t("DELETE_SHOWTIME_SUCCESS"));
+          })
+          .catch((error: any) => {
+            const errorMessage =
+              error?.data?.message || t("BAD_INPUT_ERROR") || "Có lỗi xảy ra";
+            message.error(errorMessage);
+            return Promise.reject();
+          })
+          .finally(() => setDeletingId(null));
+      },
+    });
+  };
+
   const columns = [
     {
-      key: "sort",
+      title: " ",
+      key: "action",
+      width: 60,
+      render: (_text: string, record: Showtime) => (
+        <Dropdown menu={{ items: actionMenuItems(record) }} trigger={["click"]}>
+          <Button type="text" icon={<MenuOutlined />} />
+        </Dropdown>
+      ),
     },
     {
       title: t("MOVIE_SCREENING"),
@@ -627,65 +673,42 @@ function ShowtimesByAuditorium({
   const getTranslationTypeOptions = (movie: Movie | null) =>
     getOptions(movie, "translations", translationMapping);
 
-  const onDragEnd = ({ active, over }: { active: any; over: any }) => {
-    if (active.id !== over?.id) {
-      setShowtimes((previous) => {
-        const activeIndex = previous.findIndex((i) => i.id === active.id);
-        const overIndex = previous.findIndex((i) => i.id === over?.id);
-        return arrayMove(previous, activeIndex, overIndex);
-      });
-    }
-    message.warning(t("FEATURE_UNDER_DEVELOPMENT"));
-  };
   return (
     <>
-      <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
-        <SortableContext
-          // rowKey array
-          items={showtimes.map((i) => i.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          <Table
-            components={{
-              body: {
-                row: Row,
-              },
-            }}
-            style={{ marginBottom: 30, position: "relative", zIndex: 1 }}
-            columns={columns}
-            dataSource={showtimes}
-            pagination={false}
-            rowKey="id"
-            title={() => (
-              <Typography.Title level={5} style={{ color: "#722ed1" }}>
-                {data.auditorium.name}
-              </Typography.Title>
-            )}
-            footer={() => {
-              const now = new Date();
-              const dateSelectedObj = dateSelected.toDate();
+      <Table
+        style={{ marginBottom: 30, position: "relative", zIndex: 1 }}
+        columns={columns}
+        dataSource={showtimes}
+        pagination={false}
+        rowKey="id"
+        title={() => (
+          <Typography.Title level={5} style={{ color: "#722ed1" }}>
+            {data.auditorium.name}
+          </Typography.Title>
+        )}
+        footer={() => {
+          const now = new Date();
+          const dateSelectedObj = dateSelected.toDate();
 
-              if (
-                isSameDay(now, dateSelectedObj) ||
-                dateSelectedObj.getTime() >= now.getTime()
-              ) {
-                return (
-                  <Button
-                    style={{ backgroundColor: "rgb(60, 141, 188)" }}
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    {t("ADD_SHOWTIME")}
-                  </Button>
-                );
-              } else {
-                return null;
-              }
-            }}
-          />
-        </SortableContext>
-      </DndContext>
+          if (
+            isSameDay(now, dateSelectedObj) ||
+            dateSelectedObj.getTime() >= now.getTime()
+          ) {
+            return (
+              <Button
+                style={{ backgroundColor: "rgb(60, 141, 188)" }}
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setIsModalOpen(true)}
+              >
+                {t("ADD_SHOWTIME")}
+              </Button>
+            );
+          } else {
+            return null;
+          }
+        }}
+      />
 
       {isModalOpen && (
         <Modal
