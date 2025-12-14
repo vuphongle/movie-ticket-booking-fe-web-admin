@@ -2,13 +2,14 @@ import { Button, DatePicker, Form, message, Modal, Select, Space } from "antd";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
 import { useUpdateScheduleMutation } from "@services/schedules.service";
-import { formatDate } from "@/utils/functionUtils";
+import { convertDateArrayToDate } from "@/utils/functionUtils";
 import type { ScheduleModalUpdateProps, ScheduleFormData } from "@/types";
 
 const ModalUpdate = (props: ScheduleModalUpdateProps) => {
   const { schedule, open, onCancel, movies } = props;
   const { t } = useTranslation();
   const [updateSchedule, { isLoading }] = useUpdateScheduleMutation();
+  const [form] = Form.useForm();
 
   const onFinish = (values: ScheduleFormData) => {
     updateSchedule({ id: schedule.id, ...values })
@@ -32,16 +33,17 @@ const ModalUpdate = (props: ScheduleModalUpdateProps) => {
         confirmLoading={isLoading}
       >
         <Form
+          form={form}
           layout="vertical"
           onFinish={onFinish}
           autoComplete="off"
           initialValues={{
             movieId: schedule.movie.id,
             startDate: schedule.startDate
-              ? dayjs(formatDate(schedule.startDate), "DD/MM/YYYY")
+              ? dayjs(convertDateArrayToDate(schedule.startDate))
               : null,
             endDate: schedule.endDate
-              ? dayjs(formatDate(schedule.endDate), "DD/MM/YYYY")
+              ? dayjs(convertDateArrayToDate(schedule.endDate))
               : null,
           }}
         >
@@ -88,14 +90,39 @@ const ModalUpdate = (props: ScheduleModalUpdateProps) => {
           <Form.Item
             label={t("END_DATE")}
             name="endDate"
+            dependencies={["startDate"]}
             rules={[
               {
                 required: true,
                 message: t("END_DATE_REQUIRED"),
               },
+              ({ getFieldValue }) => ({
+                validator: (_, value) => {
+                  const startDate = getFieldValue("startDate");
+                  if (!value || !startDate || value.isAfter(startDate, "day")) {
+                    return Promise.resolve();
+                  }
+
+                  return Promise.reject(
+                    new Error(
+                      t("END_DATE_MUST_BE_AFTER_START_DATE") ||
+                        "Ngày kết thúc phải lớn hơn ngày bắt đầu",
+                    ),
+                  );
+                },
+              }),
             ]}
           >
-            <DatePicker style={{ width: "100%" }} format={"DD/MM/YYYY"} />
+            <DatePicker
+              style={{ width: "100%" }}
+              format={"DD/MM/YYYY"}
+              disabledDate={(current) => {
+                const startDate = form.getFieldValue("startDate");
+                return (
+                  current && startDate && !current.isAfter(startDate, "day")
+                );
+              }}
+            />
           </Form.Item>
 
           <Form.Item>
