@@ -1,17 +1,14 @@
-import { DeleteOutlined, EditOutlined, StarOutlined } from "@ant-design/icons";
-import { Button, message, Modal, Space, Table, Typography } from "antd";
+import { DeleteOutlined, StarOutlined } from "@ant-design/icons";
+import { Button, message, Modal, Table, Typography } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDeleteReviewMutation } from "@/app/services/reviews.service";
 import { formatDateTime } from "@/utils/functionUtils";
-import ModalUpdate from "./ModalUpdate";
 import type { Review, ReviewTableProps } from "@/types/movie.types";
 
-const ReviewTable = ({ data, movieId, onReviewDeleted }: ReviewTableProps) => {
+const ReviewTable = ({ data, onReviewDeleted }: ReviewTableProps) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
   const [reviews, setReviews] = useState<Review[]>(data);
-  const [reviewUpdate, setReviewUpdate] = useState<Review | null>(null);
   const [deleteReview, { isLoading }] = useDeleteReviewMutation();
 
   const columns = [
@@ -61,23 +58,13 @@ const ReviewTable = ({ data, movieId, onReviewDeleted }: ReviewTableProps) => {
       width: "10%",
       render: (_: any, record: Review) => {
         return (
-          <Space>
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setReviewUpdate(record);
-                setOpen(true);
-              }}
-            ></Button>
-            <Button
-              danger
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                handleConfirm(record.id);
-              }}
-            ></Button>
-          </Space>
+          <Button
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              handleConfirm(record.id);
+            }}
+          />
         );
       },
     },
@@ -119,17 +106,6 @@ const ReviewTable = ({ data, movieId, onReviewDeleted }: ReviewTableProps) => {
     });
   };
 
-  const handleUpdateReview = (review: Review) => {
-    setReviews(
-      reviews.map((item: Review) => {
-        if (item.id === review.id) {
-          return review;
-        }
-        return item;
-      }),
-    );
-  };
-
   return (
     <>
       <Table
@@ -137,16 +113,6 @@ const ReviewTable = ({ data, movieId, onReviewDeleted }: ReviewTableProps) => {
         dataSource={reviews}
         rowKey={(record) => record.id}
       />
-
-      {open && reviewUpdate && (
-        <ModalUpdate
-          open={open}
-          onCancel={() => setOpen(false)}
-          review={reviewUpdate}
-          movieId={movieId}
-          onUpdateReview={handleUpdateReview}
-        />
-      )}
     </>
   );
 };
