@@ -19,7 +19,7 @@ import {
 } from "antd";
 import type { MenuProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { useGetAllMoviesInScheduleQuery } from "@services/movies.service";
 import {
@@ -27,7 +27,8 @@ import {
   useCreateBulkShowtimesMutation,
   useDeleteShowtimeMutation,
 } from "@services/showtimes.service";
-import { isSameDay } from "@utils/functionUtils";
+import { useGetSchedulesQuery } from "@services/schedules.service";
+import { convertDateArrayToDate, isSameDay } from "@utils/functionUtils";
 import { useTranslation } from "react-i18next";
 import ConflictResolutionModal from "@/components/conflicts/ConflictResolutionModal";
 import {
@@ -52,11 +53,18 @@ import {
 } from "@/utils/showtimeErrorHandler";
 
 // Type definitions
+type ScheduleDateInput = string | number[] | Date | number;
+type MovieScheduleStatus = "upcoming" | "showing" | "ended";
+
 interface Movie {
   id: number;
   name: string;
   duration: number;
-  showDate: string;
+  showDate: ScheduleDateInput;
+  startDate?: ScheduleDateInput;
+  endDate?: ScheduleDateInput;
+  scheduleStartDate?: ScheduleDateInput;
+  scheduleEndDate?: ScheduleDateInput;
   graphics: string[];
   translations: string[];
 }
@@ -94,6 +102,13 @@ interface ShowtimesByAuditoriumProps {
   dateSelected: Dayjs;
 }
 
+type ParsedSchedule = {
+  id: string | number;
+  movieId: number;
+  startDate: Dayjs;
+  endDate: Dayjs | null;
+};
+
 function ShowtimesByAuditorium({
   data,
   cinema,
@@ -122,6 +137,7 @@ function ShowtimesByAuditorium({
 
   const { data: movies, isLoading: _isFetchingMovies } =
     useGetAllMoviesInScheduleQuery(dayjs(dateSelected).format("DD-MM-YYYY"));
+  const { data: schedulesData } = useGetSchedulesQuery(undefined);
   const [createShowtimes, { isLoading: isLoadingCreateShowtimes }] =
     useCreateShowtimesMutation();
   const [createBulkShowtimes, { isLoading: isLoadingCreateBulkShowtimes }] =
@@ -227,13 +243,17 @@ function ShowtimesByAuditorium({
       okText: t("DELETE"),
       okType: "danger",
       cancelText: t("CANCEL"),
-      okButtonProps: { loading: deletingId === record.id && isDeletingShowtime },
+      okButtonProps: {
+        loading: deletingId === record.id && isDeletingShowtime,
+      },
       onOk: () => {
         setDeletingId(record.id);
         return deleteShowtime(record.id)
           .unwrap()
           .then(() => {
-            setShowtimes((prev) => prev.filter((item) => item.id !== record.id));
+            setShowtimes((prev) =>
+              prev.filter((item) => item.id !== record.id)
+            );
             message.success(t("DELETE_SHOWTIME_SUCCESS"));
           })
           .catch((error: any) => {
@@ -316,7 +336,7 @@ function ShowtimesByAuditorium({
       key: "type",
       render: (_text: string, record: Showtime, _index: number) => {
         const dateSelectedObj = dateSelected.toDate();
-        const showDate = new Date(record.movie.showDate);
+        const showDate = convertDateArrayToDate(record.movie.showDate);
 
         if (showDate.getTime() > dateSelectedObj.getTime()) {
           return <Tag color="orange">{t("PREMIERE")}</Tag>;
@@ -371,12 +391,129 @@ function ShowtimesByAuditorium({
     form.resetFields();
   };
 
-  const getClassification = (showDateStr: string) => {
-    const now = dateSelected.toDate();
-    const showDate = new Date(showDateStr);
-    if (now.getTime() < showDate.getTime()) return 1;
-    return 2;
+  const parseScheduleDate = (value?: ScheduleDateInput | null) => {
+    if (!value) return null;
+    const parsed = dayjs(convertDateArrayToDate(value));
+    return parsed.isValid() ? parsed : null;
   };
+
+  const formatRangeLabel = (
+    startDate?: Dayjs | null,
+    endDate?: Dayjs | null
+  ) => {
+    if (!startDate) return "";
+
+    const startLabel = startDate.format("DD/MM/YYYY");
+    if (!endDate) return startLabel;
+
+    return `${startLabel} - ${endDate.format("DD/MM/YYYY")}`;
+  };
+
+  const parsedSchedules = useMemo(() => {
+    const map = new Map<number, ParsedSchedule[]>();
+    if (!schedulesData) return map;
+
+    (schedulesData as any[]).forEach((schedule) => {
+      const movieId =
+        Number(schedule.movieId) || Number(schedule.movie?.id) || null;
+      if (!movieId) return;
+
+      const parsedStart = parseScheduleDate(schedule.startDate);
+      if (!parsedStart) return;
+
+      const parsedEnd = parseScheduleDate(schedule.endDate);
+      const entry: ParsedSchedule = {
+        id: schedule.id,
+        movieId,
+        startDate: parsedStart.startOf("day"),
+        endDate: parsedEnd ? parsedEnd.endOf("day") : null,
+      };
+
+      const list = map.get(movieId) || [];
+      list.push(entry);
+      map.set(movieId, list);
+    });
+
+    // Sort schedules by start date for deterministic selection
+    map.forEach((list, movieId) => {
+      list.sort((a, b) => a.startDate.valueOf() - b.startDate.valueOf());
+      map.set(movieId, list);
+    });
+
+    return map;
+  }, [schedulesData]);
+
+  const getMovieScheduleInfo = useCallback(
+    (movie: Movie) => {
+      const targetDate = dateSelected.startOf("day");
+      const schedules = parsedSchedules.get(Number(movie.id)) || [];
+
+      // Try to find schedule covering selected date
+      const current = schedules.find((sch) => {
+        const endBoundary = sch.endDate || sch.startDate;
+        return (
+          targetDate.isSame(sch.startDate, "day") ||
+          targetDate.isSame(endBoundary, "day") ||
+          (targetDate.isAfter(sch.startDate, "day") &&
+            targetDate.isBefore(endBoundary, "day"))
+        );
+      });
+
+      if (current) {
+        return {
+          status: "showing" as MovieScheduleStatus,
+          rangeLabel: formatRangeLabel(current.startDate, current.endDate),
+          source: "schedule-current",
+          scheduleCount: schedules.length,
+        };
+      }
+
+      // Upcoming schedule (next start date after target)
+      const upcoming = schedules.find((sch) =>
+        targetDate.isBefore(sch.startDate, "day")
+      );
+      if (upcoming) {
+        return {
+          status: "upcoming" as MovieScheduleStatus,
+          rangeLabel: formatRangeLabel(upcoming.startDate, upcoming.endDate),
+          source: "schedule-upcoming",
+          scheduleCount: schedules.length,
+        };
+      }
+
+      // If schedules exist but all ended before selected date -> ended
+      if (schedules.length > 0) {
+        const latest = schedules[schedules.length - 1];
+        return {
+          status: "ended" as MovieScheduleStatus,
+          rangeLabel: formatRangeLabel(latest.startDate, latest.endDate),
+          source: "schedule-ended",
+          scheduleCount: schedules.length,
+        };
+      }
+
+      // Fallback to showDate if no schedules provided
+      const parsedShowDate = parseScheduleDate(movie.showDate);
+      if (parsedShowDate && targetDate.isBefore(parsedShowDate, "day")) {
+        return {
+          status: "upcoming" as MovieScheduleStatus,
+          rangeLabel: formatRangeLabel(parsedShowDate, null),
+          source: "showDate-upcoming",
+          scheduleCount: 0,
+        };
+      }
+
+      return {
+        status: "showing" as MovieScheduleStatus,
+        rangeLabel: parsedShowDate
+          ? formatRangeLabel(parsedShowDate, null)
+          : "",
+        source: "showDate-default",
+        scheduleCount: 0,
+      };
+    },
+    [dateSelected, parsedSchedules]
+  );
 
   const onFinish = (values: ShowtimeFormData | BulkShowtimeFormData) => {
     if (!selectedMovie) return;
@@ -755,6 +892,7 @@ function ShowtimesByAuditorium({
               ]}
             >
               <Select
+                optionLabelProp="selectionLabel"
                 style={{ width: "100%" }}
                 showSearch
                 placeholder={t("SELECT_MOVIE")}
@@ -765,16 +903,38 @@ function ShowtimesByAuditorium({
                     .includes(input.toLowerCase())
                 }
                 options={movies?.map((movie: Movie) => {
-                  const classification = getClassification(movie.showDate);
-                  const color = classification === 1 ? "processing" : "success";
+                  const { status, rangeLabel } = getMovieScheduleInfo(movie);
+                  const color =
+                    status === "upcoming"
+                      ? "warning"
+                      : status === "ended"
+                        ? "default"
+                        : "success";
                   const statusText =
-                    classification === 1 ? t("UPCOMING") : t("NOW_SHOWING");
+                    status === "upcoming"
+                      ? t("UPCOMING")
+                      : status === "ended"
+                        ? t("ALREADY_SHOWN")
+                        : t("NOW_SHOWING");
+                  const scheduleRangeText = rangeLabel;
                   return {
                     value: movie.id,
+                    selectionLabel: movie.name,
                     label: (
-                      <>
-                        {movie.name} <Tag color={color}>{statusText}</Tag>
-                      </>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <Space size={6} wrap align="center">
+                          <span style={{ fontWeight: 500 }}>{movie.name}</span>
+                          <Tag color={color}>{statusText}</Tag>
+                        </Space>
+                        {scheduleRangeText && (
+                          <Typography.Text
+                            type="secondary"
+                            style={{ fontSize: 12, marginTop: 2 }}
+                          >
+                            {scheduleRangeText}
+                          </Typography.Text>
+                        )}
+                      </div>
                     ),
                     searchValue: movie.name,
                   };

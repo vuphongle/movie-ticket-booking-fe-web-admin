@@ -33,7 +33,8 @@ export function getShowtimeErrorMessage(error: ErrorResponse): string {
       return i18n.t("MOVIE_TOO_LONG_ERROR");
 
     case ShowtimeErrorCode.BAD_INPUT:
-      return i18n.t("BAD_INPUT_ERROR");
+      // Với lỗi BAD_INPUT, ưu tiên thông báo chi tiết từ BE (nếu có)
+      return error.data?.message || i18n.t("BAD_INPUT_ERROR");
 
     default:
       return defaultMessage;
